@@ -219,7 +219,7 @@ const ModuleDetail = () => {
   }
 
   return (
-    <div className="min-h-screen py-8 pt-24 bg-light">
+    <div className="min-h-screen py-6 sm:py-8 pt-20 sm:pt-24 pb-12 bg-light">
       <div className="container px-4 mx-auto max-w-7xl">
         {/* Breadcrumb */}
         <nav className="flex items-center gap-2 mb-8 text-sm">
@@ -246,10 +246,10 @@ const ModuleDetail = () => {
         </nav>
 
         {/* Module Header */}
-        <div className="p-8 mb-4 bg-white border shadow-xl rounded-2xl border-slate-100">
+        <div className="p-6 sm:p-8 mb-4 bg-white border shadow-xl rounded-2xl border-slate-100">
           <div className="flex items-start justify-between">
             <div className="flex-1">
-              <h1 className="mb-3 text-4xl font-bold tracking-tight text-slate-900">
+              <h1 className="mb-3 text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-slate-900 break-words">
                 {module.name}
               </h1>
               {module.description && (
@@ -280,7 +280,7 @@ const ModuleDetail = () => {
         </div>
 
         {/* Search Bar */}
-        <div className="p-6 mb-4 bg-white border shadow-xl rounded-2xl border-slate-100">
+        <div className="p-4 sm:p-6 mb-4 bg-white border shadow-xl rounded-2xl border-slate-100">
           <div className="relative">
             <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
               <svg
@@ -336,8 +336,8 @@ const ModuleDetail = () => {
         </div>
 
         {/* Sub Modules List */}
-        <div className="p-8 bg-white border shadow-xl rounded-2xl border-slate-100">
-          <div className="flex items-center justify-between mb-6">
+        <div className="p-4 sm:p-6 md:p-8 bg-white border shadow-xl rounded-2xl border-slate-100">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
             <h2 className="text-2xl font-bold text-slate-900">
               Daftar Sub Modul
             </h2>
@@ -382,7 +382,7 @@ const ModuleDetail = () => {
                   <div
                     key={subModule.id}
                     onClick={() => handleSubModuleClick(subModule.id)}
-                    className="relative p-6 overflow-hidden transition-all duration-300 border cursor-pointer group rounded-xl border-slate-200 hover:border-primary hover:shadow-xl"
+                    className="relative p-4 sm:p-6 overflow-hidden transition-all duration-300 border cursor-pointer group rounded-xl border-slate-200 hover:border-primary hover:shadow-xl"
                     style={{
                       animationDelay: `${index * 50}ms`,
                       animation: "fadeInUp 0.5s ease-out forwards",
@@ -392,8 +392,8 @@ const ModuleDetail = () => {
                     {/* Background Gradient Effect */}
                     <div className="absolute inset-0 transition-all duration-500 bg-gradient-to-r from-green-50/0 via-green-50/0 to-green-50/0"></div>
 
-                    <div className="relative flex items-start justify-between gap-4">
-                      <div className="flex-1">
+                    <div className="relative flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+                      <div className="flex-1 min-w-0">
                         <div className="flex items-start gap-4 mb-3">
                           <div className="flex items-center justify-center flex-shrink-0 w-12 h-12 font-bold text-white shadow-lg bg-primary rounded-xl shadow-secondary/20">
                             {index + 1}
@@ -436,7 +436,7 @@ const ModuleDetail = () => {
 
                       {/* Status Badge */}
                       <div
-                        className={`flex items-center gap-2 px-4 py-2.5 rounded-xl ${badge.color} whitespace-nowrap font-semibold text-sm`}
+                        className={`flex items-center justify-center sm:justify-end gap-2 px-4 py-2.5 rounded-xl ${badge.color} whitespace-nowrap font-semibold text-sm shrink-0`}
                       >
                         {badge.icon}
                         {badge.text}

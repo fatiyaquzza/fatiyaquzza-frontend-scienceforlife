@@ -41,11 +41,11 @@ const Result = () => {
     progress?.is_passed || score >= (subModule?.passing_grade || 70);
 
   return (
-    <div className="min-h-screen bg-light py-8 pt-24">
+    <div className="min-h-screen bg-light py-6 sm:py-8 pt-20 sm:pt-24 pb-12">
       <div className="container mx-auto px-4 max-w-4xl">
-        <h1 className="text-3xl font-bold text-primary mb-8">Hasil Postest</h1>
+        <h1 className="text-2xl sm:text-3xl font-bold text-primary mb-6 sm:mb-8">Hasil Postest</h1>
 
-        <div className="bg-white rounded-lg shadow-lg p-8 text-center">
+        <div className="bg-white rounded-lg shadow-lg p-4 sm:p-6 md:p-8 text-center">
           {/* Status kelulusan */}
           {isPassed ? (
             <>
@@ -71,7 +71,7 @@ const Result = () => {
 
           {/* Ringkasan nilai */}
           <div className="bg-light rounded-lg p-6 mb-6">
-            <div className="grid grid-cols-3 gap-4 text-center">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
               <div>
                 <p className="text-2xl font-bold text-primary">{score}%</p>
                 <p className="text-sm text-gray-600">Nilai</p>
