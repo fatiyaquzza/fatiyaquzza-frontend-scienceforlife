@@ -66,17 +66,7 @@ const LandingPage = () => {
     {
       question: "Apakah ada biaya untuk menggunakan platform ini?",
       answer:
-        "Kami menawarkan berbagai paket pembelajaran, mulai dari gratis hingga premium. Paket gratis sudah mencakup akses ke beberapa modul dasar.",
-    },
-    {
-      question: "Bagaimana cara menghubungi customer support?",
-      answer:
-        "Anda dapat menghubungi kami melalui email di support@scienceforlife.com atau melalui form kontak yang tersedia di website kami.",
-    },
-    {
-      question: "Apakah sertifikat tersedia setelah menyelesaikan modul?",
-      answer:
-        "Ya, Anda akan mendapatkan sertifikat digital setelah menyelesaikan setiap modul pembelajaran dengan nilai yang memenuhi standar.",
+        "Platform ini sepenuhnya gratis dan dapat digunakan tanpa dipungut biaya. Semua pengguna dapat mengakses fitur dan materi pembelajaran yang tersedia.",
     },
     {
       question: "Berapa lama akses modul pembelajaran?",
@@ -151,6 +141,7 @@ const LandingPage = () => {
       {/* Hero Section - Full Screen */}
       <section
         id="hero"
+        data-hero-bg
         className="relative flex flex-col justify-center min-h-screen pt-16 overflow-hidden text-white"
         style={{
           background: `
@@ -163,7 +154,7 @@ const LandingPage = () => {
           backgroundAttachment: "fixed",
         }}
       >
-        <div className="relative z-10 flex flex-col justify-center flex-1 w-full max-w-7xl px-4 mx-auto">
+        <div className="relative z-10 flex flex-col justify-center flex-1 w-full px-4 mx-auto max-w-7xl">
           <div className="max-w-5xl mx-auto text-center">
             <h1 className="mb-6 text-4xl font-bold leading-tight sm:text-5xl md:text-6xl">
               Belajar Sains untuk Kehidupan
@@ -215,10 +206,18 @@ const LandingPage = () => {
       </section>
 
       {/* About Section */}
-      <section id="tentang-kami" className="py-16 md:py-24 bg-white scroll-mt-20">
-        <div ref={aboutRef} className="w-full max-w-7xl px-4 sm:px-6 lg:px-12 mx-auto">
+      <section
+        id="tentang-kami"
+        className="py-16 bg-white md:py-24 scroll-mt-20"
+      >
+        <div
+          ref={aboutRef}
+          className="w-full px-4 mx-auto max-w-7xl sm:px-6 lg:px-12"
+        >
           <div className="grid items-center grid-cols-1 gap-16 lg:grid-cols-2">
-            <div className={`order-2 lg:order-1 ${aboutInView ? "in-view" : ""} scroll-reveal-left`}>
+            <div
+              className={`order-2 lg:order-1 ${aboutInView ? "in-view" : ""} scroll-reveal-left`}
+            >
               <span className="text-sm font-semibold tracking-widest text-green-600 uppercase">
                 — Tentang —
               </span>
@@ -250,7 +249,9 @@ const LandingPage = () => {
                 </span>
               </div>
             </div>
-            <div className={`order-1 lg:order-2 ${aboutInView ? "in-view" : ""} scroll-reveal-right`}>
+            <div
+              className={`order-1 lg:order-2 ${aboutInView ? "in-view" : ""} scroll-reveal-right`}
+            >
               <div className="relative">
                 <img
                   src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&q=80"
@@ -275,7 +276,10 @@ const LandingPage = () => {
             "linear-gradient(160deg, #0d4d3a 0%, #0a3d2e 30%, #062d22 100%)",
         }}
       >
-        <div ref={programRef} className={`container px-4 mx-auto ${programInView ? "in-view" : ""} scroll-reveal`}>
+        <div
+          ref={programRef}
+          className={`container px-4 mx-auto ${programInView ? "in-view" : ""} scroll-reveal`}
+        >
           <div className="mb-16 text-center">
             <span className="text-sm font-semibold tracking-widest text-green-300 uppercase">
               — Terbukti —
@@ -289,7 +293,9 @@ const LandingPage = () => {
               pendekatan kontekstual dan berbasis penelitian.
             </p>
           </div>
-          <div className={`grid max-w-6xl grid-cols-1 gap-8 mx-auto md:grid-cols-2 lg:grid-cols-4 scroll-reveal-stagger ${programInView ? "in-view" : ""}`}>
+          <div
+            className={`grid max-w-6xl grid-cols-1 gap-8 mx-auto md:grid-cols-2 lg:grid-cols-4 scroll-reveal-stagger ${programInView ? "in-view" : ""}`}
+          >
             {programs.map((program, index) => {
               const IconComponent = program.icon;
               return (
@@ -327,7 +333,10 @@ const LandingPage = () => {
         id="faq"
         className="py-24 bg-gradient-to-b from-green-50 to-white scroll-mt-20"
       >
-        <div ref={faqRef} className={`container max-w-4xl px-4 mx-auto ${faqInView ? "in-view" : ""} scroll-reveal-scale`}>
+        <div
+          ref={faqRef}
+          className={`container max-w-4xl px-4 mx-auto ${faqInView ? "in-view" : ""} scroll-reveal-scale`}
+        >
           <div className="mb-16 text-center">
             <h2 className="mb-4 text-4xl font-bold text-green-700 md:text-5xl">
               FAQs
@@ -344,10 +353,10 @@ const LandingPage = () => {
                 className="overflow-hidden transition-all duration-300 bg-white border-2 rounded-2xl border-green-50 hover:border-green-200 hover:shadow-lg"
               >
                 <button
-                  className="flex items-center justify-between w-full p-6 text-left transition-colors duration-300 hover:bg-green-50/50"
+                  className="flex items-center justify-between w-full p-4 sm:p-6 text-left transition-colors duration-300 hover:bg-green-50/50 gap-3"
                   onClick={() => setOpenFAQ(openFAQ === index ? null : index)}
                 >
-                  <h3 className="pr-4 text-lg font-semibold text-gray-900">
+                  <h3 className="pr-4 text-base sm:text-lg font-semibold text-gray-900 flex-1 min-w-0 text-left">
                     {faq.question}
                   </h3>
                   <span
@@ -386,7 +395,10 @@ const LandingPage = () => {
             "linear-gradient(160deg, #0d4d3a 0%, #0a3d2e 30%, #062d22 100%)",
         }}
       >
-        <div ref={teamRef} className={`container px-4 mx-auto ${teamInView ? "in-view" : ""} scroll-reveal`}>
+        <div
+          ref={teamRef}
+          className={`container px-4 mx-auto ${teamInView ? "in-view" : ""} scroll-reveal`}
+        >
           <div className="mb-16 text-center">
             <span className="text-sm font-semibold tracking-widest text-green-300 uppercase">
               — Tim Kami —
@@ -400,7 +412,9 @@ const LandingPage = () => {
               sehari-hari.
             </p>
           </div>
-          <div className={`grid max-w-6xl grid-cols-1 gap-8 mx-auto sm:grid-cols-2 lg:grid-cols-4 scroll-reveal-stagger ${teamInView ? "in-view" : ""}`}>
+          <div
+            className={`grid max-w-6xl grid-cols-1 gap-8 mx-auto sm:grid-cols-2 lg:grid-cols-4 scroll-reveal-stagger ${teamInView ? "in-view" : ""}`}
+          >
             {teamMembers.map((member, index) => (
               <div
                 key={index}
@@ -429,7 +443,10 @@ const LandingPage = () => {
 
       {/* Contact Us Section */}
       <section id="kontak" className="py-24 bg-gray-50 scroll-mt-20">
-        <div ref={contactRef} className={`container px-4 mx-auto ${contactInView ? "in-view" : ""} scroll-reveal`}>
+        <div
+          ref={contactRef}
+          className={`container px-4 mx-auto ${contactInView ? "in-view" : ""} scroll-reveal`}
+        >
           <div className="max-w-4xl mx-auto">
             <div className="mb-12 text-center">
               <span className="text-sm font-semibold tracking-widest text-green-600 uppercase">
@@ -481,7 +498,7 @@ const LandingPage = () => {
                   </div>
                   <div>
                     <h3 className="mb-1 font-semibold text-gray-900">Alamat</h3>
-                    <p className="text-gray-600">Jakarta, Indonesia</p>
+                    <p className="text-gray-600">Banda Aceh, Indonesia</p>
                   </div>
                 </div>
               </div>
@@ -590,7 +607,10 @@ const LandingPage = () => {
 
       {/* CTA Section - Siap Belajar - Organic Green Shape */}
       <section className="py-24 overflow-hidden bg-gray-50">
-        <div ref={ctaRef} className={`container px-4 mx-auto ${ctaInView ? "in-view" : ""} scroll-reveal-scale`}>
+        <div
+          ref={ctaRef}
+          className={`container px-4 mx-auto ${ctaInView ? "in-view" : ""} scroll-reveal-scale`}
+        >
           <div className="relative mx-auto max-w-7xl">
             {/* Organic blob shape - rounded corners with subtle curves */}
             <div

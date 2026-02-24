@@ -56,14 +56,14 @@ const Pretest = () => {
   }
 
   return (
-    <div className="min-h-screen bg-light py-8 pt-28">
+    <div className="min-h-screen bg-light py-6 sm:py-8 pt-20 sm:pt-24 pb-12">
       <div className="container mx-auto px-4 max-w-4xl">
-        <h1 className="text-3xl font-bold text-primary mb-8">Pretest</h1>
+        <h1 className="text-2xl sm:text-3xl font-bold text-primary mb-6 sm:mb-8">Pretest</h1>
 
         <form onSubmit={handleSubmit}>
           <div className="space-y-8">
             {questions.map((question, index) => (
-              <div key={question.id} className="bg-white rounded-lg shadow p-6">
+              <div key={question.id} className="bg-white rounded-lg shadow p-4 sm:p-6">
                 <h3 className="text-lg font-semibold text-primary mb-4">
                   Soal {index + 1}
                 </h3>
@@ -107,11 +107,11 @@ const Pretest = () => {
             ))}
           </div>
 
-          <div className="mt-8 flex justify-end">
+          <div className="mt-6 sm:mt-8 flex flex-col-reverse sm:flex-row sm:justify-end gap-3">
             <button
               type="submit"
               disabled={submitting || questions.length === 0}
-              className="bg-primary text-white px-8 py-3 rounded-lg font-semibold hover:bg-opacity-90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full sm:w-auto bg-primary text-white px-8 py-3 rounded-lg font-semibold hover:bg-opacity-90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {submitting ? "Menyimpan..." : "Submit Jawaban"}
             </button>

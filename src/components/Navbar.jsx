@@ -80,7 +80,7 @@ const Navbar = () => {
 
   return (
     <nav className="fixed z-50 w-full bg-white border-b border-gray-100 shadow-sm">
-      <div className="px-4 py-4 mx-auto max-w-7xl">
+      <div className="px-4 sm:px-6 py-3 sm:py-4 mx-auto max-w-7xl">
         <div className="flex items-center justify-between">
           <Link
             to={logoLink}

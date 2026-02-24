@@ -109,3 +109,10 @@ body {
   opacity: 1;
   transform: translateY(0);
 }
+
+/* Mobile: avoid fixed background (performance & scroll issues) */
+@media (max-width: 768px) {
+  [data-hero-bg] {
+    background-attachment: scroll !important;
+  }
+}

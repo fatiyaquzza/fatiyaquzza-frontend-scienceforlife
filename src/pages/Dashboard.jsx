@@ -94,7 +94,7 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="min-h-screen py-8 pt-24 bg-light">
+    <div className="min-h-screen py-6 sm:py-8 pt-20 sm:pt-24 pb-12 bg-light">
       <div className="container px-4 mx-auto max-w-7xl">
         {/* Header Section */}
         <div className="mb-6">
@@ -113,7 +113,7 @@ const Dashboard = () => {
         </div>
 
         {/* Search and Filters Section */}
-        <div className="p-6 mb-8 bg-white border shadow-xl rounded-2xl backdrop-blur-sm border-slate-100">
+        <div className="p-4 sm:p-6 mb-6 sm:mb-8 bg-white border shadow-xl rounded-2xl backdrop-blur-sm border-slate-100">
           {/* Search Bar */}
           <div className="mb-6">
             <div className="relative">

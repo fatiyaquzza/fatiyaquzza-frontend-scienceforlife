@@ -98,7 +98,7 @@ const ChatAI = ({ subModuleId, subModuleName }) => {
         )}
       </div>
 
-      <form onSubmit={sendMessage} className="flex gap-2">
+      <form onSubmit={sendMessage} className="flex flex-col sm:flex-row gap-2">
         <input
           type="text"
           value={input}
@@ -110,7 +110,7 @@ const ChatAI = ({ subModuleId, subModuleName }) => {
         <button
           type="submit"
           disabled={loading || !input.trim()}
-          className="bg-primary text-white px-6 py-2 rounded-lg hover:bg-opacity-80 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          className="w-full sm:w-auto bg-primary text-white px-6 py-2.5 rounded-lg hover:bg-opacity-80 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
         >
           Kirim
         </button>
