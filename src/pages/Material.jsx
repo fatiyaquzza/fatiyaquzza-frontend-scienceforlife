@@ -163,15 +163,26 @@ const Material = () => {
                 <h2 className="mb-4 text-2xl font-bold text-slate-900">
                   Materi PDF
                 </h2>
-                <a
-                  href={`${import.meta.env.VITE_SOCKET_URL}${material.file_url}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center px-6 py-3 font-semibold text-white transition-all rounded-xl bg-secondary hover:shadow-lg hover:shadow-secondary/30"
-                >
-                  <span className="mr-2">📄</span>
-                  Download PDF
-                </a>
+                {(() => {
+                  // Ambil base URL backend dari VITE_API_URL (misal: https://backend.com/api)
+                  const rawApiUrl = import.meta.env.VITE_API_URL || "";
+                  const fileBaseUrl = rawApiUrl.replace(/\/api\/?$/, "");
+                  const href = fileBaseUrl
+                    ? `${fileBaseUrl}${material.file_url}`
+                    : material.file_url;
+
+                  return (
+                    <a
+                      href={href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center px-6 py-3 font-semibold text-white transition-all rounded-xl bg-secondary hover:shadow-lg hover:shadow-secondary/30"
+                    >
+                      <span className="mr-2">📄</span>
+                      Download PDF
+                    </a>
+                  );
+                })()}
               </div>
             )}
 
