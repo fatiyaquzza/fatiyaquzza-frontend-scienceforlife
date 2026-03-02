@@ -8,14 +8,13 @@ const Footer = () => {
     <footer className="bg-[#0d2d22] text-white">
       <div className="px-4 sm:px-6 py-12 sm:py-16 mx-auto max-w-7xl">
         <div className="grid grid-cols-1 gap-12 md:grid-cols-2 lg:grid-cols-4">
-          {/* Brand */}
           <div className="lg:col-span-1">
             <Link
               to="/"
               className="flex items-center gap-2 mb-4 text-xl font-bold transition-colors hover:text-green-300"
             >
               <Leaf className="w-8 h-8 text-green-400" />
-              Science For Life
+              ILMANA
             </Link>
             <p className="mb-6 text-sm leading-relaxed text-gray-400">
               Platform pembelajaran sains interaktif untuk kehidupan yang lebih
@@ -23,7 +22,6 @@ const Footer = () => {
             </p>
           </div>
 
-          {/* Contact */}
           <div>
             <h3 className="mb-4 text-lg font-bold text-white">Contact</h3>
             <ul className="space-y-3">
@@ -54,7 +52,6 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Links */}
           <div>
             <h3 className="mb-4 text-lg font-bold text-white">Links</h3>
             <ul className="space-y-3">
@@ -93,23 +90,21 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Info */}
           <div>
             <h3 className="mb-4 text-lg font-bold text-white">
               Tentang Platform
             </h3>
             <p className="text-sm leading-relaxed text-gray-400">
-              Science For Life menyediakan modul pembelajaran sains yang
-              kontekstual dan berbasis penelitian untuk meningkatkan literasi
-              sains generasi muda.
+              ILMANA (Ilmu Manusia dan Alam) menyediakan modul
+              pembelajaran sains yang kontekstual dan berbasis penelitian untuk
+              meningkatkan literasi sains generasi muda.
             </p>
           </div>
         </div>
 
-        {/* Bottom bar */}
         <div className="flex flex-col items-center justify-between gap-4 pt-8 mt-12 border-t border-gray-700 md:flex-row">
           <p className="text-sm text-gray-500">
-            © {currentYear} Science For Life. All rights reserved.
+            © {currentYear} ILMANA. All rights reserved.
           </p>
           <div className="flex gap-6 text-sm">
             <a
