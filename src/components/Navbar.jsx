@@ -88,7 +88,7 @@ const Navbar = () => {
             onClick={() => setMobileOpen(false)}
           >
             <Leaf className="w-6 h-6 text-green-600 shrink-0" strokeWidth={2} />
-            <span className="text-lg font-bold sm:text-xl">Science For Life</span>
+            <span className="text-lg font-bold sm:text-xl">ILMANA</span>
           </Link>
 
           {/* Desktop menu */}

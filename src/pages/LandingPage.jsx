@@ -15,6 +15,7 @@ import {
   Phone,
   MapPin,
   Send,
+  UserRound,
 } from "lucide-react";
 
 const LandingPage = () => {
@@ -54,9 +55,9 @@ const LandingPage = () => {
 
   const faqs = [
     {
-      question: "Apa itu Science For Life?",
+      question: "Apa itu ILMANA?",
       answer:
-        "Science For Life adalah platform pembelajaran interaktif yang membawa ilmu pengetahuan ke kehidupan sehari-hari. Kami menyediakan materi pembelajaran yang menarik dan mudah dipahami.",
+        "ILMANA (Ilmu Manusia dan Alam) adalah platform pembelajaran interaktif yang membawa ilmu pengetahuan ke kehidupan sehari-hari. Kami menyediakan materi pembelajaran yang menarik dan mudah dipahami.",
     },
     {
       question: "Bagaimana cara mendaftar?",
@@ -111,28 +112,12 @@ const LandingPage = () => {
 
   const teamMembers = [
     {
-      name: "Dr. Ahmad Rahman",
-      role: "Founder & Lead Educator",
-      image:
-        "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&h=400&fit=crop",
+      name: "Dr. Dra. Sulastri, M.Si.",
+      role: "Founder",
     },
     {
-      name: "Siti Nurhaliza, M.Sc",
-      role: "Curriculum Developer",
-      image:
-        "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&h=400&fit=crop",
-    },
-    {
-      name: "Budi Santoso",
-      role: "Technology Lead",
-      image:
-        "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop",
-    },
-    {
-      name: "Dewi Kusuma",
-      role: "Community Manager",
-      image:
-        "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400&h=400&fit=crop",
+      name: "Mumu",
+      role: "Project Coordinator",
     },
   ];
 
@@ -222,14 +207,13 @@ const LandingPage = () => {
                 — Tentang —
               </span>
               <h2 className="mt-2 mb-6 text-4xl font-bold text-gray-900 md:text-5xl">
-                Science For Life
+                ILMANA
               </h2>
               <p className="mb-6 text-lg leading-relaxed text-gray-600">
-                Science For Life hadir sebagai jembatan inovatif bagi siswa yang
-                ingin memperdalam sains kehidupan, kontekstual, berbasis
-                penelitian, dan meningkatkan literasi sains yang sebenarnya
-                membuka makna menjaga kehidupan, lingkungan, dan nilai
-                kemanusiaan.
+                ILMANA (Ilmu Manusia dan Alam) hadir sebagai jembatan
+                inovatif bagi siswa yang ingin memperdalam sains kehidupan
+                secara kontekstual, berbasis penelitian, dan bermakna bagi
+                kehidupan, lingkungan, serta nilai kemanusiaan.
               </p>
               <p className="text-lg leading-relaxed text-gray-600">
                 Kami menyediakan platform pembelajaran yang interaktif, menarik,
@@ -407,25 +391,23 @@ const LandingPage = () => {
               Kenali Sosok di Balik Layar
             </h2>
             <p className="max-w-2xl mx-auto text-lg text-green-100/90">
-              Inilah tim di balik Science For Life yang berperan dalam
+              Inilah tim di balik ILMANA yang berperan dalam
               menghadirkan sains agar lebih dekat dan bermakna dalam kehidupan
               sehari-hari.
             </p>
           </div>
           <div
-            className={`grid max-w-6xl grid-cols-1 gap-8 mx-auto sm:grid-cols-2 lg:grid-cols-4 scroll-reveal-stagger ${teamInView ? "in-view" : ""}`}
+            className={`grid max-w-3xl grid-cols-1 gap-8 mx-auto sm:grid-cols-2 scroll-reveal-stagger ${teamInView ? "in-view" : ""}`}
           >
             {teamMembers.map((member, index) => (
               <div
                 key={index}
                 className="overflow-hidden transition-all duration-300 shadow-lg group bg-white/90 rounded-2xl hover:shadow-2xl hover:-translate-y-2"
               >
-                <div className="overflow-hidden aspect-square">
-                  <img
-                    src={member.image}
-                    alt={member.name}
-                    className="object-cover w-full h-full transition-transform duration-500 group-hover:scale-110"
-                  />
+                <div className="flex items-center justify-center aspect-square bg-gradient-to-br from-green-100 to-green-200">
+                  <div className="flex items-center justify-center w-28 h-28 rounded-full bg-white/90 shadow-md transition-transform duration-500 group-hover:scale-110">
+                    <UserRound className="w-14 h-14 text-green-700" />
+                  </div>
                 </div>
                 <div className="p-6 text-center">
                   <h3 className="mb-1 text-xl font-bold text-gray-900">

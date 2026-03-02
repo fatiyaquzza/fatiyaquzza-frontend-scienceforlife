@@ -130,7 +130,8 @@ const AdminDashboard = () => {
           </h2>
           <p className="text-gray-600 text-sm">
             Dashboard ini digunakan untuk memantau dan mengelola seluruh konten
-            pembelajaran, pengguna, serta evaluasi sistem Science For Life.
+            pembelajaran, pengguna, serta evaluasi sistem ILMANA (Ilmu Manusia
+            dan Alam).
           </p>
         </div>
 
