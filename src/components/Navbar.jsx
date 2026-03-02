@@ -73,7 +73,7 @@ const Navbar = () => {
         className="flex items-center justify-center gap-2 bg-red-500 text-white px-5 py-2.5 rounded-lg font-semibold shadow-sm hover:bg-red-600 hover:shadow-md active:scale-95 transition-all duration-200 w-full md:w-auto"
       >
         <LogOut className="w-4 h-4" />
-        Logout
+        Keluar
       </button>
     </div>
   );

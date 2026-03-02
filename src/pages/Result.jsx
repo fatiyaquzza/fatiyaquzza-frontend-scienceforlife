@@ -86,7 +86,7 @@ const Result = () => {
                 <p className="text-2xl font-bold text-primary">
                   {subModule?.passing_grade || 70}%
                 </p>
-                <p className="text-sm text-gray-600">Passing Grade</p>
+                <p className="text-sm text-gray-600">Nilai Kelulusan</p>
               </div>
             </div>
           </div>

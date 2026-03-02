@@ -7,7 +7,7 @@ const AdminRoute = ({ children }) => {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="text-lg text-primary">Loading...</div>
+        <div className="text-lg text-primary">Memuat...</div>
       </div>
     );
   }

@@ -57,7 +57,7 @@ const AdminDashboard = () => {
         {/* Header */}
         <div className="mb-10">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            Admin Dashboard
+            Dashboard Admin
           </h1>
           <p className="text-gray-600">
             Kelola seluruh modul, materi, soal, dan pengguna dari satu tempat.
@@ -97,7 +97,7 @@ const AdminDashboard = () => {
           <div className="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition-all duration-300">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-gray-500 font-medium mb-1">Total User</p>
+                <p className="text-gray-500 font-medium mb-1">Total Pengguna</p>
                 <h3 className="text-3xl font-bold text-gray-900">
                   {loading ? "..." : stats.totalUsers}
                 </h3>
@@ -111,7 +111,7 @@ const AdminDashboard = () => {
           <div className="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition-all duration-300">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-gray-500 font-medium mb-1">Pesan Contact Us</p>
+                <p className="text-gray-500 font-medium mb-1">Pesan Kontak</p>
                 <h3 className="text-3xl font-bold text-gray-900">
                   {feedbackLoading ? "..." : feedback.length}
                 </h3>
@@ -135,12 +135,12 @@ const AdminDashboard = () => {
           </p>
         </div>
 
-        {/* Data Contact Us */}
+        {/* Data Kontak */}
         <div className="mt-12 bg-white rounded-2xl shadow-sm overflow-hidden">
           <div className="px-6 py-4 border-b border-gray-100 flex items-center gap-2">
             <Mail className="w-5 h-5 text-primary" />
             <h2 className="text-lg font-semibold text-gray-900">
-              Data Pesan Contact Us
+              Data Pesan Kontak
             </h2>
           </div>
           <div className="overflow-x-auto">
@@ -150,7 +150,7 @@ const AdminDashboard = () => {
               </div>
             ) : feedback.length === 0 ? (
               <div className="p-8 text-center text-gray-500">
-                Belum ada pesan dari form Contact Us.
+                Belum ada pesan dari formulir kontak.
               </div>
             ) : (
               <table className="w-full">

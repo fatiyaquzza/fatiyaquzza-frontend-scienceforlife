@@ -163,7 +163,7 @@ const SubModuleManagement = () => {
               </div>
               <div className="mb-4">
                 <label className="block text-gray-700 font-semibold mb-2">
-                  Passing Grade (%)
+                  Nilai Kelulusan (%)
                 </label>
                 <input
                   type="number"
@@ -197,7 +197,7 @@ const SubModuleManagement = () => {
               <thead className="bg-primary text-white">
                 <tr>
                   <th className="px-6 py-3 text-left">Nama</th>
-                  <th className="px-6 py-3 text-left">Passing Grade</th>
+                  <th className="px-6 py-3 text-left">Nilai Kelulusan</th>
                   <th className="px-6 py-3 text-left">Aksi</th>
                 </tr>
               </thead>
