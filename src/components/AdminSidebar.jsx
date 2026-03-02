@@ -36,7 +36,7 @@ const AdminSidebar = () => {
       icon: HelpCircle,
     },
     {
-      title: "User",
+      title: "Pengguna",
       path: "/admin/users",
       icon: Users,
     },

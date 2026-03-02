@@ -423,7 +423,7 @@ const ModuleDetail = () => {
                                   />
                                 </svg>
                                 <span>
-                                  Passing Grade:{" "}
+                                  Nilai Kelulusan:{" "}
                                   <span className="font-semibold text-slate-700">
                                     {subModule.passing_grade}%
                                   </span>

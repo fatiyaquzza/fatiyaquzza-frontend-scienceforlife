@@ -72,7 +72,7 @@ const LandingPage = () => {
     {
       question: "Berapa lama akses modul pembelajaran?",
       answer:
-        "Akses ke modul pembelajaran bersifat unlimited selama Anda masih terdaftar sebagai pengguna aktif di platform kami.",
+        "Akses ke modul pembelajaran bersifat tanpa batas selama Anda masih terdaftar sebagai pengguna aktif di platform kami.",
     },
   ];
 
@@ -113,11 +113,11 @@ const LandingPage = () => {
   const teamMembers = [
     {
       name: "Dr. Dra. Sulastri, M.Si.",
-      role: "Founder",
+      role: "Pendiri",
     },
     {
       name: "Mumu",
-      role: "Project Coordinator",
+      role: "Koordinator Proyek",
     },
   ];
 
@@ -239,7 +239,7 @@ const LandingPage = () => {
               <div className="relative">
                 <img
                   src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&q=80"
-                  alt="Students Learning"
+                  alt="Siswa sedang belajar"
                   className="rounded-2xl shadow-2xl w-full max-w-lg mx-auto object-cover aspect-[4/3]"
                 />
                 <div className="absolute px-4 py-2 text-white bg-green-600 rounded-lg shadow-lg -bottom-4 -right-4">
@@ -423,7 +423,7 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* Contact Us Section */}
+      {/* Section Kontak */}
       <section id="kontak" className="py-24 bg-gray-50 scroll-mt-20">
         <div
           ref={contactRef}
@@ -435,7 +435,7 @@ const LandingPage = () => {
                 — Hubungi Kami —
               </span>
               <h2 className="mt-2 mb-4 text-4xl font-bold text-gray-900 md:text-5xl">
-                Contact Us
+                Hubungi Kami
               </h2>
               <p className="text-lg text-gray-600">
                 Punya saran atau masukan? Kami senang mendengar dari Anda.

@@ -90,11 +90,15 @@ const UserManagement = () => {
   return (
     <div className="min-h-screen bg-light pb-8 pt-28 px-6">
       <div className="container mx-auto px-4">
-        <h1 className="text-3xl font-bold text-primary mb-8">Manajemen User</h1>
+        <h1 className="text-3xl font-bold text-primary mb-8">
+          Manajemen Pengguna
+        </h1>
 
         {showForm && editingUser && (
           <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
-            <h2 className="text-xl font-bold text-primary mb-4">Edit User</h2>
+            <h2 className="text-xl font-bold text-primary mb-4">
+              Edit Pengguna
+            </h2>
             <form onSubmit={handleSubmit}>
               <div className="mb-4">
                 <label className="block text-gray-700 font-semibold mb-2">
@@ -135,7 +139,7 @@ const UserManagement = () => {
                   }
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg"
                 >
-                  <option value="user">User</option>
+                  <option value="user">Pengguna</option>
                   <option value="admin">Admin</option>
                 </select>
               </div>
@@ -293,7 +297,7 @@ const UserManagement = () => {
                           onClick={() => handleEdit(user)}
                           className="text-green-600 hover:underline mr-4 font-medium"
                         >
-                          Edit
+                          Ubah
                         </button>
                         <button
                           onClick={() => handleDelete(user.id)}

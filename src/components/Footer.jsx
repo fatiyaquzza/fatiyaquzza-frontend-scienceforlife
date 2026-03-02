@@ -23,7 +23,7 @@ const Footer = () => {
           </div>
 
           <div>
-            <h3 className="mb-4 text-lg font-bold text-white">Contact</h3>
+            <h3 className="mb-4 text-lg font-bold text-white">Kontak</h3>
             <ul className="space-y-3">
               <li>
                 <a
@@ -53,14 +53,14 @@ const Footer = () => {
           </div>
 
           <div>
-            <h3 className="mb-4 text-lg font-bold text-white">Links</h3>
+            <h3 className="mb-4 text-lg font-bold text-white">Tautan</h3>
             <ul className="space-y-3">
               <li>
                 <a
                   href="/#"
                   className="text-gray-400 transition-colors hover:text-green-400"
                 >
-                  Home
+                  Beranda
                 </a>
               </li>
               <li>
@@ -68,7 +68,7 @@ const Footer = () => {
                   href="/#tentang-kami"
                   className="text-gray-400 transition-colors hover:text-green-400"
                 >
-                  About Us
+                  Tentang Kami
                 </a>
               </li>
               <li>
@@ -84,7 +84,7 @@ const Footer = () => {
                   href="/#kontak"
                   className="text-gray-400 transition-colors hover:text-green-400"
                 >
-                  Contact
+                  Kontak
                 </a>
               </li>
             </ul>
@@ -95,29 +95,29 @@ const Footer = () => {
               Tentang Platform
             </h3>
             <p className="text-sm leading-relaxed text-gray-400">
-              ILMANA (Ilmu Manusia dan Alam) menyediakan modul
-              pembelajaran sains yang kontekstual dan berbasis penelitian untuk
-              meningkatkan literasi sains generasi muda.
+              ILMANA (Ilmu Manusia dan Alam) menyediakan modul pembelajaran
+              sains yang kontekstual dan berbasis penelitian untuk meningkatkan
+              literasi sains generasi muda.
             </p>
           </div>
         </div>
 
         <div className="flex flex-col items-center justify-between gap-4 pt-8 mt-12 border-t border-gray-700 md:flex-row">
           <p className="text-sm text-gray-500">
-            © {currentYear} ILMANA. All rights reserved.
+            © {currentYear} ILMANA. Hak cipta dilindungi.
           </p>
           <div className="flex gap-6 text-sm">
             <a
               href="#"
               className="text-gray-500 transition-colors hover:text-green-400"
             >
-              Privacy Policy
+              Kebijakan Privasi
             </a>
             <a
               href="#"
               className="text-gray-500 transition-colors hover:text-green-400"
             >
-              Terms & Conditions
+              Syarat & Ketentuan
             </a>
           </div>
         </div>
