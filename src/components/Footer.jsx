@@ -6,7 +6,7 @@ const Footer = () => {
 
   return (
     <footer className="bg-[#0d2d22] text-white">
-      <div className="px-4 sm:px-6 py-12 sm:py-16 mx-auto max-w-7xl">
+      <div className="px-4 py-12 mx-auto sm:px-6 sm:py-16 max-w-7xl">
         <div className="grid grid-cols-1 gap-12 md:grid-cols-2 lg:grid-cols-4">
           <div className="lg:col-span-1">
             <Link
@@ -36,11 +36,11 @@ const Footer = () => {
               </li>
               <li>
                 <a
-                  href="mailto:support@scienceforlife.com"
+                  href="mailto:ilmanainitiative@gmail.com"
                   className="flex items-center gap-3 text-gray-400 transition-colors hover:text-green-400"
                 >
                   <Mail className="flex-shrink-0 w-4 h-4" />
-                  support@scienceforlife.com
+                  ilmanainitiative@gmail.com
                 </a>
               </li>
               <li>
