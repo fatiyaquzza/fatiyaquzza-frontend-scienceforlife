@@ -337,10 +337,10 @@ const LandingPage = () => {
                 className="overflow-hidden transition-all duration-300 bg-white border-2 rounded-2xl border-green-50 hover:border-green-200 hover:shadow-lg"
               >
                 <button
-                  className="flex items-center justify-between w-full p-4 sm:p-6 text-left transition-colors duration-300 hover:bg-green-50/50 gap-3"
+                  className="flex items-center justify-between w-full gap-3 p-4 text-left transition-colors duration-300 sm:p-6 hover:bg-green-50/50"
                   onClick={() => setOpenFAQ(openFAQ === index ? null : index)}
                 >
-                  <h3 className="pr-4 text-base sm:text-lg font-semibold text-gray-900 flex-1 min-w-0 text-left">
+                  <h3 className="flex-1 min-w-0 pr-4 text-base font-semibold text-left text-gray-900 sm:text-lg">
                     {faq.question}
                   </h3>
                   <span
@@ -405,8 +405,8 @@ const LandingPage = () => {
                 className="overflow-hidden transition-all duration-300 shadow-lg group bg-white/90 rounded-2xl hover:shadow-2xl hover:-translate-y-2"
               >
                 <div className="flex items-center justify-center aspect-square bg-gradient-to-br from-green-100 to-green-200">
-                  <div className="flex items-center justify-center w-28 h-28 rounded-full bg-white/90 shadow-md transition-transform duration-500 group-hover:scale-110">
-                    <UserRound className="w-14 h-14 text-green-700" />
+                  <div className="flex items-center justify-center transition-transform duration-500 rounded-full shadow-md w-28 h-28 bg-white/90 group-hover:scale-110">
+                    <UserRound className="text-green-700 w-14 h-14" />
                   </div>
                 </div>
                 <div className="p-6 text-center">
@@ -451,10 +451,10 @@ const LandingPage = () => {
                   <div>
                     <h3 className="mb-1 font-semibold text-gray-900">Email</h3>
                     <a
-                      href="mailto:support@scienceforlife.com"
+                      href="mailto:ilmanainitiative@gmail.com"
                       className="text-gray-600 hover:text-green-600"
                     >
-                      support@scienceforlife.com
+                      ilmanainitiative@gmail.com
                     </a>
                   </div>
                 </div>
