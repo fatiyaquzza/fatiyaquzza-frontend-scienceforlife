@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import api from "../utils/api";
+import HtmlContent from "../components/HtmlContent";
 
 const Material = () => {
   const { id } = useParams();
@@ -120,9 +121,10 @@ const Material = () => {
                 <h2 className="mb-4 text-2xl font-bold text-slate-900">
                   Deskripsi Materi
                 </h2>
-                <p className="leading-relaxed whitespace-pre-line text-slate-700">
-                  {material.description}
-                </p>
+                <HtmlContent
+                  html={material.description}
+                  className="text-slate-700"
+                />
               </div>
             )}
 

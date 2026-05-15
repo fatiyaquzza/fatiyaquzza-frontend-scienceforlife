@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import api from "../../utils/api";
+import RichTextEditor from "../../components/RichTextEditor";
+import { stripHtml } from "../../utils/contentHtml";
 
 const MaterialManagement = () => {
   const [modules, setModules] = useState([]);
@@ -187,13 +189,12 @@ const MaterialManagement = () => {
                 <label className="block text-gray-700 font-semibold mb-2">
                   Deskripsi
                 </label>
-                <textarea
+                <RichTextEditor
                   value={formData.description}
-                  onChange={(e) =>
-                    setFormData({ ...formData, description: e.target.value })
+                  onChange={(html) =>
+                    setFormData({ ...formData, description: html })
                   }
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-                  rows="4"
+                  placeholder="Tulis deskripsi materi (paragraf, gambar, tabel, italic, dll.)"
                 />
               </div>
               <div className="mb-4">
@@ -246,7 +247,11 @@ const MaterialManagement = () => {
               <tbody>
                 {materials.map((material) => (
                   <tr key={material.id} className="border-t">
-                    <td className="px-6 py-4">{material.description || "-"}</td>
+                    <td className="px-6 py-4 max-w-xs">
+                      {material.description
+                        ? stripHtml(material.description, 60)
+                        : "-"}
+                    </td>
                     <td className="px-6 py-4">
                       {material.video_url ? "✓" : "-"}
                     </td>

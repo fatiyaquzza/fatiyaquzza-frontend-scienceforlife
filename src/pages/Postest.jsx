@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import api from "../utils/api";
+import HtmlContent from "../components/HtmlContent";
 
 const Postest = () => {
   const { id } = useParams();
@@ -82,7 +83,10 @@ const Postest = () => {
                 <h3 className="text-lg font-semibold text-primary mb-4">
                   Soal {index + 1}
                 </h3>
-                <p className="text-gray-700 mb-4">{question.question_text}</p>
+                <HtmlContent
+                  html={question.question_text}
+                  className="text-gray-700 mb-4"
+                />
 
                 {question.question_type === "choice" ? (
                   <div className="space-y-2">
@@ -101,8 +105,11 @@ const Postest = () => {
                           }
                           className="mr-3"
                         />
-                        <span>
-                          {option.option_label}. {option.option_text}
+                        <span className="flex-1 flex items-start gap-2">
+                          <span className="font-semibold shrink-0">
+                            {option.option_label}.
+                          </span>
+                          <HtmlContent html={option.option_text} />
                         </span>
                       </label>
                     ))}
