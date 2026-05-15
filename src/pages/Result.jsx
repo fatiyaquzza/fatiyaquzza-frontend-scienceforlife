@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import api from "../utils/api";
 import ChatAI from "../components/ChatAI";
+import HtmlContent from "../components/HtmlContent";
 
 const Result = () => {
   const { id } = useParams();
@@ -119,7 +120,10 @@ const Result = () => {
                           {isCorrect ? "Benar" : "Salah"}
                         </span>
                       </div>
-                      <p className="text-gray-800 mb-4">{item.question_text}</p>
+                      <HtmlContent
+                        html={item.question_text}
+                        className="text-gray-800 mb-4"
+                      />
 
                       <div className="space-y-2">
                         {item.options?.map((opt) => {
@@ -137,11 +141,11 @@ const Result = () => {
                                   : "border-gray-200 bg-white"
                               }`}
                             >
-                              <span className="text-gray-800">
-                                <span className="font-semibold mr-1">
+                              <span className="text-gray-800 flex items-start gap-2 flex-1">
+                                <span className="font-semibold shrink-0">
                                   {opt.option_label}.
                                 </span>
-                                {opt.option_text}
+                                <HtmlContent html={opt.option_text} />
                               </span>
 
                               {isUserAnswer && (

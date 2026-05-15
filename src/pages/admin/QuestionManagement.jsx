@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import api from "../../utils/api";
+import RichTextEditor from "../../components/RichTextEditor";
+import { isEmptyHtml, stripHtml } from "../../utils/contentHtml";
 
 const QuestionManagement = () => {
   const [modules, setModules] = useState([]);
@@ -60,6 +62,18 @@ const QuestionManagement = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (isEmptyHtml(formData.question_text)) {
+      alert("Pertanyaan tidak boleh kosong");
+      return;
+    }
+
+    const hasEmptyOption = formData.options.some((opt) => isEmptyHtml(opt.text));
+    if (hasEmptyOption) {
+      alert("Semua opsi jawaban harus diisi");
+      return;
+    }
+
     setSubmitting(true);
 
     const dataToSend = {
@@ -251,14 +265,12 @@ const QuestionManagement = () => {
                 <label className="block text-gray-700 font-semibold mb-2">
                   Pertanyaan
                 </label>
-                <textarea
+                <RichTextEditor
                   value={formData.question_text}
-                  onChange={(e) =>
-                    setFormData({ ...formData, question_text: e.target.value })
+                  onChange={(html) =>
+                    setFormData({ ...formData, question_text: html })
                   }
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-                  rows="3"
-                  required
+                  placeholder="Tulis pertanyaan (bisa sertakan gambar, tabel, italic, dll.)"
                 />
               </div>
 
@@ -267,15 +279,16 @@ const QuestionManagement = () => {
                   Opsi Jawaban (A, B, C, D)
                 </label>
                 {formData.options.map((option, index) => (
-                  <div key={index} className="mb-2 flex items-center gap-2">
-                    <span className="w-8 font-semibold">{option.label}.</span>
-                    <input
-                      type="text"
+                  <div key={index} className="mb-4">
+                    <span className="block font-semibold text-gray-700 mb-2">
+                      Opsi {option.label}
+                    </span>
+                    <RichTextEditor
                       value={option.text}
-                      onChange={(e) => updateOption(index, e.target.value)}
+                      onChange={(html) => updateOption(index, html)}
                       placeholder={`Opsi ${option.label}`}
-                      className="flex-1 px-4 py-2 border border-gray-300 rounded-lg"
-                      required
+                      minHeight={120}
+                      compact
                     />
                   </div>
                 ))}
@@ -326,7 +339,9 @@ const QuestionManagement = () => {
               <tbody>
                 {questions.map((question) => (
                   <tr key={question.id} className="border-t">
-                    <td className="px-6 py-4">{question.question_text}</td>
+                    <td className="px-6 py-4 max-w-xs">
+                      {stripHtml(question.question_text, 60)}
+                    </td>
                     <td className="px-6 py-4">{"Pilihan Ganda"}</td>
                     <td className="px-6 py-4">
                       <button
