@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import api from "../utils/api";
+import { stripHtml } from "../utils/contentHtml";
 
 const API_BASE = import.meta.env.VITE_API_URL
   ? import.meta.env.VITE_API_URL.replace(/\/api\/?$/, "")
@@ -48,14 +49,16 @@ const Dashboard = () => {
 
     // Filter by search query
     if (searchQuery.trim() !== "") {
-      result = result.filter(
-        (module) =>
-          module.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          (module.description &&
-            module.description
-              .toLowerCase()
-              .includes(searchQuery.toLowerCase()))
-      );
+      const q = searchQuery.toLowerCase();
+      result = result.filter((module) => {
+        const descPlain = module.description
+          ? stripHtml(module.description).toLowerCase()
+          : "";
+        return (
+          module.name.toLowerCase().includes(q) ||
+          descPlain.includes(q)
+        );
+      });
     }
 
     // Filter by category
@@ -390,7 +393,8 @@ const Dashboard = () => {
                     {module.name}
                   </h3>
                   <p className="mb-4 text-sm leading-relaxed text-slate-600 line-clamp-3">
-                    {module.description ||
+                    {(module.description &&
+                      stripHtml(module.description, 400)) ||
                       "Eksplorasi materi pembelajaran yang telah dirancang khusus untuk meningkatkan pemahaman Anda."}
                   </p>
 

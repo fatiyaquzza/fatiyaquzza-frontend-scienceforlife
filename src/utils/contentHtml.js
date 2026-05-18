@@ -12,18 +12,23 @@ export const isEmptyHtml = (html) => {
   return text.length === 0;
 };
 
+/** Trim and optionally decode entity-wrapped HTML before DOMPurify. */
 export const normalizeContentHtml = (html) => {
-  if (!html) return "";
-  const trimmed = html.trim();
-  if (!trimmed) return "";
-  if (!/<[a-z][\s\S]*>/i.test(trimmed)) {
-    return trimmed
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/\n/g, "<br>");
+  if (html == null) return "";
+  let s = String(html).trim();
+  if (!s) return "";
+
+  const hasRawAngleBracket = s.includes("<");
+  const looksEntityEncoded =
+    /&(lt|#60|#x3c);/i.test(s) && /&(gt|#62|#x3e);/i.test(s);
+
+  if (!hasRawAngleBracket && looksEntityEncoded && typeof document !== "undefined") {
+    const ta = document.createElement("textarea");
+    ta.innerHTML = s;
+    s = ta.value.trim();
   }
-  return trimmed;
+
+  return s;
 };
 
 export const stripHtml = (html, maxLength = 80) => {
