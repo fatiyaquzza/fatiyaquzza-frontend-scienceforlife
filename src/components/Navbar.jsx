@@ -8,9 +8,9 @@ const Navbar = () => {
   const navigate = useNavigate();
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async () => {
     setMobileOpen(false);
+    await logout();
     navigate("/");
   };
 

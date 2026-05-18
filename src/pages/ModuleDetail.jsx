@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import api from "../utils/api";
 import { useAuth } from "../context/AuthContext";
+import HtmlContent from "../components/HtmlContent";
+import { stripHtml } from "../utils/contentHtml";
 
 const ModuleDetail = () => {
   const { id } = useParams();
@@ -52,14 +54,16 @@ const ModuleDetail = () => {
     if (searchQuery.trim() === "") {
       setFilteredSubModules(subModules);
     } else {
-      const filtered = subModules.filter(
-        (subModule) =>
-          subModule.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          (subModule.description &&
-            subModule.description
-              .toLowerCase()
-              .includes(searchQuery.toLowerCase())),
-      );
+      const q = searchQuery.toLowerCase();
+      const filtered = subModules.filter((subModule) => {
+        const descPlain = subModule.description
+          ? stripHtml(subModule.description).toLowerCase()
+          : "";
+        return (
+          subModule.name.toLowerCase().includes(q) ||
+          descPlain.includes(q)
+        );
+      });
       setFilteredSubModules(filtered);
     }
   }, [searchQuery, subModules]);
@@ -253,9 +257,9 @@ const ModuleDetail = () => {
                 {module.name}
               </h1>
               {module.description && (
-                <p className="leading-relaxed text-md text-slate-600 ">
-                  {module.description}
-                </p>
+                <div className="leading-relaxed text-md text-slate-600">
+                  <HtmlContent html={module.description} />
+                </div>
               )}
             </div>
             <button
@@ -403,9 +407,9 @@ const ModuleDetail = () => {
                               {subModule.name}
                             </h3>
                             {subModule.description && (
-                              <p className="mb-3 text-sm leading-relaxed text-slate-600">
-                                {subModule.description}
-                              </p>
+                              <div className="mb-3 text-sm leading-relaxed text-left max-w-none text-slate-600">
+                                <HtmlContent html={subModule.description} />
+                              </div>
                             )}
                             <div className="flex items-center gap-4 text-sm">
                               <div className="flex items-center gap-2 text-slate-500">
