@@ -2,6 +2,13 @@ import { useEffect, useState } from "react";
 import api from "../../utils/api";
 import RichTextEditor from "../../components/RichTextEditor";
 import { isEmptyHtml, stripHtml } from "../../utils/contentHtml";
+import {
+  MAX_QUESTION_OPTIONS,
+  defaultQuestionOptions,
+  getOptionLabel,
+  mapApiOptionsToForm,
+  relabelOptions,
+} from "../../utils/questionOptions";
 
 const QuestionManagement = () => {
   const [modules, setModules] = useState([]);
@@ -18,12 +25,7 @@ const QuestionManagement = () => {
     type: "pretest",
     question_text: "",
     correct_answer: "",
-    options: [
-      { label: "A", text: "" },
-      { label: "B", text: "" },
-      { label: "C", text: "" },
-      { label: "D", text: "" },
-    ],
+    options: defaultQuestionOptions(),
   });
   const [submitting, setSubmitting] = useState(false);
 
@@ -74,6 +76,11 @@ const QuestionManagement = () => {
       return;
     }
 
+    if (!formData.correct_answer) {
+      alert("Pilih kunci jawaban");
+      return;
+    }
+
     setSubmitting(true);
 
     const dataToSend = {
@@ -82,12 +89,10 @@ const QuestionManagement = () => {
       question_type: "choice",
       question_text: formData.question_text,
       correct_answer: formData.correct_answer,
-      options: formData.options
-        .map((opt, idx) => ({
-          label: opt.label || String.fromCharCode(65 + idx),
-          text: opt.text,
-        }))
-        .slice(0, 4),
+      options: relabelOptions(formData.options).map((opt) => ({
+        label: opt.label,
+        text: opt.text,
+      })),
     };
 
     try {
@@ -100,7 +105,8 @@ const QuestionManagement = () => {
       fetchQuestions();
       resetForm();
     } catch (error) {
-      alert("Terjadi kesalahan");
+      const msg = error.response?.data?.message || "Terjadi kesalahan";
+      alert(msg);
     } finally {
       setSubmitting(false);
     }
@@ -108,22 +114,13 @@ const QuestionManagement = () => {
 
   const handleEdit = (question) => {
     setEditingQuestion(question);
+    const options = mapApiOptionsToForm(question.options);
     setFormData({
       sub_module_id: question.sub_module_id,
       type: question.type,
       question_text: question.question_text,
       correct_answer: question.correct_answer,
-      options: question.options
-        ? question.options.map((opt) => ({
-            label: opt.option_label,
-            text: opt.option_text,
-          }))
-        : [
-            { label: "A", text: "" },
-            { label: "B", text: "" },
-            { label: "C", text: "" },
-            { label: "D", text: "" },
-          ],
+      options,
     });
     setShowForm(true);
   };
@@ -145,12 +142,7 @@ const QuestionManagement = () => {
       type: selectedType,
       question_text: "",
       correct_answer: "",
-      options: [
-        { label: "A", text: "" },
-        { label: "B", text: "" },
-        { label: "C", text: "" },
-        { label: "D", text: "" },
-      ],
+      options: defaultQuestionOptions(),
     });
     setEditingQuestion(null);
     setShowForm(false);
@@ -160,6 +152,36 @@ const QuestionManagement = () => {
     const newOptions = [...formData.options];
     newOptions[index].text = text;
     setFormData({ ...formData, options: newOptions });
+  };
+
+  const addOption = () => {
+    if (formData.options.length >= MAX_QUESTION_OPTIONS) return;
+    const newOptions = relabelOptions([
+      ...formData.options,
+      { label: getOptionLabel(formData.options.length), text: "" },
+    ]);
+    setFormData({ ...formData, options: newOptions });
+  };
+
+  const removeOption = (index) => {
+    if (formData.options.length <= 1) return;
+
+    const removedLabel = formData.options[index].label;
+    const newOptions = relabelOptions(
+      formData.options.filter((_, i) => i !== index)
+    );
+
+    let correct_answer = formData.correct_answer;
+    if (correct_answer === removedLabel) {
+      correct_answer = "";
+    } else {
+      const oldIdx = formData.options.findIndex((o) => o.label === correct_answer);
+      if (oldIdx > index) {
+        correct_answer = getOptionLabel(oldIdx - 1);
+      }
+    }
+
+    setFormData({ ...formData, options: newOptions, correct_answer });
   };
 
   return (
@@ -275,14 +297,41 @@ const QuestionManagement = () => {
               </div>
 
               <div className="mb-4">
-                <label className="block text-gray-700 font-semibold mb-2">
-                  Opsi Jawaban (A, B, C, D)
-                </label>
+                <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
+                  <label className="block text-gray-700 font-semibold">
+                    Opsi Jawaban ({formData.options.length} opsi)
+                  </label>
+                  <button
+                    type="button"
+                    onClick={addOption}
+                    disabled={formData.options.length >= MAX_QUESTION_OPTIONS}
+                    className="text-sm bg-secondary text-white px-4 py-1.5 rounded-lg hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed"
+                  >
+                    + Tambah Opsi
+                  </button>
+                </div>
+                <p className="text-sm text-gray-500 mb-3">
+                  Minimal 1 opsi. Label otomatis A, B, C, … sesuai urutan.
+                </p>
                 {formData.options.map((option, index) => (
-                  <div key={index} className="mb-4">
-                    <span className="block font-semibold text-gray-700 mb-2">
-                      Opsi {option.label}
-                    </span>
+                  <div
+                    key={`option-${index}`}
+                    className="mb-4 border border-gray-200 rounded-lg p-4"
+                  >
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="font-semibold text-gray-700">
+                        Opsi {option.label}
+                      </span>
+                      {formData.options.length > 1 && (
+                        <button
+                          type="button"
+                          onClick={() => removeOption(index)}
+                          className="text-sm text-red-600 hover:underline"
+                        >
+                          Hapus opsi
+                        </button>
+                      )}
+                    </div>
                     <RichTextEditor
                       value={option.text}
                       onChange={(html) => updateOption(index, html)}
@@ -332,6 +381,7 @@ const QuestionManagement = () => {
               <thead className="bg-primary text-white">
                 <tr>
                   <th className="px-6 py-3 text-left">Pertanyaan</th>
+                  <th className="px-6 py-3 text-left">Opsi</th>
                   <th className="px-6 py-3 text-left">Tipe</th>
                   <th className="px-6 py-3 text-left">Aksi</th>
                 </tr>
@@ -341,6 +391,9 @@ const QuestionManagement = () => {
                   <tr key={question.id} className="border-t">
                     <td className="px-6 py-4 max-w-xs">
                       {stripHtml(question.question_text, 60)}
+                    </td>
+                    <td className="px-6 py-4">
+                      {question.options?.length || 0} opsi
                     </td>
                     <td className="px-6 py-4">{"Pilihan Ganda"}</td>
                     <td className="px-6 py-4">

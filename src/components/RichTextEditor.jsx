@@ -2,6 +2,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Underline from "@tiptap/extension-underline";
+import Subscript from "@tiptap/extension-subscript";
+import Superscript from "@tiptap/extension-superscript";
 import TextAlign from "@tiptap/extension-text-align";
 import { Table } from "@tiptap/extension-table";
 import { TableRow } from "@tiptap/extension-table-row";
@@ -70,6 +72,8 @@ const RichTextEditor = ({
         heading: { levels: [1, 2, 3] },
       }),
       Underline,
+      Subscript,
+      Superscript,
       TextAlign.configure({
         types: ["heading", "paragraph"],
         alignments: ["left", "center", "right", "justify"],
@@ -179,6 +183,26 @@ const RichTextEditor = ({
           onClick: () => editor.chain().focus().toggleUnderline().run(),
           active: editor.isActive("underline"),
           children: <u>U</u>,
+        })}
+        {btn({
+          title: "Subscript",
+          onClick: () => editor.chain().focus().toggleSubscript().run(),
+          active: editor.isActive("subscript"),
+          children: (
+            <span>
+              X<sub className="text-[0.65em] leading-none">2</sub>
+            </span>
+          ),
+        })}
+        {btn({
+          title: "Superscript",
+          onClick: () => editor.chain().focus().toggleSuperscript().run(),
+          active: editor.isActive("superscript"),
+          children: (
+            <span>
+              X<sup className="text-[0.65em] leading-none">2</sup>
+            </span>
+          ),
         })}
 
         <span className="w-px h-6 bg-gray-300 mx-1 self-center" />

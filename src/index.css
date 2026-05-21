@@ -304,6 +304,20 @@ body {
   text-decoration: underline;
 }
 
+.prose-content sub,
+.rich-text-editor .ProseMirror sub {
+  vertical-align: sub;
+  font-size: 0.75em;
+  line-height: 0;
+}
+
+.prose-content sup,
+.rich-text-editor .ProseMirror sup {
+  vertical-align: super;
+  font-size: 0.75em;
+  line-height: 0;
+}
+
 .prose-content a {
   color: #2563eb;
   text-decoration: underline;
