@@ -185,8 +185,7 @@ const QuestionManagement = () => {
   };
 
   return (
-    <div className="min-h-screen bg-light pb-8 pt-28 px-6">
-      <div className="container mx-auto px-4">
+    <>
         <h1 className="text-3xl font-bold text-primary mb-8">Manajemen Soal</h1>
 
         <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
@@ -416,8 +415,7 @@ const QuestionManagement = () => {
             </table>
           </div>
         )}
-      </div>
-    </div>
+    </>
   );
 };
 

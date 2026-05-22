@@ -88,8 +88,7 @@ const UserManagement = () => {
   };
 
   return (
-    <div className="min-h-screen bg-light pb-8 pt-28 px-6">
-      <div className="container mx-auto px-4">
+    <>
         <h1 className="text-3xl font-bold text-primary mb-8">
           Manajemen Pengguna
         </h1>
@@ -313,8 +312,7 @@ const UserManagement = () => {
             </div>
           </div>
         )}
-      </div>
-    </div>
+    </>
   );
 };
 

@@ -3,14 +3,13 @@ import AdminSidebar from "../../../components/AdminSidebar";
 
 const AdminLayout = () => {
   return (
-    <div className="flex min-h-screen bg-gray-100">
-      {/* Sidebar */}
+    <div className="min-h-screen bg-light">
       <AdminSidebar />
-
-      {/* Content */}
-      <main className="flex-1 overflow-y-auto">
-        <Outlet />
-      </main>
+      <div className="flex min-h-screen flex-col lg:pl-64">
+        <main className="mx-auto w-full max-w-7xl flex-1 p-6 lg:p-8">
+          <Outlet />
+        </main>
+      </div>
     </div>
   );
 };

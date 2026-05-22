@@ -52,9 +52,7 @@ const AdminDashboard = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-light pb-8 pt-28">
-      <div className="max-w-7xl mx-auto px-4">
-        {/* Header */}
+    <>
         <div className="mb-10">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
             Dashboard Admin
@@ -202,8 +200,7 @@ const AdminDashboard = () => {
             )}
           </div>
         </div>
-      </div>
-    </div>
+    </>
   );
 };
 

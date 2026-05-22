@@ -32,11 +32,12 @@ import UserManagement from "./pages/admin/UserManagement";
 function AppContent() {
   const location = useLocation();
   const isLandingPage = location.pathname === "/";
+  const isAdminRoute = location.pathname.startsWith("/admin");
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Navbar />
-      <main className="flex-grow">
+      {!isAdminRoute && <Navbar />}
+      <main className={isAdminRoute ? "" : "flex-grow"}>
         <Routes>
               {/* ===== PUBLIC ===== */}
               <Route path="/" element={<LandingPage />} />

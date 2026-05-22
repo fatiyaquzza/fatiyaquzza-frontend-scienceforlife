@@ -80,8 +80,7 @@ const ModuleManagement = () => {
   };
 
   return (
-    <div className="min-h-screen bg-light pb-8 pt-28 px-6">
-      <div className="container mx-auto px-4">
+    <>
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold text-primary">Manajemen Modul</h1>
           <button
@@ -184,8 +183,7 @@ const ModuleManagement = () => {
             </table>
           </div>
         )}
-      </div>
-    </div>
+    </>
   );
 };
 

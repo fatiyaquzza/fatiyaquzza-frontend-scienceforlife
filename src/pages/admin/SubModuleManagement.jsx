@@ -92,8 +92,7 @@ const SubModuleManagement = () => {
   };
 
   return (
-    <div className="min-h-screen bg-light pb-8 pt-28 px-6">
-      <div className="container mx-auto px-4">
+    <>
         <h1 className="text-3xl font-bold text-primary mb-8">
           Manajemen Sub Modul
         </h1>
@@ -226,8 +225,7 @@ const SubModuleManagement = () => {
             </table>
           </div>
         )}
-      </div>
-    </div>
+    </>
   );
 };
 
