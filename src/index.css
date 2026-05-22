@@ -191,7 +191,11 @@ body {
 /* Rendered HTML content */
 .prose-content {
   color: #334155;
-  line-height: 1.75;
+  line-height: var(--content-line-height, 1.5);
+}
+
+.rich-text-editor .ProseMirror {
+  line-height: var(--content-line-height, 1.5);
 }
 
 .prose-content p {

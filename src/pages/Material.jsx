@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import api from "../utils/api";
 import HtmlContent from "../components/HtmlContent";
+import LineSpacingSelect from "../components/LineSpacingSelect";
 
 const Material = () => {
   const { id } = useParams();
@@ -118,9 +119,12 @@ const Material = () => {
             {/* Deskripsi Materi */}
             {material.description && (
               <div className="p-6 bg-white border shadow-xl sm:p-8 rounded-2xl border-slate-100">
-                <h2 className="mb-4 text-2xl font-bold text-slate-900">
-                  Deskripsi Materi
-                </h2>
+                <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
+                  <h2 className="text-2xl font-bold text-slate-900">
+                    Deskripsi Materi
+                  </h2>
+                  <LineSpacingSelect />
+                </div>
                 <HtmlContent
                   html={material.description}
                   className="text-slate-700"

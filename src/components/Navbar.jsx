@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import LineSpacingSelect from "./LineSpacingSelect";
 import { Leaf, LogOut, Menu, X } from "lucide-react";
 
 const Navbar = () => {
@@ -65,6 +66,7 @@ const Navbar = () => {
           Dashboard
         </Link>
       )}
+      <LineSpacingSelect compact className="py-2 md:py-0" />
       <span className="font-medium text-gray-600 py-2 md:py-0">
         Hi, {user.name}
       </span>

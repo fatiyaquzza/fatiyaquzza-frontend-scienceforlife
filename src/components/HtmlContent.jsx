@@ -1,5 +1,6 @@
 import DOMPurify from "dompurify";
-import { normalizeContentHtml } from "../utils/contentHtml";
+import { useLineSpacing } from "../context/LineSpacingContext";
+import { normalizeContentHtml, resolveContentHtml } from "../utils/contentHtml";
 
 const ALLOWED_ATTR = [
   "href",
@@ -19,9 +20,11 @@ const ALLOWED_ATTR = [
 ];
 
 const HtmlContent = ({ html, className = "" }) => {
+  const { lineSpacing } = useLineSpacing();
+
   if (!html || !html.trim()) return null;
 
-  const normalized = normalizeContentHtml(html);
+  const normalized = normalizeContentHtml(resolveContentHtml(html));
   const sanitized = DOMPurify.sanitize(normalized, {
     ALLOWED_TAGS: [
       "p",
@@ -64,6 +67,7 @@ const HtmlContent = ({ html, className = "" }) => {
   return (
     <div
       className={`prose-content ${className}`.trim()}
+      style={{ lineHeight: lineSpacing }}
       dangerouslySetInnerHTML={{ __html: sanitized }}
     />
   );

@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
+import { LineSpacingProvider } from "./context/LineSpacingContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AdminRoute from "./components/AdminRoute";
 
@@ -126,9 +127,11 @@ function AppContent() {
 function App() {
   return (
     <AuthProvider>
-      <Router>
-        <AppContent />
-      </Router>
+      <LineSpacingProvider>
+        <Router>
+          <AppContent />
+        </Router>
+      </LineSpacingProvider>
     </AuthProvider>
   );
 }

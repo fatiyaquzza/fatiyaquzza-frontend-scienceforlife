@@ -18,8 +18,14 @@ import {
   ImagePlus,
 } from "lucide-react";
 import api from "../utils/api";
-import { getAssetBaseUrl } from "../utils/contentHtml";
+import LineSpacingSelect from "./LineSpacingSelect";
+import {
+  persistContentHtml,
+  resolveAssetUrl,
+  resolveContentHtml,
+} from "../utils/contentHtml";
 import ResizableImage from "./tiptap/ResizableImage";
+import { useLineSpacing } from "../context/LineSpacingContext";
 
 const ToolbarButton = ({ onClick, active, disabled, title, children, className = "" }) => (
   <button
@@ -55,6 +61,7 @@ const RichTextEditor = ({
   const isInternalUpdate = useRef(false);
   const [customWidth, setCustomWidth] = useState("");
   const [, forceToolbarUpdate] = useState(0);
+  const { lineSpacing } = useLineSpacing();
 
   const uploadImage = async (file) => {
     const formData = new FormData();
@@ -62,8 +69,7 @@ const RichTextEditor = ({
     const res = await api.post("/upload-image", formData, {
       headers: { "Content-Type": "multipart/form-data" },
     });
-    const baseUrl = getAssetBaseUrl();
-    return `${baseUrl}${res.data.url}`;
+    return resolveAssetUrl(res.data.url);
   };
 
   const editor = useEditor({
@@ -85,10 +91,10 @@ const RichTextEditor = ({
       TableCell,
       Placeholder.configure({ placeholder }),
     ],
-    content: value || "",
+    content: resolveContentHtml(value || ""),
     onUpdate: ({ editor: ed }) => {
       isInternalUpdate.current = true;
-      onChange?.(ed.getHTML());
+      onChange?.(persistContentHtml(ed.getHTML()));
     },
     onSelectionUpdate: () => forceToolbarUpdate((n) => n + 1),
     editorProps: {
@@ -101,7 +107,7 @@ const RichTextEditor = ({
   useEffect(() => {
     if (!editor) return;
     const current = editor.getHTML();
-    const next = value || "";
+    const next = resolveContentHtml(value || "");
     if (current !== next && !isInternalUpdate.current) {
       editor.commands.setContent(next, false);
     }
@@ -368,6 +374,10 @@ const RichTextEditor = ({
           disabled: !editor.can().redo(),
           children: "↷",
         })}
+
+        <span className="w-px h-6 bg-gray-300 mx-1 self-center" />
+
+        <LineSpacingSelect compact />
       </div>
 
       {imageActive && (
@@ -429,7 +439,7 @@ const RichTextEditor = ({
         </div>
       )}
 
-      <div style={{ minHeight: `${minHeight}px` }}>
+      <div style={{ minHeight: `${minHeight}px`, lineHeight: lineSpacing }}>
         <EditorContent editor={editor} />
       </div>
     </div>
