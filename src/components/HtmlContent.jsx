@@ -64,11 +64,28 @@ const HtmlContent = ({ html, className = "" }) => {
     ALLOW_DATA_ATTR: false,
   });
 
+  const finalHtml =
+    typeof document === "undefined"
+      ? sanitized
+      : (() => {
+          const container = document.createElement("div");
+          container.innerHTML = sanitized;
+          container.querySelectorAll("table").forEach((table) => {
+            const parent = table.parentElement;
+            if (parent?.classList.contains("table-scroll")) return;
+            const wrapper = document.createElement("div");
+            wrapper.className = "table-scroll";
+            table.parentNode?.insertBefore(wrapper, table);
+            wrapper.appendChild(table);
+          });
+          return container.innerHTML;
+        })();
+
   return (
     <div
       className={`prose-content ${className}`.trim()}
       style={{ lineHeight: lineSpacing }}
-      dangerouslySetInnerHTML={{ __html: sanitized }}
+      dangerouslySetInnerHTML={{ __html: finalHtml }}
     />
   );
 };

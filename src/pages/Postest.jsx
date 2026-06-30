@@ -23,12 +23,26 @@ const Postest = () => {
   }, [id]);
 
   const handleAnswerChange = (questionId, answer) => {
+    setError("");
     setAnswers({ ...answers, [questionId]: answer });
   };
+
+  const missingQuestionNumbers = questions
+    .map((question, index) => {
+      const value = answers[question.id];
+      return typeof value === "string" && value.trim() ? null : index + 1;
+    })
+    .filter(Boolean);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+    if (missingQuestionNumbers.length > 0) {
+      setError(
+        `Jawab semua soal terlebih dahulu. Nomor yang belum dijawab: ${missingQuestionNumbers.join(", ")}`
+      );
+      return;
+    }
     setSubmitting(true);
 
     const answerArray = Object.entries(answers).map(([questionId, answer]) => ({
@@ -132,7 +146,9 @@ const Postest = () => {
           <div className="mt-6 sm:mt-8 flex flex-col-reverse sm:flex-row sm:justify-end gap-3">
             <button
               type="submit"
-              disabled={submitting || questions.length === 0}
+              disabled={
+                submitting || questions.length === 0 || missingQuestionNumbers.length > 0
+              }
               className="w-full sm:w-auto bg-primary text-white px-8 py-3 rounded-lg font-semibold hover:bg-opacity-90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {submitting ? "Menyimpan..." : "Submit Jawaban"}

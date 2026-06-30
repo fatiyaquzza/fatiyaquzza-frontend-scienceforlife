@@ -4,7 +4,12 @@ import { useAuth } from "../context/AuthContext";
 import { Eye, EyeOff } from "lucide-react";
 
 const Register = () => {
-  const { register: doRegister, user, isAdmin, loading: authLoading } = useAuth();
+  const {
+    register: doRegister,
+    user,
+    isAdmin,
+    loading: authLoading,
+  } = useAuth();
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -67,11 +72,14 @@ const Register = () => {
       formData.email,
       formData.password,
       formData.job,
-      formData.address
+      formData.address,
     );
 
     if (result.success) {
-      navigate(result.user?.role === "admin" ? "/admin/dashboard" : "/dashboard", { replace: true });
+      navigate(
+        result.user?.role === "admin" ? "/admin/dashboard" : "/dashboard",
+        { replace: true },
+      );
     } else {
       setError(result.message);
     }
@@ -84,21 +92,21 @@ const Register = () => {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-light py-8 pt-20 pb-12 px-4 sm:py-12">
-      <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-6 sm:p-8">
-        <h2 className="text-3xl font-bold text-center text-primary mb-6">
+    <div className="flex items-center justify-center min-h-screen px-4 py-12 pt-20 pb-12 md:mt-12 md:py-8 bg-light">
+      <div className="w-full max-w-md p-6 bg-white rounded-lg shadow-lg sm:p-8">
+        <h2 className="mb-6 text-3xl font-bold text-center text-primary">
           Daftar
         </h2>
 
         {error && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+          <div className="px-4 py-3 mb-4 text-red-700 bg-red-100 border border-red-400 rounded">
             {error}
           </div>
         )}
 
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
-            <label className="block text-gray-700 font-semibold mb-2">
+            <label className="block mb-2 font-semibold text-gray-700">
               Nama Lengkap
             </label>
             <input
@@ -112,7 +120,7 @@ const Register = () => {
           </div>
 
           <div className="mb-4">
-            <label className="block text-gray-700 font-semibold mb-2">
+            <label className="block mb-2 font-semibold text-gray-700">
               Pekerjaan
             </label>
             <input
@@ -126,7 +134,7 @@ const Register = () => {
           </div>
 
           <div className="mb-4">
-            <label className="block text-gray-700 font-semibold mb-2">
+            <label className="block mb-2 font-semibold text-gray-700">
               Alamat
             </label>
             <textarea
@@ -140,7 +148,7 @@ const Register = () => {
           </div>
 
           <div className="mb-4">
-            <label className="block text-gray-700 font-semibold mb-2">
+            <label className="block mb-2 font-semibold text-gray-700">
               Email
             </label>
             <input
@@ -154,7 +162,7 @@ const Register = () => {
           </div>
 
           <div className="mb-4">
-            <label className="block text-gray-700 font-semibold mb-2">
+            <label className="block mb-2 font-semibold text-gray-700">
               Password
             </label>
 
@@ -171,7 +179,7 @@ const Register = () => {
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute inset-y-0 right-3 flex items-center text-gray-500 hover:text-primary"
+                className="absolute inset-y-0 flex items-center text-gray-500 right-3 hover:text-primary"
               >
                 {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
               </button>
@@ -179,7 +187,7 @@ const Register = () => {
           </div>
 
           <div className="mb-6">
-            <label className="block text-gray-700 font-semibold mb-2">
+            <label className="block mb-2 font-semibold text-gray-700">
               Konfirmasi Password
             </label>
 
@@ -196,7 +204,7 @@ const Register = () => {
               <button
                 type="button"
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                className="absolute inset-y-0 right-3 flex items-center text-gray-500 hover:text-primary"
+                className="absolute inset-y-0 flex items-center text-gray-500 right-3 hover:text-primary"
               >
                 {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
               </button>
@@ -206,7 +214,7 @@ const Register = () => {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-primary text-white py-3 rounded-lg font-semibold hover:bg-opacity-90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full py-3 font-semibold text-white transition-colors rounded-lg bg-primary hover:bg-opacity-90 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading ? "Memproses..." : "Daftar"}
           </button>
@@ -216,7 +224,7 @@ const Register = () => {
           Sudah punya akun?{" "}
           <Link
             to="/login"
-            className="text-secondary font-semibold hover:underline"
+            className="font-semibold text-secondary hover:underline"
           >
             Login di sini
           </Link>

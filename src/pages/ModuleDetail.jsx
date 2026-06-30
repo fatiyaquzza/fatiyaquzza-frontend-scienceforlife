@@ -5,6 +5,12 @@ import { useAuth } from "../context/AuthContext";
 import HtmlContent from "../components/HtmlContent";
 import { stripHtml } from "../utils/contentHtml";
 
+const moduleFlow = [
+  "Mulai dengan pretest pada sub modul yang dipilih.",
+  "Pelajari materi utama beserta media pendukungnya.",
+  "Selesaikan postest untuk melihat capaian akhir.",
+];
+
 const ModuleDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -283,6 +289,34 @@ const ModuleDetail = () => {
           </div>
         </div>
 
+        <div className="mb-4 grid gap-4 lg:grid-cols-[1.1fr,0.9fr]">
+          <div className="rounded-2xl border border-slate-100 bg-white p-5 shadow-xl">
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-secondary">
+              Struktur Belajar
+            </p>
+            <div className="mt-4 space-y-3">
+              {moduleFlow.map((item, index) => (
+                <div key={item} className="rounded-xl bg-light px-4 py-3 text-sm text-slate-700">
+                  <span className="mr-2 inline-flex h-6 w-6 items-center justify-center rounded-full bg-primary text-xs font-bold text-white">
+                    {index + 1}
+                  </span>
+                  {item}
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="rounded-2xl border border-slate-100 bg-white p-5 shadow-xl">
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-secondary">
+              Capaian Umum
+            </p>
+            <p className="mt-3 text-sm leading-7 text-slate-700">
+              Pengguna diharapkan memahami konsep inti dalam modul ini, mampu
+              menghubungkannya dengan konteks kehidupan sehari-hari, dan mencapai
+              nilai kelulusan pada setiap sub modul yang dipelajari.
+            </p>
+          </div>
+        </div>
+
         {/* Search Bar */}
         <div className="p-4 sm:p-6 mb-4 bg-white border shadow-xl rounded-2xl border-slate-100">
           <div className="relative">
@@ -434,6 +468,26 @@ const ModuleDetail = () => {
                                 </span>
                               </div>
                             </div>
+                            {progressMap[subModule.id] && (
+                              <div className="mt-3 grid gap-2 sm:grid-cols-2">
+                                <div className="rounded-lg bg-slate-50 px-3 py-2 text-sm text-slate-700">
+                                  Pretest:{" "}
+                                  <span className="font-semibold text-slate-900">
+                                    {progressMap[subModule.id].pretest_done
+                                      ? `${progressMap[subModule.id].pretest_score}%`
+                                      : "-"}
+                                  </span>
+                                </div>
+                                <div className="rounded-lg bg-slate-50 px-3 py-2 text-sm text-slate-700">
+                                  Postest:{" "}
+                                  <span className="font-semibold text-slate-900">
+                                    {progressMap[subModule.id].postest_done
+                                      ? `${progressMap[subModule.id].postest_score}%`
+                                      : "-"}
+                                  </span>
+                                </div>
+                              </div>
+                            )}
                           </div>
                         </div>
                       </div>

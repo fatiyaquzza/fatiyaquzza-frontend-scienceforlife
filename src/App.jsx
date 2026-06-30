@@ -9,6 +9,9 @@ import Footer from "./components/Footer";
 
 // Public Pages
 import LandingPage from "./pages/LandingPage";
+import AboutIlmana from "./pages/AboutIlmana";
+import ArticleHub from "./pages/ArticleHub";
+import ClassOverview from "./pages/ClassOverview";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 
@@ -31,8 +34,9 @@ import UserManagement from "./pages/admin/UserManagement";
 
 function AppContent() {
   const location = useLocation();
-  const isLandingPage = location.pathname === "/";
   const isAdminRoute = location.pathname.startsWith("/admin");
+  const footerRoutes = ["/", "/tentang-ilmana", "/artikel", "/kelas"];
+  const showFooter = footerRoutes.includes(location.pathname);
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -41,6 +45,9 @@ function AppContent() {
         <Routes>
               {/* ===== PUBLIC ===== */}
               <Route path="/" element={<LandingPage />} />
+              <Route path="/tentang-ilmana" element={<AboutIlmana />} />
+              <Route path="/artikel" element={<ArticleHub />} />
+              <Route path="/kelas" element={<ClassOverview />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
 
@@ -120,7 +127,7 @@ function AppContent() {
               </Route>
         </Routes>
       </main>
-      {isLandingPage && <Footer />}
+      {showFooter && <Footer />}
     </div>
   );
 }

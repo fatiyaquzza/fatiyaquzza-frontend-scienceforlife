@@ -3,6 +3,8 @@ import api from "../../utils/api";
 import RichTextEditor from "../../components/RichTextEditor";
 import { stripHtml } from "../../utils/contentHtml";
 
+const emptyReference = () => ({ title: "", href: "" });
+
 const MaterialManagement = () => {
   const [modules, setModules] = useState([]);
   const [selectedModuleId, setSelectedModuleId] = useState("");
@@ -16,6 +18,7 @@ const MaterialManagement = () => {
     sub_module_id: "",
     description: "",
     video_url: "",
+    reference_links: [emptyReference()],
   });
   const [fileFile, setFileFile] = useState(null);
   const [submitting, setSubmitting] = useState(false);
@@ -61,6 +64,12 @@ const MaterialManagement = () => {
     formDataToSend.append("sub_module_id", formData.sub_module_id);
     formDataToSend.append("description", formData.description);
     formDataToSend.append("video_url", formData.video_url);
+    formDataToSend.append(
+      "reference_links",
+      JSON.stringify(
+        formData.reference_links.filter((item) => item.title.trim() && item.href.trim())
+      )
+    );
     if (fileFile) {
       formDataToSend.append("file", fileFile);
     }
@@ -86,11 +95,23 @@ const MaterialManagement = () => {
   };
 
   const handleEdit = (material) => {
+    let referenceLinks = [emptyReference()];
+    try {
+      const parsed = JSON.parse(material.references_json || "[]");
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        referenceLinks = parsed.map((item) => ({
+          title: item.title || "",
+          href: item.href || "",
+        }));
+      }
+    } catch {}
+
     setEditingMaterial(material);
     setFormData({
       sub_module_id: material.sub_module_id,
       description: material.description || "",
       video_url: material.video_url || "",
+      reference_links: referenceLinks,
     });
     setShowForm(true);
   };
@@ -111,10 +132,32 @@ const MaterialManagement = () => {
       sub_module_id: selectedSubModuleId,
       description: "",
       video_url: "",
+      reference_links: [emptyReference()],
     });
     setFileFile(null);
     setEditingMaterial(null);
     setShowForm(false);
+  };
+
+  const updateReference = (index, key, value) => {
+    const next = [...formData.reference_links];
+    next[index] = { ...next[index], [key]: value };
+    setFormData({ ...formData, reference_links: next });
+  };
+
+  const addReference = () => {
+    setFormData({
+      ...formData,
+      reference_links: [...formData.reference_links, emptyReference()],
+    });
+  };
+
+  const removeReference = (index) => {
+    const next = formData.reference_links.filter((_, i) => i !== index);
+    setFormData({
+      ...formData,
+      reference_links: next.length > 0 ? next : [emptyReference()],
+    });
   };
 
   return (
@@ -221,6 +264,63 @@ const MaterialManagement = () => {
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg"
                 />
               </div>
+              <div className="mb-6">
+                <div className="mb-2 flex items-center justify-between gap-3">
+                  <label className="block text-gray-700 font-semibold">
+                    Referensi Awal
+                  </label>
+                  <button
+                    type="button"
+                    onClick={addReference}
+                    className="rounded-lg bg-secondary px-4 py-2 text-sm font-semibold text-white hover:opacity-90"
+                  >
+                    + Tambah Referensi
+                  </button>
+                </div>
+                <div className="space-y-3">
+                  {formData.reference_links.map((item, index) => (
+                    <div
+                      key={`reference-${index}`}
+                      className="rounded-lg border border-gray-200 p-4"
+                    >
+                      <div className="mb-3 flex items-center justify-between gap-3">
+                        <p className="font-medium text-gray-700">
+                          Referensi {index + 1}
+                        </p>
+                        {formData.reference_links.length > 1 && (
+                          <button
+                            type="button"
+                            onClick={() => removeReference(index)}
+                            className="text-sm font-medium text-red-500 hover:underline"
+                          >
+                            Hapus
+                          </button>
+                        )}
+                      </div>
+                      <div className="grid gap-3 md:grid-cols-2">
+                        <input
+                          type="text"
+                          value={item.title}
+                          onChange={(e) =>
+                            updateReference(index, "title", e.target.value)
+                          }
+                          className="w-full rounded-lg border border-gray-300 px-4 py-2"
+                          placeholder="Judul referensi"
+                        />
+                        <input
+                          type="url"
+                          value={item.href}
+                          onChange={(e) =>
+                            updateReference(index, "href", e.target.value)
+                          }
+                          className="w-full rounded-lg border border-gray-300 px-4 py-2"
+                          placeholder="https://..."
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
               <button
                 type="submit"
                 disabled={submitting}
@@ -240,6 +340,7 @@ const MaterialManagement = () => {
                   <th className="px-6 py-3 text-left">Deskripsi</th>
                   <th className="px-6 py-3 text-left">Video</th>
                   <th className="px-6 py-3 text-left">File</th>
+                  <th className="px-6 py-3 text-left">Referensi</th>
                   <th className="px-6 py-3 text-left">Aksi</th>
                 </tr>
               </thead>
@@ -252,10 +353,22 @@ const MaterialManagement = () => {
                         : "-"}
                     </td>
                     <td className="px-6 py-4">
-                      {material.video_url ? "✓" : "-"}
+                      {material.video_url ? "Ya" : "-"}
                     </td>
                     <td className="px-6 py-4">
-                      {material.file_url ? "✓" : "-"}
+                      {material.file_url ? "Ya" : "-"}
+                    </td>
+                    <td className="px-6 py-4">
+                      {(() => {
+                        try {
+                          const parsed = JSON.parse(material.references_json || "[]");
+                          return Array.isArray(parsed) && parsed.length > 0
+                            ? `${parsed.length} item`
+                            : "-";
+                        } catch {
+                          return "-";
+                        }
+                      })()}
                     </td>
                     <td className="px-6 py-4">
                       <button

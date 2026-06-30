@@ -7,6 +7,13 @@ const API_BASE = import.meta.env.VITE_API_URL
   ? import.meta.env.VITE_API_URL.replace(/\/api\/?$/, "")
   : "http://localhost:5000";
 
+const learningFlow = [
+  "Pilih modul sesuai kebutuhan belajar.",
+  "Kerjakan pretest untuk memetakan pemahaman awal.",
+  "Pelajari materi dan multimedia pendukung.",
+  "Selesaikan postest untuk mengukur capaian belajar.",
+];
+
 const Dashboard = () => {
   const [modules, setModules] = useState([]);
   const [filteredModules, setFilteredModules] = useState([]);
@@ -113,6 +120,41 @@ const Dashboard = () => {
             Pilih modul yang sesuai dengan kebutuhan pembelajaran Anda dan mulai
             perjalanan belajar yang menyenangkan.
           </p>
+        </div>
+
+        <div className="mb-6 grid gap-4 lg:grid-cols-[1.1fr,0.9fr]">
+          <div className="rounded-2xl bg-white p-5 shadow-xl border border-slate-100">
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-secondary">
+              Alur Belajar
+            </p>
+            <h2 className="mt-2 text-xl font-bold text-slate-900">
+              ILMANA dirancang untuk belajar bertahap, bukan langsung lompat ke evaluasi.
+            </h2>
+            <div className="mt-4 grid gap-3 sm:grid-cols-2">
+              {learningFlow.map((item, index) => (
+                <div key={item} className="rounded-xl bg-light px-4 py-3 text-sm text-slate-700">
+                  <span className="mr-2 inline-flex h-6 w-6 items-center justify-center rounded-full bg-primary text-xs font-bold text-white">
+                    {index + 1}
+                  </span>
+                  {item}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="rounded-2xl bg-[#0d4d3a] p-5 text-white shadow-xl">
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-green-200">
+              Fokus Platform
+            </p>
+            <h2 className="mt-2 text-xl font-bold">
+              Materi menghubungkan manusia, alam, dan sains dalam konteks nyata.
+            </h2>
+            <p className="mt-4 text-sm leading-7 text-green-50/90">
+              Setiap modul diarahkan untuk membantu pengguna memahami konsep inti,
+              mengaitkannya dengan kehidupan sehari-hari, lalu mengukur capaian
+              melalui pretest dan postest.
+            </p>
+          </div>
         </div>
 
         {/* Search and Filters Section */}

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { Leaf, LogOut, Menu, X } from "lucide-react";
 
@@ -7,6 +7,36 @@ const Navbar = () => {
   const { user, logout, isAdmin } = useAuth();
   const navigate = useNavigate();
   const [mobileOpen, setMobileOpen] = useState(false);
+
+  const primaryLinks = [
+    { type: "route", to: "/", label: "Beranda" },
+    { type: "route", to: "/tentang-ilmana", label: "Tentang ILMANA" },
+    { type: "route", to: "/kelas", label: "Kelas" },
+    { type: "route", to: "/artikel", label: "Artikel" },
+  ];
+  const memberLinks =
+    user && !isAdmin
+      ? [{ type: "route", to: "/dashboard", label: "Materi" }]
+      : [];
+
+  const baseLinkClass =
+    "block py-2 font-medium transition-colors md:py-0";
+  const routeLinkClass = ({ isActive }) =>
+    `${baseLinkClass} ${
+      isActive ? "text-primary" : "text-gray-700 hover:text-green-600"
+    }`;
+  const closeMenu = () => setMobileOpen(false);
+  const renderPrimaryLink = (item) => (
+    <NavLink
+      key={item.label}
+      to={item.to}
+      end={item.to === "/"}
+      onClick={closeMenu}
+      className={routeLinkClass}
+    >
+      {item.label}
+    </NavLink>
+  );
 
   const handleLogout = () => {
     logout();
@@ -16,56 +46,32 @@ const Navbar = () => {
 
   const logoLink = !user ? "/" : isAdmin ? "/admin/dashboard" : "/dashboard";
 
+  const publicNavLinks = (
+    <>
+      {primaryLinks.map(renderPrimaryLink)}
+    </>
+  );
+
   const navLinks = !user ? (
     <>
-      <a
-        href="/#"
-        onClick={() => setMobileOpen(false)}
-        className="font-medium text-gray-700 transition-colors hover:text-green-600 block py-2 md:py-0"
-      >
-        Beranda
-      </a>
-      <a
-        href="/#tentang-kami"
-        onClick={() => setMobileOpen(false)}
-        className="font-medium text-gray-700 transition-colors hover:text-green-600 block py-2 md:py-0"
-      >
-        Tentang Kami
-      </a>
-      <a
-        href="/#program-unggulan"
-        onClick={() => setMobileOpen(false)}
-        className="font-medium text-gray-700 transition-colors hover:text-green-600 block py-2 md:py-0"
-      >
-        Modul
-      </a>
-      <a
-        href="/#kontak"
-        onClick={() => setMobileOpen(false)}
-        className="font-medium text-gray-700 transition-colors hover:text-green-600 block py-2 md:py-0"
-      >
-        Kontak
-      </a>
+      {publicNavLinks}
       <Link
         to="/login"
-        onClick={() => setMobileOpen(false)}
+        onClick={closeMenu}
         className="bg-primary hover:bg-[#0C452A] text-white px-5 py-2.5 rounded-lg font-semibold transition-all duration-300 shadow-md hover:shadow-lg inline-block text-center mt-2 md:mt-0"
       >
-        Mulai Belajar
+        Login / Daftar
       </Link>
     </>
   ) : (
-    <div className="flex flex-col md:flex-row md:items-center gap-4 md:gap-6">
+    <div className="flex flex-col gap-4 md:flex-row md:items-center md:gap-6">
       {!isAdmin && (
-        <Link
-          to="/dashboard"
-          onClick={() => setMobileOpen(false)}
-          className="font-medium text-gray-700 hover:text-green-600 py-2 md:py-0"
-        >
-          Dashboard
-        </Link>
+        <>
+          {primaryLinks.map(renderPrimaryLink)}
+          {memberLinks.map(renderPrimaryLink)}
+        </>
       )}
-      <span className="font-medium text-gray-600 py-2 md:py-0">
+      <span className="py-2 font-medium text-gray-600 md:py-0">
         Hi, {user.name}
       </span>
       <button
@@ -80,7 +86,7 @@ const Navbar = () => {
 
   return (
     <nav className="fixed z-50 w-full bg-white border-b border-gray-100 shadow-sm">
-      <div className="px-4 sm:px-6 py-3 sm:py-4 mx-auto max-w-7xl">
+      <div className="px-4 py-3 mx-auto sm:px-6 sm:py-4 max-w-7xl">
         <div className="flex items-center justify-between">
           <Link
             to={logoLink}
@@ -92,7 +98,7 @@ const Navbar = () => {
           </Link>
 
           {/* Desktop menu */}
-          <div className="hidden md:flex items-center gap-6 lg:gap-8">
+          <div className="items-center hidden gap-6 lg:flex lg:gap-8">
             {navLinks}
           </div>
 
@@ -100,7 +106,7 @@ const Navbar = () => {
           <button
             type="button"
             onClick={() => setMobileOpen(!mobileOpen)}
-            className="md:hidden p-2 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors"
+            className="p-2 text-gray-700 transition-colors rounded-lg lg:hidden hover:bg-gray-100"
             aria-label={mobileOpen ? "Tutup menu" : "Buka menu"}
           >
             {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -109,7 +115,7 @@ const Navbar = () => {
 
         {/* Mobile menu dropdown */}
         {mobileOpen && (
-          <div className="md:hidden mt-4 pt-4 border-t border-gray-100 space-y-1">
+          <div className="pt-4 mt-4 space-y-1 border-t border-gray-100 lg:hidden">
             {navLinks}
           </div>
         )}

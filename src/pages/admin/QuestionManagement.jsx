@@ -310,7 +310,7 @@ const QuestionManagement = () => {
                   </button>
                 </div>
                 <p className="text-sm text-gray-500 mb-3">
-                  Minimal 1 opsi. Label otomatis A, B, C, … sesuai urutan.
+                  Minimal 1 opsi. Label otomatis A, B, C, dan seterusnya sesuai urutan.
                 </p>
                 {formData.options.map((option, index) => (
                   <div

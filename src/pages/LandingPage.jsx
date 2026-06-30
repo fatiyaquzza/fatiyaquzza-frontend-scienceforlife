@@ -4,6 +4,7 @@ import api from "../utils/api";
 import { useEffect, useState } from "react";
 import { useInView } from "../hooks/useInView";
 import {
+  ArrowRight,
   ChevronDown,
   Leaf,
   Brain,
@@ -121,6 +122,24 @@ const LandingPage = () => {
     },
   ];
 
+  const quickAccess = [
+    {
+      title: "Tentang ILMANA",
+      body: "Lihat visi, misi, target pengguna, dan posisi ILMANA sebagai platform belajar digital.",
+      to: "/tentang-ilmana",
+    },
+    {
+      title: "Struktur Kelas",
+      body: "Pahami alur pretest, materi, postest, dan refleksi yang dipakai di platform.",
+      to: "/kelas",
+    },
+    {
+      title: "Artikel",
+      body: "Jelajahi arah pengembangan bacaan pendukung dan penguatan dasar akademik konten.",
+      to: "/artikel",
+    },
+  ];
+
   return (
     <div className="flex flex-col min-h-screen">
       {/* Hero Section - Full Screen */}
@@ -170,10 +189,10 @@ const LandingPage = () => {
                     Mulai Belajar Sekarang
                   </Link>
                   <Link
-                    to="/#program-unggulan"
+                    to="/kelas"
                     className="px-10 py-4 text-lg font-semibold text-white transition-all duration-300 border-2 border-white rounded-full hover:bg-white hover:text-green-700"
                   >
-                    Lihat Modul Pembelajaran
+                    Lihat Struktur Belajar
                   </Link>
                 </>
               )}
@@ -190,6 +209,25 @@ const LandingPage = () => {
         </a>
       </section>
 
+      <section className="bg-white py-8">
+        <div className="mx-auto grid max-w-7xl gap-4 px-4 sm:px-6 lg:grid-cols-3 lg:px-8">
+          {quickAccess.map((item) => (
+            <Link
+              key={item.title}
+              to={item.to}
+              className="group rounded-2xl border border-slate-200 bg-slate-50 px-5 py-5 transition hover:border-primary hover:bg-white hover:shadow-lg"
+            >
+              <p className="text-lg font-bold text-slate-900">{item.title}</p>
+              <p className="mt-2 text-sm leading-6 text-slate-600">{item.body}</p>
+              <span className="mt-4 inline-flex items-center text-sm font-semibold text-primary">
+                Buka halaman
+                <ArrowRight className="ml-2 h-4 w-4 transition group-hover:translate-x-1" />
+              </span>
+            </Link>
+          ))}
+        </div>
+      </section>
+
       {/* About Section */}
       <section
         id="tentang-kami"
@@ -204,7 +242,7 @@ const LandingPage = () => {
               className={`order-2 lg:order-1 ${aboutInView ? "in-view" : ""} scroll-reveal-left`}
             >
               <span className="text-sm font-semibold tracking-widest text-green-600 uppercase">
-                — Tentang —
+                Tentang
               </span>
               <h2 className="mt-2 mb-6 text-4xl font-bold text-gray-900 md:text-5xl">
                 ILMANA
@@ -266,7 +304,7 @@ const LandingPage = () => {
         >
           <div className="mb-16 text-center">
             <span className="text-sm font-semibold tracking-widest text-green-300 uppercase">
-              — Terbukti —
+              Program
             </span>
             <h2 className="mt-2 mb-4 text-4xl font-bold text-white md:text-5xl">
               PROGRAM UNGGULAN
@@ -385,7 +423,7 @@ const LandingPage = () => {
         >
           <div className="mb-16 text-center">
             <span className="text-sm font-semibold tracking-widest text-green-300 uppercase">
-              — Tim Kami —
+              Tim Kami
             </span>
             <h2 className="mt-2 mb-4 text-4xl font-bold text-white md:text-5xl">
               Kenali Sosok di Balik Layar
@@ -432,7 +470,7 @@ const LandingPage = () => {
           <div className="max-w-4xl mx-auto">
             <div className="mb-12 text-center">
               <span className="text-sm font-semibold tracking-widest text-green-600 uppercase">
-                — Hubungi Kami —
+                Hubungi Kami
               </span>
               <h2 className="mt-2 mb-4 text-4xl font-bold text-gray-900 md:text-5xl">
                 Hubungi Kami

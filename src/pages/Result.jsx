@@ -50,7 +50,9 @@ const Result = () => {
           {/* Status kelulusan */}
           {isPassed ? (
             <>
-              <div className="text-6xl mb-4">🎉</div>
+              <div className="mb-4 text-sm font-semibold uppercase tracking-[0.2em] text-secondary">
+                Lulus
+              </div>
               <h2 className="text-3xl font-bold text-secondary mb-4">
                 Selamat! Anda Lulus
               </h2>
@@ -60,7 +62,9 @@ const Result = () => {
             </>
           ) : (
             <>
-              <div className="text-6xl mb-4">📚</div>
+              <div className="mb-4 text-sm font-semibold uppercase tracking-[0.2em] text-primary">
+                Ulangi
+              </div>
               <h2 className="text-3xl font-bold text-primary mb-4">
                 Belum Lulus
               </h2>

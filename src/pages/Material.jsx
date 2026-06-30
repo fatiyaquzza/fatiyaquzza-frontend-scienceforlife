@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import api from "../utils/api";
 import HtmlContent from "../components/HtmlContent";
 import LineSpacingSelect from "../components/LineSpacingSelect";
+import { resolveAssetUrl } from "../utils/contentHtml";
 
 const Material = () => {
   const { id } = useParams();
@@ -44,6 +45,19 @@ const Material = () => {
   };
 
   const moduleId = subModule?.module_id;
+  const referenceLinks = (() => {
+    try {
+      const parsed = JSON.parse(material?.references_json || "[]");
+      return Array.isArray(parsed) ? parsed.filter((item) => item?.title && item?.href) : [];
+    } catch {
+      return [];
+    }
+  })();
+  const successIndicators = [
+    `Memahami konsep inti pada ${subModule?.name || "materi ini"}.`,
+    `Mampu mengaitkan materi ${module?.name || "ILMANA"} dengan konteks kehidupan sehari-hari.`,
+    `Mencapai nilai minimal ${subModule?.passing_grade || 70}% pada postest.`,
+  ];
 
   if (loading) {
     return (
@@ -57,8 +71,8 @@ const Material = () => {
   }
 
   return (
-    <div className="min-h-screen py-6 pt-20 pb-12 sm:py-8 sm:pt-24 bg-light">
-      <div className="container px-4 mx-auto max-w-7xl">
+    <div className="min-h-screen py-4 pt-20 pb-10 sm:py-8 sm:pt-24 bg-light">
+      <div className="container px-3 mx-auto sm:px-4 max-w-7xl">
         {/* Breadcrumb: Modul > Sub Modul > Materi */}
         <nav className="flex flex-wrap items-center gap-2 pb-2 mb-6 -mx-1 overflow-x-auto text-xs md:mb-8 sm:text-sm">
           <button
@@ -107,20 +121,59 @@ const Material = () => {
         </nav>
 
         {/* Materi Header Card */}
-        <div className="p-6 mb-4 bg-white border shadow-xl sm:p-8 rounded-2xl border-slate-100">
-          <h1 className="text-2xl font-bold tracking-tight break-words sm:text-3xl md:text-4xl text-slate-900">
+        <div className="p-4 mb-4 bg-white border shadow-xl sm:p-8 rounded-2xl border-slate-100">
+          <h1 className="text-xl font-bold tracking-tight break-words sm:text-3xl md:text-4xl text-slate-900">
             {subModule?.name || "Materi"}
           </h1>
-          {module?.name && <p className="mt-2 text-slate-600">{module.name}</p>}
+          {module?.name && (
+            <p className="mt-2 text-sm break-words sm:text-base text-slate-600">
+              {module.name}
+            </p>
+          )}
+        </div>
+
+        <div className="mb-4 grid gap-4 lg:grid-cols-[1.1fr,0.9fr]">
+          <div className="rounded-2xl border border-slate-100 bg-white p-4 shadow-xl sm:p-6">
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-secondary">
+              Alur Belajar Materi
+            </p>
+            <div className="mt-4 space-y-3">
+              {[
+                "Baca tujuan dan fokus materi.",
+                "Pelajari penjelasan utama, gambar, video, dan PDF pendukung.",
+                "Lanjut ke postest untuk mengukur pemahaman akhir.",
+              ].map((item, index) => (
+                <div key={item} className="rounded-xl bg-light px-4 py-3 text-sm text-slate-700">
+                  <span className="mr-2 inline-flex h-6 w-6 items-center justify-center rounded-full bg-primary text-xs font-bold text-white">
+                    {index + 1}
+                  </span>
+                  {item}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="rounded-2xl border border-slate-100 bg-white p-4 shadow-xl sm:p-6">
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-secondary">
+              Indikator Keberhasilan
+            </p>
+            <div className="mt-4 space-y-3">
+              {successIndicators.map((item) => (
+                <div key={item} className="rounded-xl bg-slate-50 px-4 py-3 text-sm leading-7 text-slate-700">
+                  {item}
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
 
         {material ? (
           <div className="space-y-4">
             {/* Deskripsi Materi */}
             {material.description && (
-              <div className="p-6 bg-white border shadow-xl sm:p-8 rounded-2xl border-slate-100">
+              <div className="p-4 bg-white border shadow-xl sm:p-8 rounded-2xl border-slate-100">
                 <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
-                  <h2 className="text-2xl font-bold text-slate-900">
+                  <h2 className="text-xl font-bold sm:text-2xl text-slate-900">
                     Deskripsi Materi
                   </h2>
                   <LineSpacingSelect />
@@ -135,7 +188,7 @@ const Material = () => {
             {/* Video Pembelajaran */}
             {material.video_url && (
               <div className="p-4 bg-white border shadow-xl sm:p-8 rounded-2xl border-slate-100">
-                <h2 className="mb-4 text-2xl font-bold text-slate-900">
+                <h2 className="mb-4 text-xl font-bold sm:text-2xl text-slate-900">
                   Video Pembelajaran
                 </h2>
                 <div className="overflow-hidden rounded-xl aspect-video">
@@ -165,26 +218,20 @@ const Material = () => {
 
             {/* Materi PDF */}
             {material.file_url && (
-              <div className="p-6 bg-white border shadow-xl sm:p-8 rounded-2xl border-slate-100">
-                <h2 className="mb-4 text-2xl font-bold text-slate-900">
+              <div className="p-4 bg-white border shadow-xl sm:p-8 rounded-2xl border-slate-100">
+                <h2 className="mb-4 text-xl font-bold sm:text-2xl text-slate-900">
                   Materi PDF
                 </h2>
                 {(() => {
-                  // Ambil base URL backend dari VITE_API_URL (misal: https://backend.com/api)
-                  const rawApiUrl = import.meta.env.VITE_API_URL || "";
-                  const fileBaseUrl = rawApiUrl.replace(/\/api\/?$/, "");
-                  const href = fileBaseUrl
-                    ? `${fileBaseUrl}${material.file_url}`
-                    : material.file_url;
+                  const href = resolveAssetUrl(material.file_url);
 
                   return (
                     <a
                       href={href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center px-6 py-3 font-semibold text-white transition-all rounded-xl bg-secondary hover:shadow-lg hover:shadow-secondary/30"
+                      className="inline-flex max-w-full items-center justify-center break-words px-5 py-3 font-semibold text-white transition-all rounded-xl bg-secondary hover:shadow-lg hover:shadow-secondary/30"
                     >
-                      <span className="mr-2">📄</span>
                       Download PDF
                     </a>
                   );
@@ -192,8 +239,47 @@ const Material = () => {
               </div>
             )}
 
+            <div className="grid gap-4 lg:grid-cols-[1fr,0.9fr]">
+              <div className="p-4 bg-white border shadow-xl sm:p-8 rounded-2xl border-slate-100">
+                <h2 className="mb-4 text-xl font-bold sm:text-2xl text-slate-900">
+                  Refleksi Belajar
+                </h2>
+                <div className="space-y-3">
+                  {[
+                    `Apa konsep paling penting dari ${subModule?.name || "materi ini"}?`,
+                    "Bagian mana yang paling dekat dengan pengalaman sehari-hari Anda?",
+                    "Apa yang masih perlu diperdalam sebelum lanjut ke postest?",
+                  ].map((item) => (
+                    <div key={item} className="rounded-xl bg-slate-50 px-4 py-3 text-sm leading-7 text-slate-700">
+                      {item}
+                    </div>
+                  ))}
+                </div>
+              </div>
+              {referenceLinks.length > 0 && (
+                <div className="p-4 bg-white border shadow-xl sm:p-8 rounded-2xl border-slate-100">
+                  <h2 className="mb-4 text-xl font-bold sm:text-2xl text-slate-900">
+                    Referensi Awal
+                  </h2>
+                  <div className="space-y-3">
+                    {referenceLinks.map((item, index) => (
+                      <a
+                        key={`${item.title}-${index}`}
+                        href={item.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="block rounded-xl border border-slate-200 px-4 py-3 text-sm font-medium text-slate-700 transition hover:border-primary hover:text-primary"
+                      >
+                        {item.title}
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
             {/* CTA: Lanjut ke Postest */}
-            <div className="p-6 bg-white border shadow-xl sm:p-8 rounded-2xl border-slate-100">
+            <div className="p-4 bg-white border shadow-xl sm:p-8 rounded-2xl border-slate-100">
               <button
                 onClick={() => navigate(`/postest/${id}`)}
                 className="w-full py-3 font-semibold text-white transition-all rounded-xl bg-primary hover:bg-opacity-90 hover:shadow-lg"
@@ -203,7 +289,7 @@ const Material = () => {
             </div>
           </div>
         ) : (
-          <div className="p-16 text-center bg-white border shadow-xl rounded-2xl border-slate-100">
+          <div className="p-8 text-center bg-white border shadow-xl sm:p-16 rounded-2xl border-slate-100">
             <div className="flex items-center justify-center w-24 h-24 mx-auto mb-6 rounded-full bg-slate-100">
               <svg
                 className="w-12 h-12 text-slate-400"
