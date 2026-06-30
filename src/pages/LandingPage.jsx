@@ -247,13 +247,13 @@ const LandingPage = () => {
               <h2 className="mt-2 mb-6 text-4xl font-bold text-gray-900 md:text-5xl">
                 ILMANA
               </h2>
-              <p className="mb-6 text-lg leading-relaxed text-gray-600">
+              <p className="mb-6 text-justify text-lg leading-relaxed text-gray-600">
                 ILMANA (Ilmu Manusia dan Alam) hadir sebagai jembatan
                 inovatif bagi siswa yang ingin memperdalam sains kehidupan
                 secara kontekstual, berbasis penelitian, dan bermakna bagi
                 kehidupan, lingkungan, serta nilai kemanusiaan.
               </p>
-              <p className="text-lg leading-relaxed text-gray-600">
+              <p className="text-justify text-lg leading-relaxed text-gray-600">
                 Kami menyediakan platform pembelajaran yang interaktif, menarik,
                 dan mudah dipahami untuk semua kalangan.
               </p>
@@ -331,7 +331,7 @@ const LandingPage = () => {
                   <h3 className="mb-4 text-xl font-bold text-white">
                     {program.title}
                   </h3>
-                  <p className="leading-relaxed text-green-100/80">
+                  <p className="text-justify leading-relaxed text-green-100/80 sm:text-left">
                     {program.description}
                   </p>
                 </div>
@@ -397,7 +397,7 @@ const LandingPage = () => {
                   }`}
                 >
                   <div className="px-6 pb-6">
-                    <p className="leading-relaxed text-gray-600">
+                    <p className="text-justify leading-relaxed text-gray-600">
                       {faq.answer}
                     </p>
                   </div>

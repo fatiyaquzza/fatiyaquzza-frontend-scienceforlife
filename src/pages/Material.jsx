@@ -122,11 +122,11 @@ const Material = () => {
 
         {/* Materi Header Card */}
         <div className="p-4 mb-4 bg-white border shadow-xl sm:p-8 rounded-2xl border-slate-100">
-          <h1 className="text-xl font-bold tracking-tight break-words sm:text-3xl md:text-4xl text-slate-900">
+          <h1 className="text-xl text-justify font-bold leading-tight tracking-tight break-words sm:text-3xl md:text-4xl text-slate-900">
             {subModule?.name || "Materi"}
           </h1>
           {module?.name && (
-            <p className="mt-2 text-sm break-words sm:text-base text-slate-600">
+            <p className="mt-2 text-justify text-sm break-words leading-6 sm:text-base text-slate-600">
               {module.name}
             </p>
           )}
@@ -143,7 +143,7 @@ const Material = () => {
                 "Pelajari penjelasan utama, gambar, video, dan PDF pendukung.",
                 "Lanjut ke postest untuk mengukur pemahaman akhir.",
               ].map((item, index) => (
-                <div key={item} className="rounded-xl bg-light px-4 py-3 text-sm text-slate-700">
+                <div key={item} className="rounded-xl bg-light px-4 py-3 text-justify text-sm leading-7 text-slate-700">
                   <span className="mr-2 inline-flex h-6 w-6 items-center justify-center rounded-full bg-primary text-xs font-bold text-white">
                     {index + 1}
                   </span>
@@ -159,7 +159,7 @@ const Material = () => {
             </p>
             <div className="mt-4 space-y-3">
               {successIndicators.map((item) => (
-                <div key={item} className="rounded-xl bg-slate-50 px-4 py-3 text-sm leading-7 text-slate-700">
+                <div key={item} className="rounded-xl bg-slate-50 px-4 py-3 text-justify text-sm leading-7 text-slate-700">
                   {item}
                 </div>
               ))}
@@ -250,7 +250,7 @@ const Material = () => {
                     Refleksi Belajar
                   </h2>
                   {!hasReferenceLinks && (
-                    <p className="mt-2 text-sm leading-6 text-slate-600">
+                    <p className="mt-2 text-justify text-sm leading-6 text-slate-600">
                       Gunakan pertanyaan berikut untuk merangkum pemahaman sebelum
                       melanjutkan ke postest.
                     </p>

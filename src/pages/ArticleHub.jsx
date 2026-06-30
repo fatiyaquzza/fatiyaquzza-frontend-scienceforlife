@@ -50,10 +50,10 @@ const ArticleHub = () => {
           <p className="text-sm font-semibold uppercase tracking-[0.2em] text-secondary">
             Artikel ILMANA
           </p>
-          <h1 className="mt-3 text-3xl font-bold text-slate-900 sm:text-4xl">
+          <h1 className="mt-3 text-3xl font-bold leading-tight text-slate-900 sm:text-4xl">
             Ruang bacaan pendukung untuk memperkuat dasar akademik materi.
           </h1>
-          <p className="mt-4 max-w-3xl text-sm leading-7 text-slate-600 sm:text-base">
+          <p className="mt-4 w-full text-justify text-sm leading-7 text-slate-600 sm:text-base">
             Halaman ini menyiapkan struktur artikel, referensi bacaan, dan konten
             pendukung agar klaim berbasis penelitian lebih terlihat. Kelas artikel
             penuh belum diisi, tetapi arah kurasinya sudah ditetapkan.
@@ -67,7 +67,7 @@ const ArticleHub = () => {
             <article key={title} className="rounded-2xl bg-white p-6 shadow-lg shadow-slate-200/60">
               <Icon className="h-8 w-8 text-primary" />
               <h2 className="mt-4 text-xl font-bold text-slate-900">{title}</h2>
-              <p className="mt-3 text-sm leading-7 text-slate-600">{body}</p>
+              <p className="mt-3 text-justify text-sm leading-7 text-slate-600">{body}</p>
             </article>
           ))}
         </div>
@@ -76,7 +76,7 @@ const ArticleHub = () => {
       <section className="px-4 py-8 mx-auto max-w-7xl sm:px-6 lg:px-8">
         <div className="rounded-[2rem] bg-white px-6 py-8 shadow-lg shadow-slate-200/60 md:px-10">
           <h2 className="text-2xl font-bold text-slate-900">Referensi Awal</h2>
-          <p className="mt-3 max-w-3xl text-sm leading-7 text-slate-600">
+          <p className="mt-3 max-w-3xl text-justify text-sm leading-7 text-slate-600">
             Sambil konten artikel per materi dilengkapi, halaman ini menampung rujukan
             resmi yang bisa dipakai sebagai dasar akademik awal.
           </p>
@@ -90,7 +90,7 @@ const ArticleHub = () => {
                 className="rounded-2xl border border-slate-200 bg-slate-50 px-5 py-5 transition hover:border-primary hover:bg-white"
               >
                 <p className="text-lg font-bold text-slate-900">{item.title}</p>
-                <p className="mt-2 text-sm leading-6 text-slate-600">{item.body}</p>
+                <p className="mt-2 text-justify text-sm leading-6 text-slate-600">{item.body}</p>
               </a>
             ))}
           </div>
@@ -107,7 +107,7 @@ const ArticleHub = () => {
               <h2 className="mt-4 text-2xl font-bold">
                 Artikel akan dipakai sebagai penguat materi, sumber data, dan bacaan lanjutan.
               </h2>
-              <p className="mt-3 text-sm leading-7 text-green-50/90">
+              <p className="mt-3 text-justify text-sm leading-7 text-green-50/90">
                 Untuk saat ini, pengguna diarahkan belajar lewat modul utama sambil
                 struktur artikel disiapkan agar konsisten dengan tema manusia, alam,
                 dan sains.

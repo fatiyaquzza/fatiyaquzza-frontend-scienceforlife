@@ -123,7 +123,7 @@ const Result = () => {
                       </div>
                       <HtmlContent
                         html={item.question_text}
-                        className="text-gray-800 mb-4"
+                        className="mb-4 text-justify text-gray-800"
                       />
 
                       <div className="space-y-2">
@@ -146,7 +146,10 @@ const Result = () => {
                                 <span className="font-semibold shrink-0">
                                   {opt.option_label}.
                                 </span>
-                                <HtmlContent html={opt.option_text} />
+                                <HtmlContent
+                                  html={opt.option_text}
+                                  className="text-justify"
+                                />
                               </span>
 
                               {isUserAnswer && (

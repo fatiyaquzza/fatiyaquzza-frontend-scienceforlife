@@ -32,10 +32,10 @@ const ClassOverview = () => {
           <p className="text-sm font-semibold uppercase tracking-[0.2em] text-secondary">
             Struktur Kelas
           </p>
-          <h1 className="mt-3 text-3xl font-bold text-slate-900 sm:text-4xl">
+          <h1 className="mt-3 text-3xl font-bold leading-tight text-slate-900 sm:text-4xl">
             ILMANA memakai alur belajar yang sederhana, terukur, dan mudah diikuti.
           </h1>
-          <p className="mt-4 max-w-3xl text-sm leading-7 text-slate-600 sm:text-base">
+          <p className="mt-4 w-full text-justify text-sm leading-7 text-slate-600 sm:text-base">
             Halaman ini menjelaskan bentuk kelas digital di ILMANA. Saat ini kelas
             diwujudkan melalui rangkaian modul dan sub modul, lalu diperkuat oleh
             materi, evaluasi, dan tindak lanjut belajar.
@@ -56,7 +56,7 @@ const ClassOverview = () => {
                 </div>
               </div>
               <h2 className="mt-4 text-xl font-bold text-slate-900">{title}</h2>
-              <p className="mt-3 text-sm leading-7 text-slate-600">{body}</p>
+              <p className="mt-3 text-justify text-sm leading-7 text-slate-600">{body}</p>
             </article>
           ))}
         </div>
@@ -65,7 +65,7 @@ const ClassOverview = () => {
       <section className="px-4 py-8 mx-auto max-w-7xl sm:px-6 lg:px-8">
         <div className="rounded-[2rem] bg-[#123b2f] px-6 py-8 text-white shadow-xl md:px-10">
           <h2 className="text-2xl font-bold">Masuk ke kelas yang tersedia sekarang</h2>
-          <p className="mt-3 max-w-2xl text-sm leading-7 text-green-50/90">
+          <p className="mt-3 max-w-2xl text-justify text-sm leading-7 text-green-50/90">
             Implementasi saat ini berpusat pada pembelajaran berbasis modul.
             Penguatan kelas lanjutan seperti artikel, aktivitas tambahan, dan
             referensi terkurasi akan mengikuti struktur ini.

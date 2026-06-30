@@ -57,10 +57,10 @@ const AboutIlmana = () => {
               <p className="mb-3 text-sm font-semibold tracking-[0.2em] uppercase text-green-200">
                 Tentang ILMANA
               </p>
-              <h1 className="max-w-3xl text-3xl font-bold leading-tight sm:text-4xl md:text-5xl">
+              <h1 className="max-w-3xl text-3xl font-bold leading-tight sm:text-3xl md:text-4xl lg:text-5xl">
                 Platform pembelajaran sains kontekstual yang dirancang untuk alur belajar yang utuh.
               </h1>
-              <p className="mt-5 max-w-2xl text-base leading-7 text-green-50/90 sm:text-lg">
+              <p className="mt-5 max-w-2xl text-justify text-base leading-7 text-green-50/90 sm:text-lg">
                 ILMANA menempatkan sains sebagai pengalaman belajar yang terhubung
                 dengan kehidupan, lingkungan, dan nilai kemanusiaan. Platform ini
                 memadukan materi, evaluasi, dan refleksi agar proses belajar lebih
@@ -74,7 +74,7 @@ const AboutIlmana = () => {
                 <p className="text-sm font-semibold uppercase tracking-wide text-green-200">
                   Target Pengguna
                 </p>
-                <p className="mt-2 text-sm leading-6 text-green-50/90">
+                <p className="mt-2 text-justify text-sm leading-6 text-green-50/90">
                   Peserta didik, guru, dan pembelajar umum yang membutuhkan materi sains yang relevan dengan kehidupan sehari-hari.
                 </p>
               </div>
@@ -83,7 +83,7 @@ const AboutIlmana = () => {
                 <p className="text-sm font-semibold uppercase tracking-wide text-green-200">
                   Posisi Platform
                 </p>
-                <p className="mt-2 text-sm leading-6 text-green-50/90">
+                <p className="mt-2 text-justify text-sm leading-6 text-green-50/90">
                   ILMANA diarahkan sebagai platform belajar digital bergaya MOOC dengan alur pembelajaran, evaluasi, dan pendampingan belajar.
                 </p>
               </div>
@@ -98,7 +98,7 @@ const AboutIlmana = () => {
             <article key={title} className="rounded-2xl bg-white p-6 shadow-lg shadow-slate-200/60">
               <Icon className="h-8 w-8 text-primary" />
               <h2 className="mt-4 text-xl font-bold text-slate-900">{title}</h2>
-              <p className="mt-3 text-sm leading-7 text-slate-600">{body}</p>
+              <p className="mt-3 text-justify text-sm leading-7 text-slate-600">{body}</p>
             </article>
           ))}
         </div>
@@ -110,7 +110,7 @@ const AboutIlmana = () => {
             <h2 className="text-2xl font-bold text-slate-900">Siapa yang Dilayani</h2>
             <div className="mt-5 space-y-3">
               {audiences.map((item) => (
-                <div key={item} className="rounded-xl bg-slate-50 px-4 py-3 text-sm leading-6 text-slate-700">
+                <div key={item} className="rounded-xl bg-slate-50 px-4 py-3 text-justify text-sm leading-6 text-slate-700">
                   {item}
                 </div>
               ))}
@@ -125,7 +125,7 @@ const AboutIlmana = () => {
                   <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary text-sm font-bold text-white">
                     {index + 1}
                   </div>
-                  <p className="text-sm leading-6 text-slate-700">{item}</p>
+                  <p className="text-justify text-sm leading-6 text-slate-700">{item}</p>
                 </div>
               ))}
             </div>
@@ -147,7 +147,7 @@ const AboutIlmana = () => {
               />
               <div className="p-6">
                 <h2 className="text-xl font-bold text-slate-900">{item.title}</h2>
-                <p className="mt-3 text-sm leading-7 text-slate-600">{item.body}</p>
+                <p className="mt-3 text-justify text-sm leading-7 text-slate-600">{item.body}</p>
               </div>
             </article>
           ))}
@@ -157,7 +157,7 @@ const AboutIlmana = () => {
       <section className="px-4 py-8 mx-auto max-w-7xl sm:px-6 lg:px-8">
         <div className="rounded-[2rem] bg-white px-6 py-8 shadow-lg shadow-slate-200/60 md:px-10">
           <h2 className="text-2xl font-bold text-slate-900">Arah Pengembangan Konten</h2>
-          <p className="mt-4 max-w-3xl text-sm leading-7 text-slate-600">
+          <p className="mt-4 w-full text-justify text-sm leading-7 text-slate-600">
             Setiap materi ILMANA diarahkan memiliki pengantar, tujuan belajar,
             konten utama, multimedia pendukung, evaluasi, dan refleksi. Revisi
             berikutnya akan memperkuat referensi ilmiah, artikel pendukung, dan

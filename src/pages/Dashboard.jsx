@@ -114,10 +114,10 @@ const Dashboard = () => {
               Modul
             </span>
           </div>
-          <h1 className="mb-2 text-2xl font-bold tracking-tight sm:text-2xl md:text-4xl text-primary">
+          <h1 className="mb-2 text-3xl font-bold leading-tight tracking-tight text-primary sm:text-4xl">
             Modul Pembelajaran
           </h1>
-          <p className="mb-2 text-sm text-gray-600 sm:text-sm md:text-md">
+          <p className="mb-2 text-justify text-sm leading-7 text-gray-600 sm:text-base">
             Pilih modul yang sesuai dengan kebutuhan pembelajaran Anda dan mulai
             perjalanan belajar yang menyenangkan.
           </p>
@@ -150,7 +150,7 @@ const Dashboard = () => {
             <h2 className="mt-2 text-xl font-bold">
               Materi menghubungkan manusia, alam, dan sains dalam konteks nyata.
             </h2>
-            <p className="mt-4 text-sm leading-7 text-green-50/90">
+            <p className="mt-4 text-justify text-sm leading-7 text-green-50/90">
               Setiap modul diarahkan untuk membantu pengguna memahami konsep inti,
               mengaitkannya dengan kehidupan sehari-hari, lalu mengukur capaian
               melalui pretest dan postest.
@@ -428,7 +428,7 @@ const Dashboard = () => {
                   <h3 className="mb-2 text-xl font-bold transition-colors duration-200 text-slate-900 group-hover:text-primary line-clamp-2">
                     {module.name}
                   </h3>
-                  <p className="mb-4 text-sm leading-relaxed text-slate-600 line-clamp-3">
+                  <p className="mb-4 text-justify text-sm leading-relaxed text-slate-600 line-clamp-3">
                     {(module.description &&
                       stripHtml(module.description, 400)) ||
                       "Eksplorasi materi pembelajaran yang telah dirancang khusus untuk meningkatkan pemahaman Anda."}

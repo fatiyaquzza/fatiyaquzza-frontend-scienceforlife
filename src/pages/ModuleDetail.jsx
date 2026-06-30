@@ -253,18 +253,18 @@ const ModuleDetail = () => {
         <div className="p-6 sm:p-8 mb-4 bg-white border shadow-xl rounded-2xl border-slate-100">
           <div className="flex items-start justify-between">
             <div className="flex-1">
-              <h1 className="mb-3 text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-slate-900 break-words">
+              <h1 className="mb-3 text-xl font-bold leading-tight tracking-tight text-slate-900 break-words sm:text-3xl md:text-4xl">
                 {module.name}
               </h1>
               {module.description && (
-                <div className="leading-relaxed text-md text-slate-600">
+                <div className="text-justify text-sm leading-7 text-slate-600 sm:text-base">
                   <HtmlContent html={module.description} />
                 </div>
               )}
             </div>
             <button
               onClick={() => navigate("/dashboard")}
-              className="p-3 ml-4 transition-all duration-200 rounded-xl bg-slate-100 text-slate-600 hover:bg-green-50 hover:text-primary"
+              className="ml-3 rounded-xl bg-slate-100 p-2.5 text-slate-600 transition-all duration-200 hover:bg-green-50 hover:text-primary sm:ml-4 sm:p-3"
             >
               <svg
                 className="w-5 h-5"
@@ -303,7 +303,7 @@ const ModuleDetail = () => {
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-secondary">
               Capaian Umum
             </p>
-            <p className="mt-3 text-sm leading-7 text-slate-700">
+            <p className="mt-3 text-justify text-sm leading-7 text-slate-700">
               Pengguna diharapkan memahami konsep inti dalam modul ini, mampu
               menghubungkannya dengan konteks kehidupan sehari-hari, dan mencapai
               nilai kelulusan pada setiap sub modul yang dipelajari.
@@ -427,7 +427,7 @@ const ModuleDetail = () => {
                     <div className="relative flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
                       <div className="flex-1 min-w-0">
                         <div className="flex items-start gap-4 mb-3">
-                          <div className="flex items-center justify-center flex-shrink-0 w-12 h-12 font-bold text-white shadow-lg bg-primary rounded-xl shadow-secondary/20">
+                          <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg bg-primary text-sm font-bold text-white shadow-lg shadow-secondary/20 sm:h-12 sm:w-12 sm:rounded-xl sm:text-base">
                             {index + 1}
                           </div>
                           <div className="flex-1">
@@ -435,7 +435,7 @@ const ModuleDetail = () => {
                               {subModule.name}
                             </h3>
                             {subModule.description && (
-                              <div className="mb-3 text-sm leading-relaxed text-left max-w-none text-slate-600">
+                              <div className="mb-3 max-w-none text-justify text-sm leading-7 text-slate-600">
                                 <HtmlContent html={subModule.description} />
                               </div>
                             )}

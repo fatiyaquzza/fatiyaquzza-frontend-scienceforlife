@@ -96,7 +96,7 @@ const Postest = () => {
                 </h3>
                 <HtmlContent
                   html={question.question_text}
-                  className="text-gray-700 mb-4"
+                  className="mb-4 text-justify text-gray-700"
                 />
 
                 {question.question_type === "choice" ? (
@@ -120,7 +120,10 @@ const Postest = () => {
                           <span className="font-semibold shrink-0">
                             {option.option_label}.
                           </span>
-                          <HtmlContent html={option.option_text} />
+                          <HtmlContent
+                            html={option.option_text}
+                            className="text-justify"
+                          />
                         </span>
                       </label>
                     ))}
