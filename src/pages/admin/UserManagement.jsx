@@ -1,5 +1,9 @@
 import { useEffect, useState } from "react";
 import api from "../../utils/api";
+import {
+  AdminTableSkeleton,
+  ProgressPanelSkeleton,
+} from "../../components/LoadingStates";
 
 const UserManagement = () => {
   const [users, setUsers] = useState([]);
@@ -392,7 +396,20 @@ const UserManagement = () => {
         )}
 
         {loading ? (
-          <p className="text-gray-500">Memuat...</p>
+          <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+            <AdminTableSkeleton
+              columns={[
+                "Nama",
+                "Email",
+                "Role",
+                "Pekerjaan",
+                "Alamat",
+                "Progress",
+                "Aksi",
+              ]}
+              rowCount={6}
+            />
+          </div>
         ) : (
           <div className="bg-white rounded-lg shadow-lg">
             <div className="flex flex-col gap-4 border-b border-gray-100 p-4 sm:flex-row sm:items-end sm:justify-between sm:p-6">
@@ -620,7 +637,7 @@ const UserManagement = () => {
 
               <div className="flex-1 overflow-y-auto">
                 {progressLoading ? (
-                  <p className="p-6 text-gray-500">Memuat nilai...</p>
+                  <ProgressPanelSkeleton />
                 ) : progressRows.length === 0 ? (
                   <p className="p-6 text-gray-500">Belum ada progress.</p>
                 ) : (

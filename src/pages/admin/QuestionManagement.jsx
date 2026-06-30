@@ -9,6 +9,7 @@ import {
   mapApiOptionsToForm,
   relabelOptions,
 } from "../../utils/questionOptions";
+import { AdminTableSkeleton } from "../../components/LoadingStates";
 
 const QuestionManagement = () => {
   const [modules, setModules] = useState([]);
@@ -17,6 +18,7 @@ const QuestionManagement = () => {
   const [selectedSubModuleId, setSelectedSubModuleId] = useState("");
   const [selectedType, setSelectedType] = useState("pretest");
   const [questions, setQuestions] = useState([]);
+  const [questionsLoading, setQuestionsLoading] = useState(false);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [editingQuestion, setEditingQuestion] = useState(null);
@@ -52,14 +54,17 @@ const QuestionManagement = () => {
       fetchQuestions();
     } else {
       setQuestions([]);
+      setQuestionsLoading(false);
     }
   }, [selectedSubModuleId, selectedType]);
 
   const fetchQuestions = () => {
+    setQuestionsLoading(true);
     api
       .get(`/questions/submodule/${selectedSubModuleId}/${selectedType}`)
       .then((res) => setQuestions(res.data.questions))
-      .catch(() => setQuestions([]));
+      .catch(() => setQuestions([]))
+      .finally(() => setQuestionsLoading(false));
   };
 
   const handleSubmit = async (e) => {
@@ -203,7 +208,11 @@ const QuestionManagement = () => {
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg"
               >
                 <option value="">-- Pilih Modul --</option>
-                {modules.map((module) => (
+                {loading ? (
+                  <option value="" disabled>
+                    Memuat modul...
+                  </option>
+                ) : modules.map((module) => (
                   <option key={module.id} value={module.id}>
                     {module.name}
                   </option>
@@ -374,7 +383,14 @@ const QuestionManagement = () => {
           </div>
         )}
 
-        {selectedSubModuleId && (
+        {selectedSubModuleId && questionsLoading ? (
+          <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+            <AdminTableSkeleton
+              columns={["Pertanyaan", "Opsi", "Tipe", "Aksi"]}
+              rowCount={4}
+            />
+          </div>
+        ) : selectedSubModuleId && (
           <div className="bg-white rounded-lg shadow-lg overflow-hidden">
             <table className="w-full">
               <thead className="bg-primary text-white">

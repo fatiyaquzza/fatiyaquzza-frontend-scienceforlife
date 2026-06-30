@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import api from "../utils/api";
 import HtmlContent from "../components/HtmlContent";
+import { QuestionPageSkeleton } from "../components/LoadingStates";
 
 const Pretest = () => {
   const { id } = useParams();
@@ -64,11 +65,7 @@ const Pretest = () => {
   };
 
   if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <p className="text-gray-500">Memuat soal...</p>
-      </div>
-    );
+    return <QuestionPageSkeleton title="pretest" />;
   }
 
   return (

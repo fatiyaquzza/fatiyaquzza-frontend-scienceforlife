@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { Eye, EyeOff } from "lucide-react";
+import { PageLoader } from "../components/LoadingStates";
 
 const Login = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
@@ -48,7 +49,7 @@ const Login = () => {
   };
 
   if (authLoading || user) {
-    return null;
+    return <PageLoader label="Memuat sesi pengguna..." />;
   }
 
   return (

@@ -4,6 +4,7 @@ import api from "../utils/api";
 import { useAuth } from "../context/AuthContext";
 import HtmlContent from "../components/HtmlContent";
 import { stripHtml } from "../utils/contentHtml";
+import { ModuleDetailSkeleton } from "../components/LoadingStates";
 
 const moduleFlow = [
   "Mulai dengan pretest pada sub modul yang dipilih.",
@@ -182,14 +183,7 @@ const ModuleDetail = () => {
   };
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-light">
-        <div className="text-center">
-          <div className="w-16 h-16 mx-auto mb-4 border-b-4 rounded-full animate-spin border-primary"></div>
-          <p className="font-medium text-slate-600">Memuat sub modul...</p>
-        </div>
-      </div>
-    );
+    return <ModuleDetailSkeleton />;
   }
 
   if (!module) {

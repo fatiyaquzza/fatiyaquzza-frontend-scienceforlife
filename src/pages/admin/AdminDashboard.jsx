@@ -11,6 +11,56 @@ import {
 } from "lucide-react";
 import api from "../../utils/api";
 
+const StatValueSkeleton = () => (
+  <div className="mt-2 h-9 w-16 animate-pulse rounded-lg bg-gray-200" />
+);
+
+const FeedbackTableSkeleton = () => (
+  <table className="w-full">
+    <thead>
+      <tr className="bg-gray-50 text-left text-sm font-medium text-gray-600">
+        <th className="px-6 py-3">Nama</th>
+        <th className="px-6 py-3">Email</th>
+        <th className="px-6 py-3">Subjek</th>
+        <th className="px-6 py-3">Pesan</th>
+        <th className="px-6 py-3">Status</th>
+        <th className="px-6 py-3">Tanggal</th>
+        <th className="px-6 py-3">Kelola</th>
+      </tr>
+    </thead>
+    <tbody className="divide-y divide-gray-100">
+      {[1, 2, 3, 4].map((row) => (
+        <tr key={row}>
+          <td className="px-6 py-4">
+            <div className="h-4 w-28 animate-pulse rounded bg-gray-200" />
+          </td>
+          <td className="px-6 py-4">
+            <div className="h-4 w-36 animate-pulse rounded bg-gray-200" />
+          </td>
+          <td className="px-6 py-4">
+            <div className="h-4 w-24 animate-pulse rounded bg-gray-200" />
+          </td>
+          <td className="px-6 py-4">
+            <div className="h-4 w-48 animate-pulse rounded bg-gray-200" />
+          </td>
+          <td className="px-6 py-4">
+            <div className="h-6 w-24 animate-pulse rounded-lg bg-gray-200" />
+          </td>
+          <td className="px-6 py-4">
+            <div className="h-4 w-20 animate-pulse rounded bg-gray-200" />
+          </td>
+          <td className="px-6 py-4">
+            <div className="flex min-w-max items-center gap-2">
+              <div className="h-8 w-28 animate-pulse rounded-lg bg-gray-200" />
+              <div className="h-8 w-20 animate-pulse rounded-lg bg-gray-200" />
+            </div>
+          </td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+);
+
 const AdminDashboard = () => {
   const [stats, setStats] = useState({
     totalUsers: 0,
@@ -126,9 +176,13 @@ const AdminDashboard = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-gray-500 font-medium mb-1">Total Modul</p>
-                <h3 className="text-3xl font-bold text-gray-900">
-                  {loading ? "..." : stats.totalModules}
-                </h3>
+                {loading ? (
+                  <StatValueSkeleton />
+                ) : (
+                  <h3 className="text-3xl font-bold text-gray-900">
+                    {stats.totalModules}
+                  </h3>
+                )}
               </div>
               <div className="bg-green-100 text-green-600 p-3 rounded-xl">
                 <BookOpen className="w-6 h-6" />
@@ -140,9 +194,13 @@ const AdminDashboard = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-gray-500 font-medium mb-1">Total Sub Modul</p>
-                <h3 className="text-3xl font-bold text-gray-900">
-                  {loading ? "..." : stats.totalSubModules}
-                </h3>
+                {loading ? (
+                  <StatValueSkeleton />
+                ) : (
+                  <h3 className="text-3xl font-bold text-gray-900">
+                    {stats.totalSubModules}
+                  </h3>
+                )}
               </div>
               <div className="bg-emerald-100 text-emerald-600 p-3 rounded-xl">
                 <Layers className="w-6 h-6" />
@@ -154,9 +212,13 @@ const AdminDashboard = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-gray-500 font-medium mb-1">Total Pengguna</p>
-                <h3 className="text-3xl font-bold text-gray-900">
-                  {loading ? "..." : stats.totalUsers}
-                </h3>
+                {loading ? (
+                  <StatValueSkeleton />
+                ) : (
+                  <h3 className="text-3xl font-bold text-gray-900">
+                    {stats.totalUsers}
+                  </h3>
+                )}
               </div>
               <div className="bg-blue-100 text-blue-600 p-3 rounded-xl">
                 <Users className="w-6 h-6" />
@@ -168,9 +230,13 @@ const AdminDashboard = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-gray-500 font-medium mb-1">Pesan Kontak</p>
-                <h3 className="text-3xl font-bold text-gray-900">
-                  {feedbackLoading ? "..." : feedback.length}
-                </h3>
+                {feedbackLoading ? (
+                  <StatValueSkeleton />
+                ) : (
+                  <h3 className="text-3xl font-bold text-gray-900">
+                    {feedback.length}
+                  </h3>
+                )}
               </div>
               <div className="bg-amber-100 text-amber-600 p-3 rounded-xl">
                 <MessageSquare className="w-6 h-6" />
@@ -201,9 +267,7 @@ const AdminDashboard = () => {
           </div>
           <div className="overflow-x-auto">
             {feedbackLoading ? (
-              <div className="p-8 text-center text-gray-500">
-                Memuat data...
-              </div>
+              <FeedbackTableSkeleton />
             ) : feedbackError ? (
               <div className="p-8 text-center text-red-600">
                 {feedbackError}

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import api from "../../utils/api";
 import RichTextEditor from "../../components/RichTextEditor";
 import { stripHtml } from "../../utils/contentHtml";
+import { AdminTableSkeleton } from "../../components/LoadingStates";
 
 const emptyReference = () => ({ title: "", href: "" });
 
@@ -195,7 +196,11 @@ const MaterialManagement = () => {
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg"
               >
                 <option value="">-- Pilih Modul --</option>
-                {modules.map((module) => (
+                {loading ? (
+                  <option value="" disabled>
+                    Memuat modul...
+                  </option>
+                ) : modules.map((module) => (
                   <option key={module.id} value={module.id}>
                     {module.name}
                   </option>
@@ -229,13 +234,9 @@ const MaterialManagement = () => {
           </div>
 
           {selectedSubModuleId && materialsLoading && (
-            <button
-              type="button"
-              disabled
-              className="mt-4 cursor-not-allowed rounded-lg bg-gray-200 px-6 py-2 font-semibold text-gray-500"
-            >
-              Memuat materi...
-            </button>
+            <div className="mt-4 h-10 w-36 animate-pulse rounded-lg bg-gray-200">
+              <span className="sr-only">Memuat materi...</span>
+            </div>
           )}
 
           {selectedSubModuleId && !materialsLoading && !hasExistingMaterial && (
@@ -365,7 +366,14 @@ const MaterialManagement = () => {
           </div>
         )}
 
-        {selectedSubModuleId && (
+        {selectedSubModuleId && materialsLoading ? (
+          <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+            <AdminTableSkeleton
+              columns={["Deskripsi", "Video", "File", "Referensi", "Aksi"]}
+              rowCount={3}
+            />
+          </div>
+        ) : selectedSubModuleId && (
           <div className="bg-white rounded-lg shadow-lg overflow-hidden">
             <table className="w-full">
               <thead className="bg-primary text-white">

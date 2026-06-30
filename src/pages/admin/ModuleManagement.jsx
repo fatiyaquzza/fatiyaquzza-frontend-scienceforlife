@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import api from "../../utils/api";
+import { AdminTableSkeleton } from "../../components/LoadingStates";
 
 const ModuleManagement = () => {
   const [modules, setModules] = useState([]);
@@ -147,7 +148,9 @@ const ModuleManagement = () => {
         )}
 
         {loading ? (
-          <p className="text-gray-500">Memuat...</p>
+          <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+            <AdminTableSkeleton columns={["Nama", "Deskripsi", "Aksi"]} />
+          </div>
         ) : (
           <div className="bg-white rounded-lg shadow-lg overflow-hidden">
             <table className="w-full">

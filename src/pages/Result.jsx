@@ -3,6 +3,7 @@ import { useParams, useNavigate, useLocation } from "react-router-dom";
 import api from "../utils/api";
 import ChatAI from "../components/ChatAI";
 import HtmlContent from "../components/HtmlContent";
+import { ResultPageSkeleton } from "../components/LoadingStates";
 
 const Result = () => {
   const { id } = useParams();
@@ -31,11 +32,7 @@ const Result = () => {
   }, [id]);
 
   if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <p className="text-gray-500">Memuat hasil...</p>
-      </div>
-    );
+    return <ResultPageSkeleton />;
   }
 
   const isPassed =

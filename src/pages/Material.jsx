@@ -4,6 +4,7 @@ import api from "../utils/api";
 import HtmlContent from "../components/HtmlContent";
 import LineSpacingSelect from "../components/LineSpacingSelect";
 import { resolveAssetUrl } from "../utils/contentHtml";
+import { MaterialPageSkeleton } from "../components/LoadingStates";
 
 const Material = () => {
   const { id } = useParams();
@@ -66,14 +67,7 @@ const Material = () => {
   ];
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-light">
-        <div className="text-center">
-          <div className="w-16 h-16 mx-auto mb-4 border-b-4 rounded-full animate-spin border-primary"></div>
-          <p className="font-medium text-slate-600">Memuat materi...</p>
-        </div>
-      </div>
-    );
+    return <MaterialPageSkeleton />;
   }
 
   return (

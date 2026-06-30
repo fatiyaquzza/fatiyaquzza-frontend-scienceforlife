@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import api from "../../utils/api";
+import { AdminTableSkeleton } from "../../components/LoadingStates";
 
 const SubModuleManagement = () => {
   const [modules, setModules] = useState([]);
   const [selectedModuleId, setSelectedModuleId] = useState("");
   const [subModules, setSubModules] = useState([]);
+  const [subModulesLoading, setSubModulesLoading] = useState(false);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [editingSubModule, setEditingSubModule] = useState(null);
@@ -28,14 +30,17 @@ const SubModuleManagement = () => {
       fetchSubModules();
     } else {
       setSubModules([]);
+      setSubModulesLoading(false);
     }
   }, [selectedModuleId]);
 
   const fetchSubModules = () => {
+    setSubModulesLoading(true);
     api
       .get(`/submodules/module/${selectedModuleId}`)
       .then((res) => setSubModules(res.data.subModules))
-      .catch(() => setSubModules([]));
+      .catch(() => setSubModules([]))
+      .finally(() => setSubModulesLoading(false));
   };
 
   const handleSubmit = async (e) => {
@@ -109,8 +114,12 @@ const SubModuleManagement = () => {
             }}
             className="w-full px-4 py-2 border border-gray-300 rounded-lg mb-4"
           >
-            <option value="">-- Pilih Modul --</option>
-            {modules.map((module) => (
+              <option value="">-- Pilih Modul --</option>
+            {loading ? (
+              <option value="" disabled>
+                Memuat modul...
+              </option>
+            ) : modules.map((module) => (
               <option key={module.id} value={module.id}>
                 {module.name}
               </option>
@@ -190,7 +199,11 @@ const SubModuleManagement = () => {
           </div>
         )}
 
-        {selectedModuleId && (
+        {selectedModuleId && subModulesLoading ? (
+          <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+            <AdminTableSkeleton columns={["Nama", "Nilai Kelulusan", "Aksi"]} />
+          </div>
+        ) : selectedModuleId && (
           <div className="bg-white rounded-lg shadow-lg overflow-hidden">
             <table className="w-full">
               <thead className="bg-primary text-white">

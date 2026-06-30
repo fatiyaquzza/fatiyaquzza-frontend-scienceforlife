@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import api from "../utils/api";
 import { stripHtml } from "../utils/contentHtml";
+import { ModuleGridSkeleton } from "../components/LoadingStates";
 
 const API_BASE = import.meta.env.VITE_API_URL
   ? import.meta.env.VITE_API_URL.replace(/\/api\/?$/, "")
@@ -348,14 +349,7 @@ const Dashboard = () => {
 
         {/* Modules Grid */}
         {loading ? (
-          <div className="flex items-center justify-center py-20">
-            <div className="text-center">
-              <div className="w-16 h-16 mx-auto mb-4 border-b-4 rounded-full animate-spin border-primary"></div>
-              <p className="font-medium text-slate-600">
-                Memuat modul pembelajaran...
-              </p>
-            </div>
-          </div>
+          <ModuleGridSkeleton />
         ) : filteredModules.length === 0 ? (
           <div className="py-20 text-center">
             <div className="max-w-md mx-auto">
