@@ -1,5 +1,14 @@
 import { useEffect, useState } from "react";
-import { BookOpen, Users, HelpCircle, Mail, MessageSquare } from "lucide-react";
+import {
+  BookOpen,
+  CheckCircle2,
+  Layers,
+  Mail,
+  MessageSquare,
+  RotateCcw,
+  Trash2,
+  Users,
+} from "lucide-react";
 import api from "../../utils/api";
 
 const AdminDashboard = () => {
@@ -12,6 +21,8 @@ const AdminDashboard = () => {
   const [feedback, setFeedback] = useState([]);
   const [loading, setLoading] = useState(true);
   const [feedbackLoading, setFeedbackLoading] = useState(true);
+  const [feedbackError, setFeedbackError] = useState("");
+  const [feedbackActionId, setFeedbackActionId] = useState(null);
 
   useEffect(() => {
     const fetchStats = async () => {
@@ -42,14 +53,61 @@ const AdminDashboard = () => {
   }, []);
 
   useEffect(() => {
+    setFeedbackError("");
     api
       .get("/contact/feedback")
       .then((res) => {
         setFeedback(res.data?.feedback || []);
       })
-      .catch(() => {})
+      .catch((error) => {
+        setFeedback([]);
+        setFeedbackError(
+          error.response?.data?.message || "Gagal memuat data pesan kontak."
+        );
+      })
       .finally(() => setFeedbackLoading(false));
   }, []);
+
+  const handleUpdateFeedbackStatus = async (item) => {
+    const nextStatus = item.status === "done" ? "open" : "done";
+    setFeedbackActionId(item.id);
+
+    try {
+      const res = await api.patch(`/contact/feedback/${item.id}/status`, {
+        status: nextStatus,
+      });
+      const updatedFeedback = res.data?.feedback;
+
+      if (updatedFeedback) {
+        setFeedback((currentFeedback) =>
+          currentFeedback.map((feedbackItem) =>
+            feedbackItem.id === item.id ? updatedFeedback : feedbackItem
+          )
+        );
+      }
+    } catch (error) {
+      alert("Gagal memperbarui status pesan.");
+    } finally {
+      setFeedbackActionId(null);
+    }
+  };
+
+  const handleDeleteFeedback = async (item) => {
+    if (!window.confirm("Yakin ingin menghapus pesan kontak ini?")) return;
+
+    setFeedbackActionId(item.id);
+
+    try {
+      await api.delete(`/contact/feedback/${item.id}`);
+      setFeedback((currentFeedback) =>
+        currentFeedback.filter((feedbackItem) => feedbackItem.id !== item.id)
+      );
+    } catch (error) {
+      alert("Gagal menghapus pesan.");
+    } finally {
+      setFeedbackActionId(null);
+    }
+  };
 
   return (
     <>
@@ -87,7 +145,7 @@ const AdminDashboard = () => {
                 </h3>
               </div>
               <div className="bg-emerald-100 text-emerald-600 p-3 rounded-xl">
-                <BookOpen className="w-6 h-6" />
+                <Layers className="w-6 h-6" />
               </div>
             </div>
           </div>
@@ -146,6 +204,10 @@ const AdminDashboard = () => {
               <div className="p-8 text-center text-gray-500">
                 Memuat data...
               </div>
+            ) : feedbackError ? (
+              <div className="p-8 text-center text-red-600">
+                {feedbackError}
+              </div>
             ) : feedback.length === 0 ? (
               <div className="p-8 text-center text-gray-500">
                 Belum ada pesan dari formulir kontak.
@@ -158,12 +220,19 @@ const AdminDashboard = () => {
                     <th className="px-6 py-3">Email</th>
                     <th className="px-6 py-3">Subjek</th>
                     <th className="px-6 py-3">Pesan</th>
+                    <th className="px-6 py-3">Status</th>
                     <th className="px-6 py-3">Tanggal</th>
+                    <th className="px-6 py-3">Kelola</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100">
                   {feedback.map((item) => (
-                    <tr key={item.id} className="hover:bg-gray-50/50">
+                    <tr
+                      key={item.id}
+                      className={`hover:bg-gray-50/50 ${
+                        item.status === "done" ? "bg-green-50/30" : ""
+                      }`}
+                    >
                       <td className="px-6 py-4 text-gray-900 font-medium">
                         {item.name}
                       </td>
@@ -181,6 +250,17 @@ const AdminDashboard = () => {
                       <td className="px-6 py-4 text-gray-600 max-w-xs truncate">
                         {item.message}
                       </td>
+                      <td className="px-6 py-4">
+                        <span
+                          className={`inline-flex rounded-lg px-3 py-1 text-xs font-semibold ${
+                            item.status === "done"
+                              ? "bg-green-100 text-primary"
+                              : "bg-amber-100 text-amber-700"
+                          }`}
+                        >
+                          {item.status === "done" ? "Selesai" : "Belum selesai"}
+                        </span>
+                      </td>
                       <td className="px-6 py-4 text-gray-500 text-sm">
                         {item.created_at
                           ? new Date(item.created_at).toLocaleDateString(
@@ -192,6 +272,41 @@ const AdminDashboard = () => {
                               }
                             )
                           : "-"}
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex min-w-max items-center gap-2">
+                          <button
+                            type="button"
+                            onClick={() => handleUpdateFeedbackStatus(item)}
+                            disabled={feedbackActionId === item.id}
+                            className={`inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-xs font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-60 ${
+                              item.status === "done"
+                                ? "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                                : "bg-primary text-white hover:bg-[#0C452A]"
+                            }`}
+                          >
+                            {item.status === "done" ? (
+                              <>
+                                <RotateCcw className="h-3.5 w-3.5" />
+                                Buka lagi
+                              </>
+                            ) : (
+                              <>
+                                <CheckCircle2 className="h-3.5 w-3.5" />
+                                Tandai selesai
+                              </>
+                            )}
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleDeleteFeedback(item)}
+                            disabled={feedbackActionId === item.id}
+                            className="inline-flex items-center gap-1.5 rounded-lg bg-red-50 px-3 py-2 text-xs font-semibold text-red-600 transition-colors hover:bg-red-100 disabled:cursor-not-allowed disabled:opacity-60"
+                          >
+                            <Trash2 className="h-3.5 w-3.5" />
+                            Hapus
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   ))}

@@ -10,8 +10,12 @@ const UserManagement = () => {
   const [progressUser, setProgressUser] = useState(null);
   const [progressRows, setProgressRows] = useState([]);
   const [progressLoading, setProgressLoading] = useState(false);
+  const [progressPanelOpen, setProgressPanelOpen] = useState(false);
   const [exporting, setExporting] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
   const [showForm, setShowForm] = useState(false);
   const [editingUser, setEditingUser] = useState(null);
   const [formData, setFormData] = useState({
@@ -41,6 +45,15 @@ const UserManagement = () => {
       .then((res) => setSubModules(res.data.subModules || []))
       .catch(() => setSubModules([]));
   }, [selectedModuleId]);
+
+  useEffect(() => {
+    if (!progressUser) return;
+
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [progressUser]);
 
   const fetchUsers = () => {
     api
@@ -96,14 +109,22 @@ const UserManagement = () => {
     }
   };
 
-  const handleShowProgress = async (user) => {
-    if (progressUser?.id === user.id) {
+  const closeProgressPanel = () => {
+    setProgressPanelOpen(false);
+    window.setTimeout(() => {
       setProgressUser(null);
       setProgressRows([]);
+    }, 200);
+  };
+
+  const handleShowProgress = async (user) => {
+    if (progressUser?.id === user.id && progressPanelOpen) {
+      closeProgressPanel();
       return;
     }
 
     setProgressUser(user);
+    window.setTimeout(() => setProgressPanelOpen(true), 0);
     setProgressLoading(true);
     try {
       const res = await api.get(`/progress/user/${user.id}`);
@@ -162,6 +183,48 @@ const UserManagement = () => {
     acc[row.module_name].push(row);
     return acc;
   }, {});
+
+  const normalizedSearch = searchTerm.trim().toLowerCase();
+  const filteredUsers = users.filter((user) => {
+    if (!normalizedSearch) return true;
+    return (
+      user.name?.toLowerCase().includes(normalizedSearch) ||
+      user.email?.toLowerCase().includes(normalizedSearch)
+    );
+  });
+  const totalPages = Math.max(1, Math.ceil(filteredUsers.length / rowsPerPage));
+  const pageStartIndex = (currentPage - 1) * rowsPerPage;
+  const paginatedUsers = filteredUsers.slice(
+    pageStartIndex,
+    pageStartIndex + rowsPerPage
+  );
+  const visibleStart = filteredUsers.length === 0 ? 0 : pageStartIndex + 1;
+  const visibleEnd = Math.min(pageStartIndex + rowsPerPage, filteredUsers.length);
+  const visiblePageNumbers = Array.from({ length: totalPages }, (_, index) => index + 1)
+    .filter((page) => {
+      if (totalPages <= 7) return true;
+      return (
+        page === 1 ||
+        page === totalPages ||
+        Math.abs(page - currentPage) <= 1
+      );
+    });
+
+  useEffect(() => {
+    if (currentPage > totalPages) {
+      setCurrentPage(totalPages);
+    }
+  }, [currentPage, totalPages]);
+
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
+    setCurrentPage(1);
+  };
+
+  const handleRowsPerPageChange = (e) => {
+    setRowsPerPage(Number(e.target.value));
+    setCurrentPage(1);
+  };
 
   return (
     <>
@@ -332,7 +395,37 @@ const UserManagement = () => {
           <p className="text-gray-500">Memuat...</p>
         ) : (
           <div className="bg-white rounded-lg shadow-lg">
-            <div className="overflow-x-auto rounded-lg">
+            <div className="flex flex-col gap-4 border-b border-gray-100 p-4 sm:flex-row sm:items-end sm:justify-between sm:p-6">
+              <div className="w-full sm:max-w-md">
+                <label className="mb-2 block text-sm font-semibold text-gray-700">
+                  Cari Pengguna
+                </label>
+                <input
+                  type="search"
+                  value={searchTerm}
+                  onChange={handleSearchChange}
+                  placeholder="Cari berdasarkan nama atau email..."
+                  className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
+                />
+              </div>
+
+              <div className="flex flex-col gap-2 sm:items-end">
+                <label className="text-sm font-semibold text-gray-700">
+                  Baris per halaman
+                </label>
+                <select
+                  value={rowsPerPage}
+                  onChange={handleRowsPerPageChange}
+                  className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20 sm:w-28"
+                >
+                  <option value={10}>10</option>
+                  <option value={25}>25</option>
+                  <option value={50}>50</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="overflow-x-auto">
               <table className="min-w-[1100px] w-full border-collapse">
                 <thead className="bg-primary text-white sticky top-0 z-10">
                   <tr>
@@ -361,7 +454,16 @@ const UserManagement = () => {
                 </thead>
 
                 <tbody>
-                  {users.map((user) => (
+                  {paginatedUsers.length === 0 ? (
+                    <tr>
+                      <td colSpan={7} className="px-6 py-12 text-center text-gray-500">
+                        {searchTerm
+                          ? "Tidak ada user yang cocok dengan pencarian."
+                          : "Belum ada pengguna."}
+                      </td>
+                    </tr>
+                  ) : (
+                    paginatedUsers.map((user) => (
                     <tr
                       key={user.id}
                       className="border-t hover:bg-gray-50 transition"
@@ -421,115 +523,185 @@ const UserManagement = () => {
                         </button>
                       </td>
                     </tr>
-                  ))}
+                    ))
+                  )}
                 </tbody>
               </table>
+            </div>
+
+            <div className="flex flex-col gap-4 border-t border-gray-100 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+              <p className="text-sm text-gray-600">
+                Menampilkan {visibleStart}-{visibleEnd} dari {filteredUsers.length} user
+              </p>
+
+              <div className="flex flex-wrap items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => setCurrentPage((page) => Math.max(1, page - 1))}
+                  disabled={currentPage === 1}
+                  className="rounded-lg border border-gray-300 px-3 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  Previous
+                </button>
+
+                {visiblePageNumbers.map((page, index) => {
+                  const previousPage = visiblePageNumbers[index - 1];
+                  const showGap = previousPage && page - previousPage > 1;
+
+                  return (
+                    <span key={page} className="inline-flex items-center gap-2">
+                      {showGap && (
+                        <span className="px-1 text-sm text-gray-400">...</span>
+                      )}
+                      <button
+                        type="button"
+                        onClick={() => setCurrentPage(page)}
+                        className={`h-9 min-w-9 rounded-lg px-3 text-sm font-semibold transition ${
+                          currentPage === page
+                            ? "bg-primary text-white"
+                            : "border border-gray-300 text-gray-700 hover:bg-gray-50"
+                        }`}
+                      >
+                        {page}
+                      </button>
+                    </span>
+                  );
+                })}
+
+                <button
+                  type="button"
+                  onClick={() =>
+                    setCurrentPage((page) => Math.min(totalPages, page + 1))
+                  }
+                  disabled={currentPage === totalPages}
+                  className="rounded-lg border border-gray-300 px-3 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  Next
+                </button>
+              </div>
             </div>
           </div>
         )}
 
         {progressUser && (
-          <div className="mt-6 bg-white rounded-lg shadow-lg overflow-hidden">
-            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-gray-100 px-6 py-4">
-              <div>
-                <h2 className="text-lg font-bold text-primary">
-                  Nilai {progressUser.name}
-                </h2>
-                <p className="text-sm text-gray-500">
-                  Pretest dan postest per materi/sub modul
-                </p>
-              </div>
-              <button
-                type="button"
-                onClick={() => {
-                  setProgressUser(null);
-                  setProgressRows([]);
-                }}
-                className="rounded-lg bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-200"
-              >
-                Tutup
-              </button>
-            </div>
+          <div className="fixed inset-0 z-50">
+            <button
+              type="button"
+              aria-label="Tutup panel nilai"
+              onClick={closeProgressPanel}
+              className={`absolute inset-0 bg-slate-900/45 transition-opacity duration-200 ${
+                progressPanelOpen ? "opacity-100" : "opacity-0"
+              }`}
+            />
 
-            {progressLoading ? (
-              <p className="p-6 text-gray-500">Memuat nilai...</p>
-            ) : progressRows.length === 0 ? (
-              <p className="p-6 text-gray-500">Belum ada progress.</p>
-            ) : (
-              <div className="space-y-6 p-6">
-                <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-                  {[
-                    { label: "Total materi", value: progressSummary.total },
-                    { label: "Pretest selesai", value: progressSummary.pretestDone },
-                    { label: "Postest selesai", value: progressSummary.postestDone },
-                    { label: "Lulus", value: progressSummary.passed },
-                  ].map((item) => (
-                    <div key={item.label} className="rounded-xl bg-slate-50 px-4 py-4">
-                      <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                        {item.label}
-                      </p>
-                      <p className="mt-2 text-2xl font-bold text-slate-900">{item.value}</p>
-                    </div>
-                  ))}
+            <aside
+              className={`absolute right-0 top-0 flex h-full w-full max-w-lg flex-col bg-white shadow-2xl transition-transform duration-200 ease-out ${
+                progressPanelOpen ? "translate-x-0" : "translate-x-full"
+              }`}
+            >
+              <div className="flex items-start justify-between gap-4 border-b border-gray-100 px-5 py-5 sm:px-6">
+                <div>
+                  <h2 className="text-lg font-bold text-primary">
+                    Nilai {progressUser.name}
+                  </h2>
+                  <p className="mt-1 text-sm text-gray-500">
+                    Pretest dan postest per materi/sub modul
+                  </p>
                 </div>
+                <button
+                  type="button"
+                  onClick={closeProgressPanel}
+                  className="rounded-lg bg-gray-100 px-3 py-2 text-sm font-semibold text-gray-700 transition hover:bg-gray-200"
+                  aria-label="Tutup panel nilai"
+                >
+                  X
+                </button>
+              </div>
 
-                <div className="space-y-4">
-                  {Object.entries(progressByModule).map(([moduleName, rows]) => (
-                    <div key={moduleName} className="rounded-2xl border border-slate-200">
-                      <div className="border-b border-slate-200 px-4 py-3">
-                        <h3 className="font-bold text-slate-900">{moduleName}</h3>
-                      </div>
-                      <div className="grid gap-3 p-4">
-                        {rows.map((row) => (
-                          <div
-                            key={row.sub_module_id}
-                            className="rounded-xl border border-slate-200 bg-white p-4"
-                          >
-                            <div className="flex flex-wrap items-start justify-between gap-3">
-                              <div>
-                                <p className="font-semibold text-slate-900">
-                                  {row.sub_module_name}
-                                </p>
-                                <p className="mt-1 text-sm text-slate-500">
-                                  Nilai per materi
-                                </p>
-                              </div>
-                              <span
-                                className={`rounded-full px-3 py-1 text-sm font-medium ${
-                                  row.is_passed
-                                    ? "bg-green-100 text-green-700"
-                                    : "bg-amber-100 text-amber-700"
-                                }`}
-                              >
-                                {row.is_passed ? "Lulus" : "Belum lulus"}
-                              </span>
-                            </div>
-                            <div className="mt-4 grid gap-3 sm:grid-cols-2">
-                              <div className="rounded-lg bg-slate-50 px-4 py-3">
-                                <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                                  Pretest
-                                </p>
-                                <p className="mt-2 text-lg font-bold text-slate-900">
-                                  {row.pretest_done ? `${row.pretest_score}%` : "-"}
-                                </p>
-                              </div>
-                              <div className="rounded-lg bg-slate-50 px-4 py-3">
-                                <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                                  Postest
-                                </p>
-                                <p className="mt-2 text-lg font-bold text-slate-900">
-                                  {row.postest_done ? `${row.postest_score}%` : "-"}
-                                </p>
-                              </div>
-                            </div>
+              <div className="flex-1 overflow-y-auto">
+                {progressLoading ? (
+                  <p className="p-6 text-gray-500">Memuat nilai...</p>
+                ) : progressRows.length === 0 ? (
+                  <p className="p-6 text-gray-500">Belum ada progress.</p>
+                ) : (
+                  <div className="space-y-6 p-5 sm:p-6">
+                    <div className="grid gap-3 sm:grid-cols-2">
+                      {[
+                        { label: "Total materi", value: progressSummary.total },
+                        { label: "Pretest selesai", value: progressSummary.pretestDone },
+                        { label: "Postest selesai", value: progressSummary.postestDone },
+                        { label: "Lulus", value: progressSummary.passed },
+                      ].map((item) => (
+                        <div key={item.label} className="rounded-xl bg-slate-50 px-4 py-4">
+                          <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+                            {item.label}
+                          </p>
+                          <p className="mt-2 text-2xl font-bold text-slate-900">
+                            {item.value}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="space-y-4">
+                      {Object.entries(progressByModule).map(([moduleName, rows]) => (
+                        <div key={moduleName} className="rounded-2xl border border-slate-200">
+                          <div className="border-b border-slate-200 px-4 py-3">
+                            <h3 className="font-bold text-slate-900">{moduleName}</h3>
                           </div>
-                        ))}
-                      </div>
+                          <div className="grid gap-3 p-4">
+                            {rows.map((row) => (
+                              <div
+                                key={row.sub_module_id}
+                                className="rounded-xl border border-slate-200 bg-white p-4"
+                              >
+                                <div className="flex flex-wrap items-start justify-between gap-3">
+                                  <div>
+                                    <p className="font-semibold text-slate-900">
+                                      {row.sub_module_name}
+                                    </p>
+                                    <p className="mt-1 text-sm text-slate-500">
+                                      Nilai per materi
+                                    </p>
+                                  </div>
+                                  <span
+                                    className={`rounded-full px-3 py-1 text-sm font-medium ${
+                                      row.is_passed
+                                        ? "bg-green-100 text-green-700"
+                                        : "bg-amber-100 text-amber-700"
+                                    }`}
+                                  >
+                                    {row.is_passed ? "Lulus" : "Belum lulus"}
+                                  </span>
+                                </div>
+                                <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                                  <div className="rounded-lg bg-slate-50 px-4 py-3">
+                                    <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+                                      Pretest
+                                    </p>
+                                    <p className="mt-2 text-lg font-bold text-slate-900">
+                                      {row.pretest_done ? `${row.pretest_score}%` : "-"}
+                                    </p>
+                                  </div>
+                                  <div className="rounded-lg bg-slate-50 px-4 py-3">
+                                    <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+                                      Postest
+                                    </p>
+                                    <p className="mt-2 text-lg font-bold text-slate-900">
+                                      {row.postest_done ? `${row.postest_score}%` : "-"}
+                                    </p>
+                                  </div>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      ))}
                     </div>
-                  ))}
-                </div>
+                  </div>
+                )}
               </div>
-            )}
+            </aside>
           </div>
         )}
     </>

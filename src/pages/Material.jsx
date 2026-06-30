@@ -53,6 +53,12 @@ const Material = () => {
       return [];
     }
   })();
+  const hasReferenceLinks = referenceLinks.length > 0;
+  const reflectionQuestions = [
+    `Apa konsep paling penting dari ${subModule?.name || "materi ini"}?`,
+    "Bagian mana yang paling dekat dengan pengalaman sehari-hari Anda?",
+    "Apa yang masih perlu diperdalam sebelum lanjut ke postest?",
+  ];
   const successIndicators = [
     `Memahami konsep inti pada ${subModule?.name || "materi ini"}.`,
     `Mampu mengaitkan materi ${module?.name || "ILMANA"} dengan konteks kehidupan sehari-hari.`,
@@ -239,24 +245,39 @@ const Material = () => {
               </div>
             )}
 
-            <div className="grid gap-4 lg:grid-cols-[1fr,0.9fr]">
+            <div
+              className={`grid gap-4 ${
+                hasReferenceLinks ? "lg:grid-cols-[1fr,0.9fr]" : "lg:grid-cols-1"
+              }`}
+            >
               <div className="p-4 bg-white border shadow-xl sm:p-8 rounded-2xl border-slate-100">
-                <h2 className="mb-4 text-xl font-bold sm:text-2xl text-slate-900">
-                  Refleksi Belajar
-                </h2>
-                <div className="space-y-3">
-                  {[
-                    `Apa konsep paling penting dari ${subModule?.name || "materi ini"}?`,
-                    "Bagian mana yang paling dekat dengan pengalaman sehari-hari Anda?",
-                    "Apa yang masih perlu diperdalam sebelum lanjut ke postest?",
-                  ].map((item) => (
-                    <div key={item} className="rounded-xl bg-slate-50 px-4 py-3 text-sm leading-7 text-slate-700">
+                <div className="mb-4 max-w-3xl">
+                  <h2 className="text-xl font-bold sm:text-2xl text-slate-900">
+                    Refleksi Belajar
+                  </h2>
+                  {!hasReferenceLinks && (
+                    <p className="mt-2 text-sm leading-6 text-slate-600">
+                      Gunakan pertanyaan berikut untuk merangkum pemahaman sebelum
+                      melanjutkan ke postest.
+                    </p>
+                  )}
+                </div>
+                <div
+                  className={`grid gap-3 ${
+                    hasReferenceLinks ? "grid-cols-1" : "md:grid-cols-3"
+                  }`}
+                >
+                  {reflectionQuestions.map((item) => (
+                    <div
+                      key={item}
+                      className="rounded-xl bg-slate-50 px-4 py-3 text-sm leading-7 text-slate-700"
+                    >
                       {item}
                     </div>
                   ))}
                 </div>
               </div>
-              {referenceLinks.length > 0 && (
+              {hasReferenceLinks && (
                 <div className="p-4 bg-white border shadow-xl sm:p-8 rounded-2xl border-slate-100">
                   <h2 className="mb-4 text-xl font-bold sm:text-2xl text-slate-900">
                     Referensi Awal

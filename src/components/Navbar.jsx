@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { Leaf, LogOut, Menu, X } from "lucide-react";
+import { Leaf, LogOut, Menu, UserRound, X } from "lucide-react";
 
 const Navbar = () => {
   const { user, logout, isAdmin } = useAuth();
@@ -20,10 +20,12 @@ const Navbar = () => {
       : [];
 
   const baseLinkClass =
-    "block py-2 font-medium transition-colors md:py-0";
+    "block rounded-lg px-3.5 py-2 font-medium transition-colors md:py-2";
   const routeLinkClass = ({ isActive }) =>
     `${baseLinkClass} ${
-      isActive ? "text-primary" : "text-gray-700 hover:text-green-600"
+      isActive
+        ? "bg-green-50 text-primary"
+        : "text-gray-700 hover:bg-green-50 hover:text-gray-900"
     }`;
   const closeMenu = () => setMobileOpen(false);
   const renderPrimaryLink = (item) => (
@@ -71,8 +73,9 @@ const Navbar = () => {
           {memberLinks.map(renderPrimaryLink)}
         </>
       )}
-      <span className="py-2 font-medium text-gray-600 md:py-0">
-        Hi, {user.name}
+      <span className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-green-100 bg-green-50 px-4 py-2 text-sm font-semibold text-primary md:w-auto md:justify-start md:py-1.5">
+        <UserRound className="h-4 w-4 shrink-0 text-green-600" />
+        <span className="max-w-40 truncate">Hi, {user.name}</span>
       </span>
       <button
         onClick={handleLogout}

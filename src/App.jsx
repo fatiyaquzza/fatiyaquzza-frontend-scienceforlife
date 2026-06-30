@@ -6,6 +6,7 @@ import AdminRoute from "./components/AdminRoute";
 
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
+import ScrollToTop from "./components/ScrollToTop";
 
 // Public Pages
 import LandingPage from "./pages/LandingPage";
@@ -137,6 +138,7 @@ function App() {
     <AuthProvider>
       <LineSpacingProvider>
         <Router>
+          <ScrollToTop />
           <AppContent />
         </Router>
       </LineSpacingProvider>

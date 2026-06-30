@@ -11,6 +11,7 @@ const MaterialManagement = () => {
   const [subModules, setSubModules] = useState([]);
   const [selectedSubModuleId, setSelectedSubModuleId] = useState("");
   const [materials, setMaterials] = useState([]);
+  const [materialsLoading, setMaterialsLoading] = useState(false);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [editingMaterial, setEditingMaterial] = useState(null);
@@ -46,18 +47,27 @@ const MaterialManagement = () => {
       fetchMaterials();
     } else {
       setMaterials([]);
+      setMaterialsLoading(false);
     }
   }, [selectedSubModuleId]);
 
   const fetchMaterials = () => {
+    setMaterialsLoading(true);
     api
       .get(`/materials/submodule/${selectedSubModuleId}`)
       .then((res) => setMaterials(res.data.materials))
-      .catch(() => setMaterials([]));
+      .catch(() => setMaterials([]))
+      .finally(() => setMaterialsLoading(false));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!editingMaterial && materials.length > 0) {
+      alert("Sub modul ini sudah memiliki materi. Hapus materi yang ada terlebih dahulu jika ingin menambahkan yang baru.");
+      return;
+    }
+
     setSubmitting(true);
 
     const formDataToSend = new FormData();
@@ -139,6 +149,8 @@ const MaterialManagement = () => {
     setShowForm(false);
   };
 
+  const hasExistingMaterial = materials.length > 0;
+
   const updateReference = (index, key, value) => {
     const next = [...formData.reference_links];
     next[index] = { ...next[index], [key]: value };
@@ -177,6 +189,8 @@ const MaterialManagement = () => {
                 onChange={(e) => {
                   setSelectedModuleId(e.target.value);
                   setSelectedSubModuleId("");
+                  setShowForm(false);
+                  setEditingMaterial(null);
                 }}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg"
               >
@@ -197,6 +211,9 @@ const MaterialManagement = () => {
                 onChange={(e) => {
                   setSelectedSubModuleId(e.target.value);
                   setFormData({ ...formData, sub_module_id: e.target.value });
+                  setShowForm(false);
+                  setEditingMaterial(null);
+                  setFileFile(null);
                 }}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg"
                 disabled={!selectedModuleId}
@@ -211,13 +228,29 @@ const MaterialManagement = () => {
             </div>
           </div>
 
-          {selectedSubModuleId && (
+          {selectedSubModuleId && materialsLoading && (
+            <button
+              type="button"
+              disabled
+              className="mt-4 cursor-not-allowed rounded-lg bg-gray-200 px-6 py-2 font-semibold text-gray-500"
+            >
+              Memuat materi...
+            </button>
+          )}
+
+          {selectedSubModuleId && !materialsLoading && !hasExistingMaterial && (
             <button
               onClick={() => setShowForm(!showForm)}
               className="mt-4 bg-primary text-white px-6 py-2 rounded-lg hover:bg-opacity-90"
             >
               {showForm ? "Batal" : "+ Tambah Materi"}
             </button>
+          )}
+
+          {selectedSubModuleId && !materialsLoading && hasExistingMaterial && !editingMaterial && (
+            <p className="mt-4 rounded-lg border border-green-100 bg-green-50 px-4 py-3 text-sm font-medium text-primary">
+              Sub modul ini sudah memiliki materi. Hapus materi yang ada terlebih dahulu jika ingin menambahkan materi baru.
+            </p>
           )}
         </div>
 

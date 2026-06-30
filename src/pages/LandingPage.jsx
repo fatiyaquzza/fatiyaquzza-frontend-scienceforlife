@@ -117,7 +117,7 @@ const LandingPage = () => {
       role: "Pendiri",
     },
     {
-      name: "Mumu",
+      name: "Muzainah Salahuddin S.Pd.",
       role: "Koordinator Proyek",
     },
   ];
