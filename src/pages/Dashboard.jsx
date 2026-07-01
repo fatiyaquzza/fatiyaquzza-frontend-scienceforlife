@@ -20,35 +20,17 @@ const Dashboard = () => {
   const [filteredModules, setFilteredModules] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Filter states
   const [sortBy, setSortBy] = useState("popular");
-  const [category, setCategory] = useState("all");
-  const [categories, setCategories] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
-    // Load modules and categories
-    const fetchData = async () => {
-      try {
-        const modulesRes = await api.get("/modules");
-        setModules(modulesRes.data.modules);
-        setFilteredModules(modulesRes.data.modules);
-
-        // Try to fetch categories, if endpoint doesn't exist, continue without it
-        try {
-          const categoriesRes = await api.get("/categories");
-          setCategories(categoriesRes.data.categories || []);
-        } catch {
-          /* categories endpoint optional */
-        }
-
+    api.get("/modules")
+      .then((res) => {
+        setModules(res.data.modules);
+        setFilteredModules(res.data.modules);
         setLoading(false);
-      } catch {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
+      })
+      .catch(() => setLoading(false));
   }, []);
 
   // Apply filters whenever filter states change
@@ -69,14 +51,6 @@ const Dashboard = () => {
       });
     }
 
-    // Filter by category
-    if (category !== "all") {
-      result = result.filter(
-        (module) => module.category_id === parseInt(category)
-      );
-    }
-
-    // Sort
     if (sortBy === "popular") {
       result.sort(
         (a, b) =>
@@ -96,11 +70,10 @@ const Dashboard = () => {
     }
 
     setFilteredModules(result);
-  }, [sortBy, category, searchQuery, modules]);
+  }, [sortBy, searchQuery, modules]);
 
   const handleResetFilters = () => {
     setSortBy("popular");
-    setCategory("all");
     setSearchQuery("");
   };
 
@@ -262,44 +235,8 @@ const Dashboard = () => {
               </div>
             </div>
 
-            {/* Category Filter */}
-            {categories.length > 0 && (
-              <div className="flex items-center gap-3">
-                <label className="flex items-center gap-2 text-sm font-semibold text-slate-700">
-                  <svg
-                    className="w-4 h-4 text-primary"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"
-                    />
-                  </svg>
-                  Kategori:
-                </label>
-                <select
-                  value={category}
-                  onChange={(e) => setCategory(e.target.value)}
-                  className="px-4 py-2 text-sm font-medium transition-all duration-200 border-none rounded-lg cursor-pointer bg-slate-100 text-slate-700 focus:outline-none focus:ring-2 focus:ring-primary hover:bg-slate-200"
-                >
-                  <option value="all">Semua Kategori</option>
-                  {categories.map((cat) => (
-                    <option key={cat.id} value={cat.id}>
-                      {cat.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            )}
-
             {/* Reset Button */}
-            {(sortBy !== "popular" ||
-              category !== "all" ||
-              searchQuery !== "") && (
+            {(sortBy !== "popular" || searchQuery !== "") && (
               <button
                 onClick={handleResetFilters}
                 className="flex items-center gap-2 px-4 py-2 ml-auto text-sm font-medium transition-all duration-200 rounded-lg bg-slate-100 text-slate-600 hover:bg-red-50 hover:text-red-600"
@@ -323,21 +260,13 @@ const Dashboard = () => {
           </div>
 
           {/* Active Filters Info */}
-          {(searchQuery || category !== "all") && (
+          {searchQuery && (
             <div className="pt-4 mt-4 border-t border-slate-200">
               <div className="flex items-center gap-2 text-sm text-slate-600">
                 <span className="font-medium">Filter aktif:</span>
-                {searchQuery && (
-                  <span className="px-3 py-1 text-xs font-medium bg-green-100 rounded-full text-primary">
-                    "{searchQuery}"
-                  </span>
-                )}
-                {category !== "all" && (
-                  <span className="px-3 py-1 text-xs font-medium bg-green-100 rounded-full text-primary">
-                    {categories.find((c) => c.id === parseInt(category))
-                      ?.name || "Kategori"}
-                  </span>
-                )}
+                <span className="px-3 py-1 text-xs font-medium bg-green-100 rounded-full text-primary">
+                  "{searchQuery}"
+                </span>
                 <span className="text-slate-400">•</span>
                 <span className="font-semibold text-primary">
                   {filteredModules.length} modul ditemukan
@@ -376,7 +305,7 @@ const Dashboard = () => {
                   ? "Coba ubah kata kunci pencarian atau filter yang digunakan"
                   : "Belum ada modul tersedia saat ini"}
               </p>
-              {(searchQuery || category !== "all") && (
+              {searchQuery && (
                 <button
                   onClick={handleResetFilters}
                   className="px-6 py-3 font-medium text-white transition-all duration-200 bg-primary rounded-xl hover:shadow-lg hover:shadow-secondary/20"
