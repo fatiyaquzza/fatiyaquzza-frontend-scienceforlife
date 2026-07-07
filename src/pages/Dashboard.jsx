@@ -1,12 +1,8 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import api from "../utils/api";
-import { stripHtml } from "../utils/contentHtml";
+import { resolveAssetUrl, stripHtml } from "../utils/contentHtml";
 import { ModuleGridSkeleton } from "../components/LoadingStates";
-
-const API_BASE = import.meta.env.VITE_API_URL
-  ? import.meta.env.VITE_API_URL.replace(/\/api\/?$/, "")
-  : "http://localhost:5000";
 
 const learningFlow = [
   "Pilih modul sesuai kebutuhan belajar.",
@@ -328,7 +324,7 @@ const Dashboard = () => {
                 <div className="relative h-48 overflow-hidden bg-green-100">
                   {module.image_url ? (
                     <img
-                      src={`${API_BASE}${module.image_url}`}
+                      src={resolveAssetUrl(module.image_url)}
                       alt={module.name}
                       className="object-cover w-full h-full transition-transform duration-500 group-hover:scale-110"
                     />

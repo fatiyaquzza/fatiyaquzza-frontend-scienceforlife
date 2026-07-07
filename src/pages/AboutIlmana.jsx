@@ -36,14 +36,12 @@ const contextVisuals = [
   {
     title: "Eksperimen dan pengamatan",
     body: "Visual kontekstual membantu pengguna menghubungkan konsep ilmiah dengan situasi nyata.",
-    image:
-      "https://images.unsplash.com/photo-1532187643603-ba119ca4109e?auto=format&fit=crop&w=1200&q=80",
+    image: "/images/about-community.jpg",
   },
   {
     title: "Manusia, alam, dan kesehatan",
     body: "Tema ILMANA diarahkan agar sains terasa dekat dengan tubuh, lingkungan, dan kebiasaan sehari-hari.",
-    image:
-      "https://images.unsplash.com/photo-1498837167922-ddd27525d352?auto=format&fit=crop&w=1200&q=80",
+    image: "/images/about-learning.jpg",
   },
 ];
 
@@ -174,7 +172,7 @@ const AboutIlmana = () => {
               to="/kelas"
               className="inline-flex items-center justify-center rounded-xl border border-slate-300 px-5 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
             >
-              Lihat Struktur Kelas
+              Lihat Panduan
             </Link>
           </div>
         </div>

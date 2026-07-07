@@ -35,7 +35,7 @@ cd frontend
 npm install
 
 # 3. Konfigurasi environment
-# Buat file .env (jika belum ada):
+# Buat file .env untuk development lokal (opsional):
 VITE_API_URL=http://localhost:5000/api
 
 # 4. Jalankan dev server (port 3000)
@@ -52,7 +52,7 @@ npm run preview
 
 | Variabel | Wajib | Default | Keterangan |
 |---|---|---|---|
-| `VITE_API_URL` | Tidak | `http://localhost:5000/api` | Base URL backend API |
+| `VITE_API_URL` | Tidak | `/api` | Base URL backend API |
 
 > Dev server Vite berjalan di port **3000** dengan proxy `/api` → `http://localhost:5000`. Di production, proxy dikelola oleh Nginx/Apache, bukan Vite.
 
@@ -100,7 +100,7 @@ frontend/
     │   ├── LandingPage.jsx     # Beranda (hero, modul, FAQ, kontak form)
     │   ├── AboutIlmana.jsx     # Visi, misi, tim, alur belajar
     │   ├── ArticleHub.jsx      # Artikel & referensi eksternal
-    │   ├── ClassOverview.jsx   # Penjelasan struktur kelas
+    │   ├── ClassOverview.jsx   # Panduan penggunaan publik
     │   ├── Login.jsx           # Form login
     │   ├── Register.jsx        # Form registrasi
     │   ├── Dashboard.jsx       # Grid modul dengan filter, sort, search
@@ -135,7 +135,7 @@ frontend/
 | `/` | LandingPage | Beranda: hero, modul unggulan, FAQ, form kontak |
 | `/tentang-ilmana` | AboutIlmana | Visi, misi, alur belajar, tim |
 | `/artikel` | ArticleHub | Artikel & referensi eksternal (WHO, FAO, dll) |
-| `/kelas` | ClassOverview | Penjelasan struktur kelas/alur belajar |
+| `/kelas` | ClassOverview | Panduan penggunaan platform |
 | `/login` | Login | Form login dengan redirect berbasis role |
 | `/register` | Register | Form registrasi (nama, email, password, pekerjaan, alamat) |
 
@@ -184,7 +184,7 @@ frontend/
 
 **File:** `src/utils/api.js`
 
-- Instance Axios dengan `baseURL` dari `VITE_API_URL`
+- Instance Axios dengan `baseURL` dari `VITE_API_URL` atau `/api`
 - **Request interceptor:** sisipkan `Authorization: Bearer <token>` dari `localStorage`
 - **Response interceptor:** pada response 401, hapus token + redirect ke `/login`
 
@@ -225,5 +225,5 @@ TipTap (ProseMirror) di halaman admin dengan fitur:
 ## Catatan Deploy
 
 - **Proxy API** — dev server Vite sudah handle proxy `/api` → `http://localhost:5000`. Untuk production, gunakan Nginx/Apache reverse proxy.
-- **SPA fallback** — file `public/.htaccess` sudah disediakan untuk Apache server.
+- **SPA fallback** — file `public/.htaccess` sudah disediakan untuk Apache server, dengan pengecualian `/api/*` agar tidak jatuh ke `index.html`.
 - **Backend harus berjalan** — frontend tidak bisa berfungsi tanpa backend API.

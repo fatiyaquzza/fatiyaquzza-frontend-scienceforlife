@@ -129,8 +129,8 @@ const LandingPage = () => {
       to: "/tentang-ilmana",
     },
     {
-      title: "Struktur Kelas",
-      body: "Pahami alur pretest, materi, postest, dan refleksi yang dipakai di platform.",
+      title: "Panduan Penggunaan",
+      body: "Ikuti tata cara daftar, pilih modul, pretest, materi, postest, hasil, dan bantuan pengguna.",
       to: "/kelas",
     },
     {
@@ -151,7 +151,7 @@ const LandingPage = () => {
           background: `
       radial-gradient(circle at center, rgba(9,57,42,0.9) 0%, rgba(16,97,70,0.6) 40%, rgba(16,97,70,0.3) 100%),
       linear-gradient(135deg, rgba(16,97,70,0.55) 0%, rgba(9,57,42,0.65) 100%),
-      url(https://images.unsplash.com/photo-1694230155228-cdde50083573?q=80&w=2070&auto=format&fit=crop)
+      url(/images/landing-hero.jpg)
     `,
           backgroundSize: "cover",
           backgroundPosition: "center",
@@ -192,7 +192,7 @@ const LandingPage = () => {
                     to="/kelas"
                     className="px-10 py-4 text-lg font-semibold text-white transition-all duration-300 border-2 border-white rounded-full hover:bg-white hover:text-green-700"
                   >
-                    Lihat Struktur Belajar
+                    Lihat Panduan Penggunaan
                   </Link>
                 </>
               )}
@@ -276,7 +276,7 @@ const LandingPage = () => {
             >
               <div className="relative">
                 <img
-                  src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&q=80"
+                  src="/images/landing-learning.jpg"
                   alt="Siswa sedang belajar"
                   className="rounded-2xl shadow-2xl w-full max-w-lg mx-auto object-cover aspect-[4/3]"
                 />

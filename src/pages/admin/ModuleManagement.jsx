@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import api from "../../utils/api";
 import { AdminTableSkeleton } from "../../components/LoadingStates";
+import RichTextEditor from "../../components/RichTextEditor";
+import { stripHtml } from "../../utils/contentHtml";
 
 const ModuleManagement = () => {
   const [modules, setModules] = useState([]);
@@ -80,12 +82,19 @@ const ModuleManagement = () => {
     setShowForm(false);
   };
 
+  const openCreateForm = () => {
+    setFormData({ name: "", description: "" });
+    setImageFile(null);
+    setEditingModule(null);
+    setShowForm(true);
+  };
+
   return (
     <>
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold text-primary">Manajemen Modul</h1>
           <button
-            onClick={() => setShowForm(!showForm)}
+            onClick={showForm ? resetForm : openCreateForm}
             className="bg-primary text-white px-6 py-2 rounded-lg hover:bg-opacity-90"
           >
             {showForm ? "Batal" : "+ Tambah Modul"}
@@ -116,13 +125,12 @@ const ModuleManagement = () => {
                 <label className="block text-gray-700 font-semibold mb-2">
                   Deskripsi
                 </label>
-                <textarea
+                <RichTextEditor
                   value={formData.description}
-                  onChange={(e) =>
-                    setFormData({ ...formData, description: e.target.value })
+                  onChange={(html) =>
+                    setFormData({ ...formData, description: html })
                   }
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-                  rows="4"
+                  placeholder="Tulis deskripsi modul (paragraf, gambar, tabel, italic, dll.)"
                 />
               </div>
               <div className="mb-4">
@@ -165,7 +173,11 @@ const ModuleManagement = () => {
                 {modules.map((module) => (
                   <tr key={module.id} className="border-t">
                     <td className="px-6 py-4">{module.name}</td>
-                    <td className="px-6 py-4">{module.description || "-"}</td>
+                    <td className="px-6 py-4 max-w-xs">
+                      {module.description
+                        ? stripHtml(module.description, 80)
+                        : "-"}
+                    </td>
                     <td className="px-6 py-4">
                       <button
                         onClick={() => handleEdit(module)}

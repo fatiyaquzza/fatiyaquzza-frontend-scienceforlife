@@ -1,5 +1,5 @@
 export const getAssetBaseUrl = () => {
-  const rawApiUrl = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+  const rawApiUrl = import.meta.env.VITE_API_URL || "/api";
   return rawApiUrl.replace(/\/api\/?$/, "");
 };
 

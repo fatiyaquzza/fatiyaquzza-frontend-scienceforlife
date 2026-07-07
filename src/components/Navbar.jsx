@@ -11,7 +11,7 @@ const Navbar = () => {
   const primaryLinks = [
     { type: "route", to: "/", label: "Beranda" },
     { type: "route", to: "/tentang-ilmana", label: "Tentang ILMANA" },
-    { type: "route", to: "/kelas", label: "Kelas" },
+    { type: "route", to: "/kelas", label: "Panduan" },
     { type: "route", to: "/artikel", label: "Artikel" },
   ];
   const memberLinks =
