@@ -226,7 +226,7 @@ const ModuleDetail = () => {
     <div className="min-h-screen py-6 sm:py-8 pt-20 sm:pt-24 pb-12 bg-light">
       <div className="container px-4 mx-auto max-w-7xl">
         {/* Breadcrumb */}
-        <nav className="flex items-center gap-2 mb-8 text-sm">
+        <nav className="flex flex-wrap items-center gap-2 mb-8 overflow-x-auto text-sm">
           <button
             onClick={() => navigate("/dashboard")}
             className="font-medium transition-colors text-slate-600 hover:text-primary"
@@ -250,21 +250,21 @@ const ModuleDetail = () => {
         </nav>
 
         {/* Module Header */}
-        <div className="p-6 sm:p-8 mb-4 bg-white border shadow-xl rounded-2xl border-slate-100">
-          <div className="flex items-start justify-between">
-            <div className="flex-1">
+        <div className="p-6 sm:p-8 mb-4 bg-white border shadow-xl rounded-2xl border-slate-100 overflow-hidden">
+          <div className="flex items-start justify-between gap-3">
+            <div className="flex-1 min-w-0">
               <h1 className="mb-3 text-xl font-bold leading-tight tracking-tight text-slate-900 break-words sm:text-3xl md:text-4xl">
                 {module.name}
               </h1>
               {module.description && (
-                <div className="text-justify text-sm leading-7 text-slate-600 sm:text-base">
+                <div className="text-justify text-sm leading-7 text-slate-600 sm:text-base overflow-hidden">
                   <HtmlContent html={module.description} />
                 </div>
               )}
             </div>
             <button
               onClick={() => navigate("/dashboard")}
-              className="ml-3 rounded-xl bg-slate-100 p-2.5 text-slate-600 transition-all duration-200 hover:bg-green-50 hover:text-primary sm:ml-4 sm:p-3"
+              className="flex-shrink-0 rounded-xl bg-slate-100 p-2.5 text-slate-600 transition-all duration-200 hover:bg-green-50 hover:text-primary sm:p-3"
             >
               <svg
                 className="w-5 h-5"
@@ -368,7 +368,7 @@ const ModuleDetail = () => {
         </div>
 
         {/* Sub Modules List */}
-        <div className="p-4 sm:p-6 md:p-8 bg-white border shadow-xl rounded-2xl border-slate-100">
+        <div className="p-4 sm:p-6 md:p-8 bg-white border shadow-xl rounded-2xl border-slate-100 overflow-hidden">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
             <h2 className="text-2xl font-bold text-slate-900">
               Daftar Sub Modul
@@ -425,17 +425,17 @@ const ModuleDetail = () => {
                     <div className="absolute inset-0 transition-all duration-500 bg-gradient-to-r from-green-50/0 via-green-50/0 to-green-50/0"></div>
 
                     <div className="relative flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
-                      <div className="flex-1 min-w-0">
+                      <div className="flex-1 min-w-0 overflow-hidden">
                         <div className="flex items-start gap-4 mb-3">
                           <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg bg-primary text-sm font-bold text-white shadow-lg shadow-secondary/20 sm:h-12 sm:w-12 sm:rounded-xl sm:text-base">
                             {index + 1}
                           </div>
-                          <div className="flex-1">
-                            <h3 className="mb-2 text-xl font-bold transition-colors duration-200 text-slate-900 group-hover:text-primary">
+                          <div className="flex-1 min-w-0 overflow-hidden">
+                            <h3 className="mb-2 text-xl font-bold transition-colors duration-200 text-slate-900 group-hover:text-primary break-words">
                               {subModule.name}
                             </h3>
                             {subModule.description && (
-                              <div className="mb-3 max-w-none text-justify text-sm leading-7 text-slate-600">
+                              <div className="mb-3 max-w-none text-justify text-sm leading-7 text-slate-600 overflow-hidden">
                                 <HtmlContent html={subModule.description} />
                               </div>
                             )}
