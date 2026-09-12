@@ -5,7 +5,7 @@ import { ChevronLeft, ChevronRight, Download, ExternalLink, Maximize2, Minimize2
 import { resolveAssetUrl } from "../utils/contentHtml";
 import { extractYouTubeId, parseInteractions } from "../utils/materialInteractions";
 
-pdfjs.GlobalWorkerOptions.workerSrc = new URL("pdfjs-dist/build/pdf.worker.min.mjs", import.meta.url).toString();
+pdfjs.GlobalWorkerOptions.workerSrc = `${new URL("pdfjs-dist/build/pdf.worker.min.mjs", import.meta.url)}?v=20260912`;
 const PAGE_RATIO = 1.414;
 
 const BookPage = forwardRef(function BookPage({ pageNumber, interactions, pageWidth, isPortrait, onNavigate }, ref) {

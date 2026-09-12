@@ -6,7 +6,7 @@ import api from "../utils/api";
 import { clamp, extractYouTubeId } from "../utils/materialInteractions";
 import { resolveAssetUrl } from "../utils/contentHtml";
 
-pdfjs.GlobalWorkerOptions.workerSrc = new URL("pdfjs-dist/build/pdf.worker.min.mjs", import.meta.url).toString();
+pdfjs.GlobalWorkerOptions.workerSrc = `${new URL("pdfjs-dist/build/pdf.worker.min.mjs", import.meta.url)}?v=20260912`;
 
 const getDomain = (url) => {
   try { return new URL(url).hostname.replace(/^www\./, ""); } catch { return "URL belum valid"; }
