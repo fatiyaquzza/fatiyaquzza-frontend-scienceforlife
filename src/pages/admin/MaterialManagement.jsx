@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link, useSearchParams } from "react-router-dom";
 import api from "../../utils/api";
 import RichTextEditor from "../../components/RichTextEditor";
 import { stripHtml } from "../../utils/contentHtml";
@@ -6,14 +7,16 @@ import { AdminTableSkeleton } from "../../components/LoadingStates";
 import FlipbookEditor from "../../components/FlipbookEditor";
 import { resolveAssetUrl } from "../../utils/contentHtml";
 import { parseInteractions } from "../../utils/materialInteractions";
+import AdminPageHeader from "../../components/AdminPageHeader";
 
 const emptyReference = () => ({ title: "", href: "" });
 
 const MaterialManagement = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [modules, setModules] = useState([]);
-  const [selectedModuleId, setSelectedModuleId] = useState("");
+  const [selectedModuleId, setSelectedModuleId] = useState(searchParams.get("module") || "");
   const [subModules, setSubModules] = useState([]);
-  const [selectedSubModuleId, setSelectedSubModuleId] = useState("");
+  const [selectedSubModuleId, setSelectedSubModuleId] = useState(searchParams.get("submodule") || "");
   const [materials, setMaterials] = useState([]);
   const [materialsLoading, setMaterialsLoading] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -33,7 +36,14 @@ const MaterialManagement = () => {
   const [formError, setFormError] = useState("");
 
   const selectedModule = modules.find((item) => String(item.id) === String(selectedModuleId));
+  const selectedSubModule = subModules.find((item) => String(item.id) === String(selectedSubModuleId));
   const isFlipbook = selectedModule?.material_layout !== "legacy";
+
+  const updateContext = (patch) => {
+    const next = new URLSearchParams(searchParams);
+    Object.entries(patch).forEach(([key, value]) => value ? next.set(key, value) : next.delete(key));
+    setSearchParams(next);
+  };
 
   useEffect(() => {
     api.get("/modules").then((res) => {
@@ -148,11 +158,11 @@ const MaterialManagement = () => {
     setShowForm(true);
   };
 
-  const handleDelete = async (id) => {
-    if (!window.confirm("Yakin ingin menghapus materi ini?")) return;
+  const handleDelete = async (material) => {
+    if (!window.confirm(`Hapus materi untuk “${selectedSubModule?.name || "submodul ini"}”? File dan pengaturannya tidak dapat dipulihkan dari panel admin.`)) return;
 
     try {
-      await api.delete(`/materials/${id}`);
+      await api.delete(`/materials/${material.id}`);
       fetchMaterials();
     } catch (error) {
       alert("Terjadi kesalahan");
@@ -200,11 +210,9 @@ const MaterialManagement = () => {
 
   return (
     <>
-        <h1 className="text-3xl font-bold text-primary mb-8">
-          Manajemen Materi
-        </h1>
+        <AdminPageHeader title="Materi" section="Konten Pembelajaran · Langkah 4" description="Pilih submodul lalu siapkan materi. Pastikan pretest tersedia agar siswa dapat mencapai halaman materi." />
 
-        <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
+        <div className="mb-8 rounded-2xl bg-white p-4 shadow-sm sm:p-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-gray-700 font-semibold mb-2">
@@ -215,6 +223,7 @@ const MaterialManagement = () => {
                 onChange={(e) => {
                   setSelectedModuleId(e.target.value);
                   setSelectedSubModuleId("");
+                  updateContext({ module: e.target.value, submodule: "" });
                   setShowForm(false);
                   setEditingMaterial(null);
                 }}
@@ -240,6 +249,7 @@ const MaterialManagement = () => {
                 value={selectedSubModuleId}
                 onChange={(e) => {
                   setSelectedSubModuleId(e.target.value);
+                  updateContext({ submodule: e.target.value });
                   setFormData({ ...formData, sub_module_id: e.target.value });
                   setShowForm(false);
                   setEditingMaterial(null);
@@ -261,6 +271,14 @@ const MaterialManagement = () => {
             </div>
           </div>
 
+          {selectedSubModuleId && Number(selectedSubModule?.pretest_count || 0) === 0 && (
+            <div className="mt-4 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
+              <p className="font-bold">Pretest belum tersedia</p>
+              <p className="mt-1 leading-6">Materi tetap dapat disiapkan, tetapi siswa belum bisa membukanya sebelum minimal satu soal pretest dibuat.</p>
+              <Link to={`/admin/questions?type=pretest&module=${selectedModuleId}&submodule=${selectedSubModuleId}`} className="mt-3 inline-flex min-h-10 items-center rounded-lg bg-amber-900 px-4 py-2 font-semibold text-white">Tambah pretest</Link>
+            </div>
+          )}
+
           {selectedSubModuleId && materialsLoading && (
             <div className="mt-4 h-10 w-36 animate-pulse rounded-lg bg-gray-200">
               <span className="sr-only">Memuat materi...</span>
@@ -270,7 +288,7 @@ const MaterialManagement = () => {
           {selectedSubModuleId && !materialsLoading && !hasExistingMaterial && (
             <button
               onClick={() => setShowForm(!showForm)}
-              className="mt-4 bg-primary text-white px-6 py-2 rounded-lg hover:bg-opacity-90"
+              className="mt-4 min-h-11 w-full rounded-lg bg-primary px-6 py-2 font-semibold text-white hover:bg-opacity-90 sm:w-auto"
             >
               {showForm ? "Batal" : "+ Tambah Materi"}
             </button>
@@ -284,7 +302,7 @@ const MaterialManagement = () => {
         </div>
 
         {showForm && selectedSubModuleId && (
-          <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
+          <div className="mb-8 rounded-2xl bg-white p-4 shadow-sm sm:p-6">
             <h2 className="text-xl font-bold text-primary mb-4">
               {editingMaterial ? "Edit Materi" : "Tambah Materi Baru"}
             </h2>
@@ -404,7 +422,7 @@ const MaterialManagement = () => {
               <button
                 type="submit"
                 disabled={submitting}
-                className="bg-primary text-white px-6 py-2 rounded-lg hover:bg-opacity-90 disabled:opacity-50"
+                className="min-h-11 w-full rounded-lg bg-primary px-6 py-2 font-semibold text-white hover:bg-opacity-90 disabled:opacity-50 sm:w-auto"
               >
                 {submitting ? "Menyimpan..." : "Simpan"}
               </button>
@@ -413,15 +431,17 @@ const MaterialManagement = () => {
         )}
 
         {selectedSubModuleId && materialsLoading ? (
-          <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+          <div className="overflow-hidden rounded-2xl bg-white shadow-sm">
             <AdminTableSkeleton
               columns={["Deskripsi", "Video", "File", "Referensi", "Aksi"]}
               rowCount={3}
             />
           </div>
-        ) : selectedSubModuleId && (
-          <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-            <table className="w-full">
+        ) : selectedSubModuleId ? (
+          <div className="overflow-hidden rounded-2xl bg-white shadow-sm">
+            {materials.length === 0 ? <div className="p-8 text-center text-sm text-slate-500">Belum ada materi untuk submodul ini. Gunakan tombol “Tambah Materi”.</div> : <>
+            <div className="divide-y divide-slate-100 md:hidden">{materials.map((material) => <article key={material.id} className="space-y-3 p-4"><div><h2 className="font-bold text-slate-900">Materi {selectedSubModule?.name}</h2><p className="mt-1 text-sm leading-6 text-slate-600">{material.description ? stripHtml(material.description, 120) : material.file_url ? "Materi PDF flipbook" : "Tanpa deskripsi"}</p></div><div className="flex flex-wrap gap-2 text-xs font-semibold text-slate-600"><span className="rounded-full bg-slate-100 px-2.5 py-1">PDF: {material.file_url ? "Ada" : "Tidak"}</span><span className="rounded-full bg-slate-100 px-2.5 py-1">Video: {material.video_url ? "Ada" : "Tidak"}</span></div><div className="flex gap-2"><button onClick={() => handleEdit(material)} className="min-h-10 flex-1 rounded-lg bg-emerald-50 px-4 py-2 text-sm font-semibold text-primary">Edit</button><button onClick={() => handleDelete(material)} className="min-h-10 flex-1 rounded-lg bg-red-50 px-4 py-2 text-sm font-semibold text-red-700">Hapus</button></div></article>)}</div>
+            <div className="hidden overflow-x-auto md:block"><table className="w-full">
               <thead className="bg-primary text-white">
                 <tr>
                   <th className="px-6 py-3 text-left">Deskripsi</th>
@@ -465,7 +485,7 @@ const MaterialManagement = () => {
                         Edit
                       </button>
                       <button
-                        onClick={() => handleDelete(material.id)}
+                        onClick={() => handleDelete(material)}
                         className="text-red-500 hover:underline"
                       >
                         Hapus
@@ -474,8 +494,10 @@ const MaterialManagement = () => {
                   </tr>
                 ))}
               </tbody>
-            </table>
+            </table></div></>}
           </div>
+        ) : (
+          <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-8 text-center"><p className="font-semibold text-slate-800">Pilih modul dan submodul untuk mengelola materi.</p>{modules.length === 0 && <Link to="/admin/modules" className="mt-3 inline-flex rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white">Buat modul dahulu</Link>}</div>
         )}
     </>
   );

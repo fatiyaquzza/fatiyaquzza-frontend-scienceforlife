@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link, useSearchParams } from "react-router-dom";
 import api from "../../utils/api";
 import RichTextEditor from "../../components/RichTextEditor";
 import { isEmptyHtml, stripHtml } from "../../utils/contentHtml";
@@ -10,13 +11,16 @@ import {
   relabelOptions,
 } from "../../utils/questionOptions";
 import { AdminTableSkeleton } from "../../components/LoadingStates";
+import AdminPageHeader from "../../components/AdminPageHeader";
 
 const QuestionManagement = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const queryType = searchParams.get("type") === "postest" ? "postest" : "pretest";
   const [modules, setModules] = useState([]);
-  const [selectedModuleId, setSelectedModuleId] = useState("");
+  const [selectedModuleId, setSelectedModuleId] = useState(searchParams.get("module") || "");
   const [subModules, setSubModules] = useState([]);
-  const [selectedSubModuleId, setSelectedSubModuleId] = useState("");
-  const [selectedType, setSelectedType] = useState("pretest");
+  const [selectedSubModuleId, setSelectedSubModuleId] = useState(searchParams.get("submodule") || "");
+  const [selectedType, setSelectedType] = useState(queryType);
   const [questions, setQuestions] = useState([]);
   const [questionsLoading, setQuestionsLoading] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -24,7 +28,7 @@ const QuestionManagement = () => {
   const [editingQuestion, setEditingQuestion] = useState(null);
   const [formData, setFormData] = useState({
     sub_module_id: "",
-    type: "pretest",
+    type: queryType,
     question_text: "",
     correct_answer: "",
     options: defaultQuestionOptions(),
@@ -37,6 +41,17 @@ const QuestionManagement = () => {
       setLoading(false);
     });
   }, []);
+
+  useEffect(() => {
+    setSelectedType(queryType);
+    setFormData((current) => ({ ...current, type: queryType }));
+  }, [queryType]);
+
+  const updateContext = (patch) => {
+    const next = new URLSearchParams(searchParams);
+    Object.entries(patch).forEach(([key, value]) => value ? next.set(key, value) : next.delete(key));
+    setSearchParams(next);
+  };
 
   useEffect(() => {
     if (selectedModuleId) {
@@ -130,11 +145,11 @@ const QuestionManagement = () => {
     setShowForm(true);
   };
 
-  const handleDelete = async (id) => {
-    if (!window.confirm("Yakin ingin menghapus soal ini?")) return;
+  const handleDelete = async (question) => {
+    if (!window.confirm(`Hapus soal “${stripHtml(question.question_text, 60)}”? Tindakan ini tidak dapat dibatalkan.`)) return;
 
     try {
-      await api.delete(`/questions/${id}`);
+      await api.delete(`/questions/${question.id}`);
       fetchQuestions();
     } catch (error) {
       alert("Terjadi kesalahan");
@@ -191,9 +206,9 @@ const QuestionManagement = () => {
 
   return (
     <>
-        <h1 className="text-3xl font-bold text-primary mb-8">Manajemen Soal</h1>
+        <AdminPageHeader title={selectedType === "pretest" ? "Pretest" : "Posttest"} section={`Konten Pembelajaran · Langkah ${selectedType === "pretest" ? 3 : 5}`} description={selectedType === "pretest" ? "Tambahkan minimal satu soal. Tanpa pretest, siswa berhenti sebelum dapat membuka materi." : "Tambahkan minimal satu soal agar siswa dapat menyelesaikan pembelajaran dan melihat hasil."} />
 
-        <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
+        <div className="mb-8 rounded-2xl bg-white p-4 shadow-sm sm:p-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
               <label className="block text-gray-700 font-semibold mb-2">
@@ -204,6 +219,7 @@ const QuestionManagement = () => {
                 onChange={(e) => {
                   setSelectedModuleId(e.target.value);
                   setSelectedSubModuleId("");
+                  updateContext({ module: e.target.value, submodule: "" });
                 }}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg"
               >
@@ -227,6 +243,7 @@ const QuestionManagement = () => {
                 value={selectedSubModuleId}
                 onChange={(e) => {
                   setSelectedSubModuleId(e.target.value);
+                  updateContext({ submodule: e.target.value });
                   setFormData({ ...formData, sub_module_id: e.target.value });
                 }}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg"
@@ -252,6 +269,7 @@ const QuestionManagement = () => {
                     checked={selectedType === "pretest"}
                     onChange={(e) => {
                       setSelectedType(e.target.value);
+                      updateContext({ type: e.target.value });
                       setFormData({ ...formData, type: e.target.value });
                     }}
                     className="mr-2"
@@ -265,11 +283,12 @@ const QuestionManagement = () => {
                     checked={selectedType === "postest"}
                     onChange={(e) => {
                       setSelectedType(e.target.value);
+                      updateContext({ type: e.target.value });
                       setFormData({ ...formData, type: e.target.value });
                     }}
                     className="mr-2"
                   />
-                  Postest
+                  Posttest
                 </label>
               </div>
             </div>
@@ -278,7 +297,7 @@ const QuestionManagement = () => {
           {selectedSubModuleId && (
             <button
               onClick={() => setShowForm(!showForm)}
-              className="mt-4 bg-primary text-white px-6 py-2 rounded-lg hover:bg-opacity-90"
+              className="mt-4 min-h-11 w-full rounded-lg bg-primary px-6 py-2 font-semibold text-white hover:bg-opacity-90 sm:w-auto"
             >
               {showForm ? "Batal" : "+ Tambah Soal"}
             </button>
@@ -286,7 +305,7 @@ const QuestionManagement = () => {
         </div>
 
         {showForm && selectedSubModuleId && (
-          <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
+          <div className="mb-8 rounded-2xl bg-white p-4 shadow-sm sm:p-6">
             <h2 className="text-xl font-bold text-primary mb-4">
               {editingQuestion ? "Edit Soal" : "Tambah Soal Baru"}
             </h2>
@@ -375,7 +394,7 @@ const QuestionManagement = () => {
               <button
                 type="submit"
                 disabled={submitting}
-                className="bg-primary text-white px-6 py-2 rounded-lg hover:bg-opacity-90 disabled:opacity-50"
+                className="min-h-11 w-full rounded-lg bg-primary px-6 py-2 font-semibold text-white hover:bg-opacity-90 disabled:opacity-50 sm:w-auto"
               >
                 {submitting ? "Menyimpan..." : "Simpan"}
               </button>
@@ -384,15 +403,17 @@ const QuestionManagement = () => {
         )}
 
         {selectedSubModuleId && questionsLoading ? (
-          <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+          <div className="overflow-hidden rounded-2xl bg-white shadow-sm">
             <AdminTableSkeleton
               columns={["Pertanyaan", "Opsi", "Tipe", "Aksi"]}
               rowCount={4}
             />
           </div>
-        ) : selectedSubModuleId && (
-          <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-            <table className="w-full">
+        ) : selectedSubModuleId ? (
+          <div className="overflow-hidden rounded-2xl bg-white shadow-sm">
+            {questions.length === 0 ? <div className="p-8 text-center"><p className="font-semibold text-slate-800">Belum ada soal {selectedType === "pretest" ? "pretest" : "posttest"}.</p><p className="mt-2 text-sm text-amber-700">{selectedType === "pretest" ? "Siswa belum dapat membuka materi sampai minimal satu soal dibuat." : "Siswa belum dapat menyelesaikan alur belajar."}</p></div> : <>
+            <div className="divide-y divide-slate-100 md:hidden">{questions.map((question, index) => <article key={question.id} className="space-y-3 p-4"><div><p className="text-xs font-semibold uppercase tracking-wide text-slate-400">Soal {index + 1} · {question.options?.length || 0} opsi</p><h2 className="mt-1 font-semibold leading-6 text-slate-900">{stripHtml(question.question_text, 130)}</h2></div><div className="flex gap-2"><button onClick={() => handleEdit(question)} className="min-h-10 flex-1 rounded-lg bg-emerald-50 px-4 py-2 text-sm font-semibold text-primary">Edit</button><button onClick={() => handleDelete(question)} className="min-h-10 flex-1 rounded-lg bg-red-50 px-4 py-2 text-sm font-semibold text-red-700">Hapus</button></div></article>)}</div>
+            <div className="hidden overflow-x-auto md:block"><table className="w-full">
               <thead className="bg-primary text-white">
                 <tr>
                   <th className="px-6 py-3 text-left">Pertanyaan</th>
@@ -419,7 +440,7 @@ const QuestionManagement = () => {
                         Edit
                       </button>
                       <button
-                        onClick={() => handleDelete(question.id)}
+                        onClick={() => handleDelete(question)}
                         className="text-red-500 hover:underline"
                       >
                         Hapus
@@ -428,8 +449,10 @@ const QuestionManagement = () => {
                   </tr>
                 ))}
               </tbody>
-            </table>
+            </table></div></>}
           </div>
+        ) : (
+          <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-8 text-center"><p className="font-semibold text-slate-800">Pilih modul dan submodul terlebih dahulu.</p>{modules.length === 0 && <Link to="/admin/modules" className="mt-3 inline-flex rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white">Buat modul dahulu</Link>}</div>
         )}
     </>
   );

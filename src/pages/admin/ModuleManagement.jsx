@@ -3,6 +3,7 @@ import api from "../../utils/api";
 import { AdminTableSkeleton } from "../../components/LoadingStates";
 import RichTextEditor from "../../components/RichTextEditor";
 import { stripHtml } from "../../utils/contentHtml";
+import AdminPageHeader from "../../components/AdminPageHeader";
 
 const ModuleManagement = () => {
   const [modules, setModules] = useState([]);
@@ -64,11 +65,11 @@ const ModuleManagement = () => {
     setShowForm(true);
   };
 
-  const handleDelete = async (id) => {
-    if (!window.confirm("Yakin ingin menghapus modul ini?")) return;
+  const handleDelete = async (module) => {
+    if (!window.confirm(`Hapus modul “${module.name}”? Data terkait dapat ikut terdampak dan tindakan ini tidak dapat dibatalkan.`)) return;
 
     try {
-      await api.delete(`/modules/${id}`);
+      await api.delete(`/modules/${module.id}`);
       fetchModules();
     } catch (error) {
       alert("Terjadi kesalahan");
@@ -91,18 +92,20 @@ const ModuleManagement = () => {
 
   return (
     <>
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold text-primary">Manajemen Modul</h1>
-          <button
+        <AdminPageHeader
+          title="Modul"
+          section="Konten Pembelajaran · Langkah 1"
+          description="Buat wadah utama pembelajaran. Setelah modul tersedia, lanjutkan dengan menambahkan submodul."
+          action={<button
             onClick={showForm ? resetForm : openCreateForm}
-            className="bg-primary text-white px-6 py-2 rounded-lg hover:bg-opacity-90"
+            className="min-h-11 w-full rounded-xl bg-primary px-5 py-2.5 font-semibold text-white hover:bg-opacity-90 sm:w-auto"
           >
             {showForm ? "Batal" : "+ Tambah Modul"}
-          </button>
-        </div>
+          </button>}
+        />
 
         {showForm && (
-          <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
+          <div className="mb-8 rounded-2xl bg-white p-4 shadow-sm sm:p-6">
             <h2 className="text-xl font-bold text-primary mb-4">
               {editingModule ? "Edit Modul" : "Tambah Modul Baru"}
             </h2>
@@ -147,7 +150,7 @@ const ModuleManagement = () => {
               <button
                 type="submit"
                 disabled={submitting}
-                className="bg-primary text-white px-6 py-2 rounded-lg hover:bg-opacity-90 disabled:opacity-50"
+                className="min-h-11 w-full rounded-lg bg-primary px-6 py-2 font-semibold text-white hover:bg-opacity-90 disabled:opacity-50 sm:w-auto"
               >
                 {submitting ? "Menyimpan..." : "Simpan"}
               </button>
@@ -156,12 +159,24 @@ const ModuleManagement = () => {
         )}
 
         {loading ? (
-          <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+          <div className="overflow-hidden rounded-2xl bg-white shadow-sm">
             <AdminTableSkeleton columns={["Nama", "Deskripsi", "Aksi"]} />
           </div>
         ) : (
-          <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-            <table className="w-full">
+          <div className="overflow-hidden rounded-2xl bg-white shadow-sm">
+            {modules.length === 0 ? (
+              <div className="p-8 text-center text-sm text-slate-500">Belum ada modul. Gunakan tombol “Tambah Modul” untuk memulai.</div>
+            ) : <>
+            <div className="divide-y divide-slate-100 md:hidden">
+              {modules.map((module) => (
+                <article key={module.id} className="space-y-3 p-4">
+                  <div><h2 className="font-bold text-slate-900">{module.name}</h2><p className="mt-1 text-sm leading-6 text-slate-600">{module.description ? stripHtml(module.description, 130) : "Belum ada deskripsi."}</p></div>
+                  <p className="text-xs font-semibold text-slate-500">{module.sub_module_count || 0} submodul</p>
+                  <div className="flex gap-2"><button onClick={() => handleEdit(module)} className="min-h-10 flex-1 rounded-lg bg-emerald-50 px-4 py-2 text-sm font-semibold text-primary">Edit</button><button onClick={() => handleDelete(module)} className="min-h-10 flex-1 rounded-lg bg-red-50 px-4 py-2 text-sm font-semibold text-red-700">Hapus</button></div>
+                </article>
+              ))}
+            </div>
+            <div className="hidden overflow-x-auto md:block"><table className="w-full">
               <thead className="bg-primary text-white">
                 <tr>
                   <th className="px-6 py-3 text-left">Nama</th>
@@ -186,7 +201,7 @@ const ModuleManagement = () => {
                         Edit
                       </button>
                       <button
-                        onClick={() => handleDelete(module.id)}
+                        onClick={() => handleDelete(module)}
                         className="text-red-500 hover:underline"
                       >
                         Hapus
@@ -195,7 +210,7 @@ const ModuleManagement = () => {
                   </tr>
                 ))}
               </tbody>
-            </table>
+            </table></div></>}
           </div>
         )}
     </>

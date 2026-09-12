@@ -157,16 +157,16 @@ const FlipbookEditor = ({ file, interactions, onChange, onPageCountChange }) => 
   const handles = { nw: "-left-2 -top-2 cursor-nw-resize", ne: "-right-2 -top-2 cursor-ne-resize", sw: "-bottom-2 -left-2 cursor-sw-resize", se: "-bottom-2 -right-2 cursor-se-resize" };
 
   return <div className="overflow-hidden rounded-2xl border border-slate-200 bg-[#edf2ef]">
-    <div className="flex flex-wrap items-center gap-3 border-b border-slate-200 bg-white px-4 py-3">
+    <div className="flex flex-wrap items-center gap-3 border-b border-slate-200 bg-white px-3 py-3 sm:px-4">
       <div className="flex rounded-lg bg-slate-100 p-1">
         <button type="button" onClick={() => setMode("edit")} className={`inline-flex items-center gap-2 rounded-md px-3 py-2 text-sm font-semibold ${mode === "edit" ? "bg-white text-primary shadow-sm" : "text-slate-500"}`}><MousePointer2 className="h-4 w-4" /> Edit</button>
         <button type="button" onClick={() => { setMode("preview"); setSelectedId(null); }} className={`inline-flex items-center gap-2 rounded-md px-3 py-2 text-sm font-semibold ${mode === "preview" ? "bg-white text-primary shadow-sm" : "text-slate-500"}`}><Eye className="h-4 w-4" /> Preview</button>
       </div>
       <p className="text-sm text-slate-500">{mode === "edit" ? "Pilih elemen, lalu geser atau tarik titik sudutnya." : "Video dan tautan sudah aktif untuk diuji."}</p>
-      <div className="ml-auto flex items-center gap-2 text-sm"><label htmlFor="editor-page" className="font-medium text-slate-600">Halaman</label><input id="editor-page" type="number" min="1" max={pageCount || 1} value={page} onChange={(event) => setPage(clamp(Number(event.target.value) || 1, 1, pageCount || 1))} className="w-20 rounded-lg border border-slate-300 px-2 py-1.5" /><span className="text-slate-500">/ {pageCount}</span></div>
+      <div className="flex w-full items-center gap-2 text-sm sm:ml-auto sm:w-auto"><label htmlFor="editor-page" className="font-medium text-slate-600">Halaman</label><input id="editor-page" type="number" min="1" max={pageCount || 1} value={page} onChange={(event) => setPage(clamp(Number(event.target.value) || 1, 1, pageCount || 1))} className="min-h-10 w-20 rounded-lg border border-slate-300 px-2 py-1.5" /><span className="text-slate-500">/ {pageCount}</span></div>
     </div>
     {error && <p className="border-b border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</p>}
-    <div className="grid min-h-[46rem] xl:grid-cols-[13rem_minmax(0,1fr)_19rem]">
+    <div className="grid min-h-0 xl:min-h-[46rem] xl:grid-cols-[13rem_minmax(0,1fr)_19rem]">
       <aside className="border-b border-slate-200 bg-white p-4 xl:border-b-0 xl:border-r">
         <p className="text-xs font-bold uppercase tracking-[0.16em] text-slate-400">Interaksi</p>
         <div className="mt-4 grid gap-2 sm:grid-cols-3 xl:grid-cols-1">
@@ -184,14 +184,14 @@ const FlipbookEditor = ({ file, interactions, onChange, onPageCountChange }) => 
           </div>
         </div>
       </aside>
-      <main className="flex items-start justify-center overflow-auto bg-[radial-gradient(circle_at_top,#365f54,#163e34_52%,#0b2c24)] p-4 sm:p-7">
-        <Document file={file} onLoadSuccess={({ numPages }) => { setPageCount(numPages); onPageCountChange(numPages); setPage((value) => Math.min(value, numPages)); setError(""); }} onLoadError={() => setError("PDF tidak dapat dibaca. Pastikan file tidak rusak atau terkunci.")} loading={<div className="py-24 text-center text-white">Menyiapkan preview PDF…</div>}>
-          <div ref={canvasRef} data-editor-page onPointerMove={transform} onPointerUp={endTransform} onPointerCancel={endTransform} className="relative mx-auto aspect-[1/1.414] w-[min(44rem,76vw)] touch-none overflow-hidden bg-white shadow-[0_30px_90px_rgba(0,0,0,.45)]">
+      <main className="flex min-w-0 items-start justify-center overflow-auto bg-[radial-gradient(circle_at_top,#365f54,#163e34_52%,#0b2c24)] p-3 sm:p-7">
+        <Document className="w-full max-w-[44rem]" file={file} onLoadSuccess={({ numPages }) => { setPageCount(numPages); onPageCountChange(numPages); setPage((value) => Math.min(value, numPages)); setError(""); }} onLoadError={() => setError("PDF tidak dapat dibaca. Pastikan file tidak rusak atau terkunci.")} loading={<div className="py-24 text-center text-white">Menyiapkan preview PDF…</div>}>
+          <div ref={canvasRef} data-editor-page onPointerMove={transform} onPointerUp={endTransform} onPointerCancel={endTransform} className="relative mx-auto aspect-[1/1.414] w-full max-w-[44rem] touch-none overflow-hidden bg-white shadow-[0_30px_90px_rgba(0,0,0,.45)]">
             <Page pageNumber={page} width={704} renderAnnotationLayer={false} renderTextLayer className="h-full w-full [&_canvas]:!h-full [&_canvas]:!w-full" />
             <div className="absolute inset-0">{pageInteractions.map((item) => <div key={item.id} onPointerDown={(event) => beginTransform(event, item, "move")} onKeyDown={(event) => handleKeyDown(event, item)} onClick={(event) => { event.stopPropagation(); if (mode === "edit") setSelectedId(item.id); }} role={mode === "edit" ? "button" : undefined} tabIndex={mode === "edit" ? 0 : -1} aria-label={`Edit ${item.label || item.type}`} className={`absolute touch-none overflow-visible border-2 ${mode === "edit" ? "cursor-move select-none" : "border-transparent"} ${selectedId === item.id && mode === "edit" ? "border-amber-400 ring-2 ring-amber-200/80" : mode === "edit" ? "border-emerald-500/70" : ""} bg-white/80`} style={{ left: `${item.x}%`, top: `${item.y}%`, width: `${item.width}%`, height: `${item.height}%` }}>
               <div className="h-full w-full overflow-hidden">{renderContent(item)}</div>
               {mode === "edit" && selectedId === item.id && <div onPointerDown={(event) => beginTransform(event, item, "move")} className="absolute inset-x-0 top-0 z-10 flex h-7 cursor-grab items-center justify-center gap-1 bg-amber-400/95 px-2 text-[10px] font-bold text-amber-950 active:cursor-grabbing"><GripHorizontal className="h-3.5 w-3.5" /> Geser · tarik sudut untuk ukuran</div>}
-              {mode === "edit" && selectedId === item.id && Object.entries(handles).map(([handle, classes]) => <button key={handle} type="button" onPointerDown={(event) => beginTransform(event, item, handle)} aria-label={`Ubah ukuran ${handle}`} className={`absolute z-10 h-5 w-5 rounded-full border-2 border-white bg-amber-400 shadow-md ${classes}`} />)}
+              {mode === "edit" && selectedId === item.id && Object.entries(handles).map(([handle, classes]) => <button key={handle} type="button" onPointerDown={(event) => beginTransform(event, item, handle)} aria-label={`Ubah ukuran ${handle}`} className={`absolute z-10 h-6 w-6 rounded-full border-2 border-white bg-amber-400 shadow-md sm:h-5 sm:w-5 ${classes}`} />)}
             </div>)}</div>
           </div>
         </Document>
