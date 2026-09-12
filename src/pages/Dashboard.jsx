@@ -350,6 +350,7 @@ const Dashboard = () => {
 
                 {/* Module Content */}
                 <div className="p-6">
+                  {module.material_layout === "legacy" && <span className="mb-3 inline-flex rounded-full bg-amber-100 px-3 py-1 text-xs font-bold uppercase tracking-wide text-amber-800">Versi Sebelumnya</span>}
                   <h3 className="mb-2 text-xl font-bold transition-colors duration-200 text-slate-900 group-hover:text-primary line-clamp-2">
                     {module.name}
                   </h3>

@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Leaf, Mail, Phone, MapPin } from "lucide-react";
+import { Mail } from "lucide-react";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -19,7 +19,7 @@ const Footer = () => {
               to="/"
               className="mb-4 flex items-center gap-2 text-xl font-bold transition-colors hover:text-green-300"
             >
-              <Leaf className="h-8 w-8 text-green-400" />
+              <img src="/logo-512.png" alt="ILMANA" className="h-12 w-12 object-contain" />
               ILMANA
             </Link>
             <p className="mb-6 text-sm leading-relaxed text-gray-400">
@@ -33,27 +33,12 @@ const Footer = () => {
             <ul className="space-y-3">
               <li>
                 <a
-                  href="tel:+6281234567890"
-                  className="flex items-center gap-3 text-gray-400 transition-colors hover:text-green-400"
-                >
-                  <Phone className="h-4 w-4 flex-shrink-0" />
-                  +62 812 3456 7890
-                </a>
-              </li>
-              <li>
-                <a
                   href="mailto:ilmanainitiative@gmail.com"
                   className="flex items-center gap-3 text-gray-400 transition-colors hover:text-green-400"
                 >
                   <Mail className="h-4 w-4 flex-shrink-0" />
                   ilmanainitiative@gmail.com
                 </a>
-              </li>
-              <li>
-                <span className="flex items-start gap-3 text-gray-400">
-                  <MapPin className="mt-0.5 h-4 w-4 flex-shrink-0" />
-                  Banda Aceh, Indonesia
-                </span>
               </li>
             </ul>
           </div>

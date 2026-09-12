@@ -1,0 +1,11 @@
+# ILMANA – Ilmu Manusia dan Alam
+
+ILMANA adalah platform pembelajaran sains interaktif yang menghubungkan ilmu manusia dan alam dengan kehidupan sehari-hari.
+
+- Website: https://ilmanainitiative.com/
+- Kontak: ilmanainitiative@gmail.com
+- Tentang: https://ilmanainitiative.com/tentang-ilmana
+- Kelas: https://ilmanainitiative.com/kelas
+- Artikel: https://ilmanainitiative.com/artikel
+
+Konten publik menjelaskan platform, panduan penggunaan, dan artikel pendukung. Halaman akun, materi, evaluasi, hasil, dashboard, dan administrasi bersifat privat.

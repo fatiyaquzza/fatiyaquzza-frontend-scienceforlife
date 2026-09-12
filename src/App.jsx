@@ -7,6 +7,7 @@ import AdminRoute from "./components/AdminRoute";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import ScrollToTop from "./components/ScrollToTop";
+import SeoMeta from "./components/SeoMeta";
 
 // Public Pages
 import LandingPage from "./pages/LandingPage";
@@ -32,6 +33,7 @@ import SubModuleManagement from "./pages/admin/SubModuleManagement";
 import MaterialManagement from "./pages/admin/MaterialManagement";
 import QuestionManagement from "./pages/admin/QuestionManagement";
 import UserManagement from "./pages/admin/UserManagement";
+import TeamManagement from "./pages/admin/TeamManagement";
 
 function AppContent() {
   const location = useLocation();
@@ -41,6 +43,7 @@ function AppContent() {
 
   return (
     <div className="min-h-screen flex flex-col">
+      <SeoMeta />
       {!isAdminRoute && <Navbar />}
       <main className={isAdminRoute ? "" : "flex-grow"}>
         <Routes>
@@ -125,6 +128,7 @@ function AppContent() {
                 <Route path="materials" element={<MaterialManagement />} />
                 <Route path="questions" element={<QuestionManagement />} />
                 <Route path="users" element={<UserManagement />} />
+                <Route path="team" element={<TeamManagement />} />
               </Route>
         </Routes>
       </main>

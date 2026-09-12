@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { Leaf, LogOut, Menu, UserRound, X } from "lucide-react";
+import { LogOut, Menu, UserRound, X } from "lucide-react";
 
 const Navbar = () => {
   const { user, logout, isAdmin } = useAuth();
@@ -96,7 +96,7 @@ const Navbar = () => {
             className="flex items-center gap-2 text-gray-900 transition-colors hover:text-green-600"
             onClick={() => setMobileOpen(false)}
           >
-            <Leaf className="w-6 h-6 text-green-600 shrink-0" strokeWidth={2} />
+            <img src="/logo-512.png" alt="ILMANA" className="h-11 w-11 shrink-0 object-contain" />
             <span className="text-lg font-bold sm:text-xl">ILMANA</span>
           </Link>
 

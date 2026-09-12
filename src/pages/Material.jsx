@@ -5,6 +5,7 @@ import HtmlContent from "../components/HtmlContent";
 import LineSpacingSelect from "../components/LineSpacingSelect";
 import { resolveAssetUrl } from "../utils/contentHtml";
 import { MaterialPageSkeleton } from "../components/LoadingStates";
+import FlipbookViewer from "../components/FlipbookViewer";
 
 const Material = () => {
   const { id } = useParams();
@@ -46,6 +47,8 @@ const Material = () => {
   };
 
   const moduleId = subModule?.module_id;
+  const isLegacy = module?.material_layout === "legacy";
+  const usesFlipbook = module?.material_layout === "flipbook" && Boolean(material?.file_url);
   const referenceLinks = (() => {
     try {
       const parsed = JSON.parse(material?.references_json || "[]");
@@ -130,6 +133,11 @@ const Material = () => {
               {module.name}
             </p>
           )}
+          {isLegacy && (
+            <span className="mt-3 inline-flex rounded-full bg-amber-100 px-3 py-1 text-xs font-bold uppercase tracking-wide text-amber-800">
+              Versi Sebelumnya
+            </span>
+          )}
         </div>
 
         <div className="mb-4 grid gap-4 lg:grid-cols-[1.1fr,0.9fr]">
@@ -170,7 +178,7 @@ const Material = () => {
         {material ? (
           <div className="space-y-4">
             {/* Deskripsi Materi */}
-            {material.description && (
+            {!usesFlipbook && material.description && (
               <div className="p-4 bg-white border shadow-xl sm:p-8 rounded-2xl border-slate-100">
                 <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
                   <h2 className="text-xl font-bold sm:text-2xl text-slate-900">
@@ -186,7 +194,7 @@ const Material = () => {
             )}
 
             {/* Video Pembelajaran */}
-            {material.video_url && (
+            {!usesFlipbook && material.video_url && (
               <div className="p-4 bg-white border shadow-xl sm:p-8 rounded-2xl border-slate-100">
                 <h2 className="mb-4 text-xl font-bold sm:text-2xl text-slate-900">
                   Video Pembelajaran
@@ -217,7 +225,13 @@ const Material = () => {
             )}
 
             {/* Materi PDF */}
-            {material.file_url && (
+            {usesFlipbook ? (
+              <FlipbookViewer
+                fileUrl={material.file_url}
+                interactions={material.interactions_json}
+                title={subModule?.name}
+              />
+            ) : material.file_url ? (
               <div className="p-4 bg-white border shadow-xl sm:p-8 rounded-2xl border-slate-100">
                 <h2 className="mb-4 text-xl font-bold sm:text-2xl text-slate-900">
                   Materi PDF
@@ -237,7 +251,7 @@ const Material = () => {
                   );
                 })()}
               </div>
-            )}
+            ) : null}
 
             <div
               className={`grid gap-4 ${

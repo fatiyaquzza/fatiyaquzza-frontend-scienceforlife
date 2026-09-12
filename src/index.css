@@ -385,3 +385,51 @@ body {
     padding: 0.4rem 0.5rem;
   }
 }
+/* PDF pages inherit the responsive dimensions of the page-flip container. */
+.flipbook-page .react-pdf__Page,
+.flipbook-page .react-pdf__Page__canvas,
+.flipbook-page .react-pdf__Page__textContent {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.flipbook-viewer:fullscreen {
+  width: 100vw;
+  height: 100dvh;
+  max-width: none;
+  border-radius: 0;
+  background: radial-gradient(circle at top, #17684d 0%, #0b3d2f 44%, #041f18 100%);
+}
+
+.flipbook-viewer:fullscreen .flipbook-stage {
+  min-height: 0;
+  overscroll-behavior: none;
+}
+
+.flipbook-stage--scrollable {
+  scrollbar-gutter: stable both-edges;
+}
+
+.team-slider {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(134, 239, 172, 0.6) rgba(255, 255, 255, 0.08);
+  overscroll-behavior-inline: contain;
+}
+
+.team-slider::-webkit-scrollbar {
+  height: 5px;
+}
+
+.team-slider::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: rgba(134, 239, 172, 0.6);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flipbook-stage *,
+  .flipbook-stage *::before,
+  .flipbook-stage *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

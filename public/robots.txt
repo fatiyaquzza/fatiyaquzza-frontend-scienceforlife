@@ -1,0 +1,13 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /dashboard
+Disallow: /module/
+Disallow: /pretest/
+Disallow: /material/
+Disallow: /postest/
+Disallow: /result/
+Disallow: /login
+Disallow: /register
+
+Sitemap: https://ilmanainitiative.com/sitemap.xml

@@ -3,6 +3,9 @@ import api from "../../utils/api";
 import RichTextEditor from "../../components/RichTextEditor";
 import { stripHtml } from "../../utils/contentHtml";
 import { AdminTableSkeleton } from "../../components/LoadingStates";
+import FlipbookEditor from "../../components/FlipbookEditor";
+import { resolveAssetUrl } from "../../utils/contentHtml";
+import { parseInteractions } from "../../utils/materialInteractions";
 
 const emptyReference = () => ({ title: "", href: "" });
 
@@ -24,6 +27,13 @@ const MaterialManagement = () => {
   });
   const [fileFile, setFileFile] = useState(null);
   const [submitting, setSubmitting] = useState(false);
+  const [interactions, setInteractions] = useState([]);
+  const [pdfPageCount, setPdfPageCount] = useState(0);
+  const [previewUrl, setPreviewUrl] = useState("");
+  const [formError, setFormError] = useState("");
+
+  const selectedModule = modules.find((item) => String(item.id) === String(selectedModuleId));
+  const isFlipbook = selectedModule?.material_layout !== "legacy";
 
   useEffect(() => {
     api.get("/modules").then((res) => {
@@ -69,7 +79,12 @@ const MaterialManagement = () => {
       return;
     }
 
+    if (isFlipbook && !fileFile && !editingMaterial?.file_url) {
+      setFormError("PDF wajib dipilih untuk materi flipbook.");
+      return;
+    }
     setSubmitting(true);
+    setFormError("");
 
     const formDataToSend = new FormData();
     formDataToSend.append("sub_module_id", formData.sub_module_id);
@@ -81,6 +96,8 @@ const MaterialManagement = () => {
         formData.reference_links.filter((item) => item.title.trim() && item.href.trim())
       )
     );
+    formDataToSend.append("interactions", JSON.stringify(isFlipbook ? interactions : []));
+    formDataToSend.append("pdf_page_count", String(isFlipbook ? pdfPageCount : 0));
     if (fileFile) {
       formDataToSend.append("file", fileFile);
     }
@@ -99,7 +116,7 @@ const MaterialManagement = () => {
       fetchMaterials();
       resetForm();
     } catch (error) {
-      alert("Terjadi kesalahan");
+      setFormError(error.response?.data?.message || "Terjadi kesalahan saat menyimpan materi.");
     } finally {
       setSubmitting(false);
     }
@@ -124,6 +141,10 @@ const MaterialManagement = () => {
       video_url: material.video_url || "",
       reference_links: referenceLinks,
     });
+    setInteractions(parseInteractions(material.interactions_json));
+    setPdfPageCount(Number(material.pdf_page_count || 0));
+    setPreviewUrl(material.file_url ? resolveAssetUrl(material.file_url) : "");
+    setFormError("");
     setShowForm(true);
   };
 
@@ -146,6 +167,10 @@ const MaterialManagement = () => {
       reference_links: [emptyReference()],
     });
     setFileFile(null);
+    setInteractions([]);
+    setPdfPageCount(0);
+    setPreviewUrl("");
+    setFormError("");
     setEditingMaterial(null);
     setShowForm(false);
   };
@@ -219,6 +244,9 @@ const MaterialManagement = () => {
                   setShowForm(false);
                   setEditingMaterial(null);
                   setFileFile(null);
+                  setInteractions([]);
+                  setPdfPageCount(0);
+                  setPreviewUrl("");
                 }}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg"
                 disabled={!selectedModuleId}
@@ -261,7 +289,7 @@ const MaterialManagement = () => {
               {editingMaterial ? "Edit Materi" : "Tambah Materi Baru"}
             </h2>
             <form onSubmit={handleSubmit}>
-              <div className="mb-4">
+              {!isFlipbook && <div className="mb-4">
                 <label className="block text-gray-700 font-semibold mb-2">
                   Deskripsi
                 </label>
@@ -272,8 +300,8 @@ const MaterialManagement = () => {
                   }
                   placeholder="Tulis deskripsi materi (paragraf, gambar, tabel, italic, dll.)"
                 />
-              </div>
-              <div className="mb-4">
+              </div>}
+              {!isFlipbook && <div className="mb-4">
                 <label className="block text-gray-700 font-semibold mb-2">
                   Video URL (YouTube)
                 </label>
@@ -286,7 +314,7 @@ const MaterialManagement = () => {
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg"
                   placeholder="https://www.youtube.com/watch?v=..."
                 />
-              </div>
+              </div>}
               <div className="mb-4">
                 <label className="block text-gray-700 font-semibold mb-2">
                   File PDF
@@ -294,11 +322,28 @@ const MaterialManagement = () => {
                 <input
                   type="file"
                   accept="application/pdf"
-                  onChange={(e) => setFileFile(e.target.files[0])}
+                  onChange={(e) => {
+                    const file = e.target.files[0];
+                    if (!file) return;
+                    if (file.size > 10 * 1024 * 1024) {
+                      setFormError("Ukuran PDF maksimal 10 MB.");
+                      e.target.value = "";
+                      return;
+                    }
+                    setFileFile(file);
+                    setPreviewUrl(URL.createObjectURL(file));
+                    setPdfPageCount(0);
+                    setFormError("");
+                  }}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg"
                 />
               </div>
-              <div className="mb-6">
+              {isFlipbook && previewUrl && (
+                <div className="mb-6">
+                  <FlipbookEditor file={previewUrl} interactions={interactions} onChange={setInteractions} onPageCountChange={setPdfPageCount} />
+                </div>
+              )}
+              {!isFlipbook && <div className="mb-6">
                 <div className="mb-2 flex items-center justify-between gap-3">
                   <label className="block text-gray-700 font-semibold">
                     Referensi Awal
@@ -354,7 +399,8 @@ const MaterialManagement = () => {
                     </div>
                   ))}
                 </div>
-              </div>
+              </div>}
+              {formError && <p className="mb-4 rounded-lg bg-red-50 px-4 py-3 text-sm font-medium text-red-700">{formError}</p>}
               <button
                 type="submit"
                 disabled={submitting}

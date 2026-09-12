@@ -256,6 +256,7 @@ const ModuleDetail = () => {
               <h1 className="mb-3 text-xl font-bold leading-tight tracking-tight text-slate-900 break-words sm:text-3xl md:text-4xl">
                 {module.name}
               </h1>
+              {module.material_layout === "legacy" && <span className="mb-3 inline-flex rounded-full bg-amber-100 px-3 py-1 text-xs font-bold uppercase tracking-wide text-amber-800">Versi Sebelumnya</span>}
               {module.description && (
                 <div className="text-justify text-sm leading-7 text-slate-600 sm:text-base overflow-hidden">
                   <HtmlContent html={module.description} />

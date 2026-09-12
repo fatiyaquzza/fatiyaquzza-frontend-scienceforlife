@@ -1,7 +1,8 @@
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import api from "../utils/api";
-import { useEffect, useState } from "react";
+import { resolveAssetUrl } from "../utils/contentHtml";
+import { useEffect, useRef, useState } from "react";
 import { useInView } from "../hooks/useInView";
 import {
   ArrowRight,
@@ -13,16 +14,19 @@ import {
   Sprout,
   Star,
   Mail,
-  Phone,
-  MapPin,
   Send,
   UserRound,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 
 const LandingPage = () => {
   const { user } = useAuth();
   const [modules, setModules] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [teamCategories, setTeamCategories] = useState([]);
+  const [activeEditor, setActiveEditor] = useState(0);
+  const teamSliderRef = useRef(null);
   const [openFAQ, setOpenFAQ] = useState(null);
   const [contactForm, setContactForm] = useState({
     name: "",
@@ -111,16 +115,30 @@ const LandingPage = () => {
   const [contactRef, contactInView] = useInView();
   const [ctaRef, ctaInView] = useInView();
 
-  const teamMembers = [
-    {
-      name: "Dr. Dra. Sulastri, M.Si.",
-      role: "Pendiri",
-    },
-    {
-      name: "Muzainah Salahuddin S.Pd.",
-      role: "Koordinator Proyek",
-    },
-  ];
+  useEffect(() => {
+    api.get("/team").then((res) => setTeamCategories((res.data.categories || []).filter((category) => category.members?.length))).catch(() => setTeamCategories([
+      { id: "fallback-featured", name: "Pendiri", layout: "featured", members: [
+        { id: "founder-1", name: "Dr. Dra. Sulastri, M.Si.", role: "Pendiri", bio: "Mengembangkan arah pembelajaran ILMANA agar ilmu kimia dekat dengan kehidupan sehari-hari.", image_url: null },
+      ] },
+      { id: "fallback-grid", name: "Tim ILMANA", layout: "grid", members: [
+        { id: "editor-1", name: "Muzainah Salahuddin S.Pd.", role: "Koordinator Proyek", image_url: null },
+      ] },
+    ]));
+  }, []);
+
+  const moveTeamSlider = (direction) => {
+    const slider = teamSliderRef.current;
+    if (!slider) return;
+    const card = slider.querySelector("[data-team-card]");
+    slider.scrollBy({ left: direction * ((card?.clientWidth || 280) + 16), behavior: "smooth" });
+  };
+
+  const updateEditorPosition = () => {
+    const slider = teamSliderRef.current;
+    const card = slider?.querySelector("[data-team-card]");
+    if (!slider || !card) return;
+    setActiveEditor(Math.round(slider.scrollLeft / (card.clientWidth + 16)));
+  };
 
   const quickAccess = [
     {
@@ -434,27 +452,46 @@ const LandingPage = () => {
               sehari-hari.
             </p>
           </div>
-          <div
-            className={`grid max-w-3xl grid-cols-1 gap-8 mx-auto sm:grid-cols-2 scroll-reveal-stagger ${teamInView ? "in-view" : ""}`}
-          >
-            {teamMembers.map((member, index) => (
-              <div
-                key={index}
-                className="overflow-hidden transition-all duration-300 shadow-lg group bg-white/90 rounded-2xl hover:shadow-2xl hover:-translate-y-2"
-              >
-                <div className="flex items-center justify-center aspect-square bg-gradient-to-br from-green-100 to-green-200">
-                  <div className="flex items-center justify-center transition-transform duration-500 rounded-full shadow-md w-28 h-28 bg-white/90 group-hover:scale-110">
-                    <UserRound className="text-green-700 w-14 h-14" />
+          <div className={`mx-auto max-w-6xl space-y-20 scroll-reveal-stagger ${teamInView ? "in-view" : ""}`}>
+            {teamCategories.map((category) => (
+              <div key={category.id} className={category.layout === "grid" ? "border-t border-white/15 pt-12" : ""}>
+                <div className={`mb-7 ${category.layout === "featured" ? "text-left" : "flex items-end justify-between gap-4"}`}>
+                  <div>
+                    <p className="mb-2 text-xs font-semibold uppercase tracking-[0.22em] text-green-300">{category.layout === "featured" ? "Sosok utama" : "Kolaborator"}</p>
+                    <h3 className="text-2xl font-bold text-white sm:text-3xl">{category.name}</h3>
                   </div>
+                  {category.layout === "grid" && <span className="text-sm text-green-100/70">{category.members.length} anggota</span>}
                 </div>
-                <div className="p-6 text-center">
-                  <h3 className="mb-1 text-xl font-bold text-gray-900">
-                    {member.name}
-                  </h3>
-                  <p className="text-sm font-medium text-green-600">
-                    {member.role}
-                  </p>
-                </div>
+                {category.layout === "featured" ? <div className="space-y-8">
+                  {category.members.map((member, index) => <article key={member.id} className={`group grid overflow-hidden rounded-[1.75rem] bg-[#f4f8f2] shadow-[0_28px_80px_rgba(1,24,17,0.28)] md:grid-cols-2 ${index % 2 ? "md:[&_.team-photo]:order-2" : ""}`}>
+                    <div className="team-photo relative min-h-[22rem] overflow-hidden bg-[#cfe4c7] md:min-h-[31rem]">
+                      {member.image_url ? <img src={resolveAssetUrl(member.image_url)} alt={`Portrait ${member.name}`} className="absolute inset-0 h-full w-full object-cover object-top transition duration-700 group-hover:scale-[1.025]" /> : <div className="flex h-full min-h-[22rem] items-center justify-center text-5xl font-bold text-green-800"><UserRound className="h-24 w-24" /></div>}
+                      <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-black/35 to-transparent" />
+                      <span className="absolute bottom-5 left-5 text-xs font-semibold uppercase tracking-[0.2em] text-white">0{index + 1} / Pendiri</span>
+                    </div>
+                    <div className="flex flex-col justify-center p-8 text-left sm:p-10 lg:p-14">
+                      <p className="mb-5 text-xs font-semibold uppercase tracking-[0.2em] text-green-700">Arah dan visi ILMANA</p>
+                      <h4 className="max-w-md text-3xl font-bold leading-tight tracking-tight text-slate-900 lg:text-4xl">{member.name}</h4>
+                      <p className="mt-3 text-sm font-semibold text-green-800">{member.role}</p>
+                      {member.bio && <p className="mt-6 max-w-md text-base leading-7 text-slate-600">{member.bio}</p>}
+                    </div>
+                  </article>)}
+                </div> : <div>
+                  <div ref={teamSliderRef} onScroll={updateEditorPosition} onKeyDown={(event) => { if (event.key === "ArrowLeft") moveTeamSlider(-1); if (event.key === "ArrowRight") moveTeamSlider(1); }} tabIndex="0" aria-label={`Slider ${category.name}`} className="team-slider -mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-6 outline-none focus-visible:ring-2 focus-visible:ring-green-300 sm:mx-0 sm:px-0">
+                    {category.members.map((member) => <article data-team-card key={member.id} className="group min-w-[82%] snap-start overflow-hidden rounded-2xl bg-white text-left shadow-[0_18px_50px_rgba(1,24,17,0.22)] sm:min-w-[19rem] lg:min-w-[22rem]">
+                      <div className="relative aspect-[4/3] overflow-hidden bg-green-100">
+                        {member.image_url ? <img src={resolveAssetUrl(member.image_url)} alt={`Portrait ${member.name}`} className="h-full w-full object-cover object-top transition duration-500 group-hover:scale-[1.035]" /> : <div className="flex h-full items-center justify-center"><UserRound className="h-16 w-16 text-green-800" /></div>}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-transparent" />
+                        <p className="absolute bottom-4 left-4 text-xs font-semibold uppercase tracking-[0.15em] text-white">{member.role}</p>
+                      </div>
+                      <div className="p-5"><h4 className="text-xl font-bold leading-snug text-slate-900">{member.name}</h4>{member.bio && <p className="mt-3 line-clamp-2 text-sm leading-6 text-slate-500">{member.bio}</p>}</div>
+                    </article>)}
+                  </div>
+                  <div className="mt-2 flex items-center justify-between">
+                    <div className="flex gap-1.5" aria-label="Posisi slider">{category.members.map((member, index) => <span key={member.id} className={`h-1.5 rounded-full transition-all ${activeEditor === index ? "w-8 bg-green-300" : "w-2 bg-white/25"}`} />)}</div>
+                    <div className="flex gap-2"><button type="button" onClick={() => moveTeamSlider(-1)} className="rounded-full border border-white/20 p-3 text-white transition hover:bg-white hover:text-green-950 focus:outline-none focus:ring-2 focus:ring-green-300" aria-label="Editor sebelumnya"><ChevronLeft className="h-5 w-5" /></button><button type="button" onClick={() => moveTeamSlider(1)} className="rounded-full border border-white/20 p-3 text-white transition hover:bg-white hover:text-green-950 focus:outline-none focus:ring-2 focus:ring-green-300" aria-label="Editor berikutnya"><ChevronRight className="h-5 w-5" /></button></div>
+                  </div>
+                </div>}
               </div>
             ))}
           </div>
@@ -494,31 +531,6 @@ const LandingPage = () => {
                     >
                       ilmanainitiative@gmail.com
                     </a>
-                  </div>
-                </div>
-                <div className="flex items-start gap-4">
-                  <div className="flex items-center justify-center flex-shrink-0 w-12 h-12 bg-green-100 rounded-xl">
-                    <Phone className="w-6 h-6 text-green-600" />
-                  </div>
-                  <div>
-                    <h3 className="mb-1 font-semibold text-gray-900">
-                      Telepon
-                    </h3>
-                    <a
-                      href="tel:+6281234567890"
-                      className="text-gray-600 hover:text-green-600"
-                    >
-                      +62 812 3456 7890
-                    </a>
-                  </div>
-                </div>
-                <div className="flex items-start gap-4">
-                  <div className="flex items-center justify-center flex-shrink-0 w-12 h-12 bg-green-100 rounded-xl">
-                    <MapPin className="w-6 h-6 text-green-600" />
-                  </div>
-                  <div>
-                    <h3 className="mb-1 font-semibold text-gray-900">Alamat</h3>
-                    <p className="text-gray-600">Banda Aceh, Indonesia</p>
                   </div>
                 </div>
               </div>

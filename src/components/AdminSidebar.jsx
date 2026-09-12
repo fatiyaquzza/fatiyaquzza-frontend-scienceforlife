@@ -7,7 +7,6 @@ import {
   FileText,
   HelpCircle,
   Users,
-  Leaf,
   LogOut,
 } from "lucide-react";
 
@@ -22,6 +21,7 @@ const AdminSidebar = () => {
     { title: "Materi", path: "/admin/materials", icon: FileText },
     { title: "Soal", path: "/admin/questions", icon: HelpCircle },
     { title: "Pengguna", path: "/admin/users", icon: Users },
+    { title: "Tim Kami", path: "/admin/team", icon: Users },
   ];
 
   const handleLogout = () => {
@@ -32,7 +32,7 @@ const AdminSidebar = () => {
   return (
     <aside className="fixed top-0 left-0 z-40 flex h-screen w-64 flex-col border-r border-slate-200 bg-white shadow-sm">
       <div className="flex h-16 shrink-0 items-center gap-2.5 border-b border-slate-200 px-5">
-        <Leaf className="h-7 w-7 shrink-0 text-green-600" strokeWidth={2} />
+        <img src="/logo-512.png" alt="Logo ILMANA" className="h-10 w-10 shrink-0 object-contain" />
         <div className="min-w-0">
           <p className="truncate text-lg font-bold leading-tight text-slate-900">
             ILMANA
