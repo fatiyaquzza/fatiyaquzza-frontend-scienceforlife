@@ -86,6 +86,13 @@ const FlipbookViewer = ({ fileUrl, interactions: interactionValue = [], title = 
   const [actualPageWidth, setActualPageWidth] = useState(0);
   const [visibleRange, setVisibleRange] = useState({ from: 0, to: 0 });
   const [isPanning, setIsPanning] = useState(false);
+  // Tombol navigasi harus tetap nonaktif sampai PageFlip benar-benar menempel.
+  // `pageCount` terisi saat pdf.js selesai membaca dokumen, sedangkan instance
+  // PageFlip baru siap beberapa frame kemudian. Di celah itu tombol sudah
+  // enabled, tapi navigate() bail out karena getLivePageFlip() null sehingga
+  // klik pertama ditelan tanpa efek. Celahnya cuma beberapa ratus milidetik,
+  // tapi tetap terasa seperti tombol rusak.
+  const [bookReady, setBookReady] = useState(false);
 
   const interactions = useMemo(() => parseInteractions(interactionValue), [interactionValue]);
   const resolvedFileUrl = resolveAssetUrl(fileUrl);
@@ -420,13 +427,17 @@ const FlipbookViewer = ({ fileUrl, interactions: interactionValue = [], title = 
   }, [isZoomed]);
 
   const handleFlip = useCallback((event) => {
-    // Sisa-sisa restore harus selalu dibersihkan. Kalau hanya `return` di sini,
-    // ref tetap terisi dan handleFlip berikutnya ikut terlewat terus, jadi
-    // indikator halaman membeku permanen padahal tombolnya masih hidup.
-    if (restorePageRef.current !== null) {
-      restorePageRef.current = null;
-      return;
-    }
+    // `event.data` adalah acuan: halaman yang benar-benar sedang tampil, jadi
+    // selalu ikut disinkronkan. Dulu flip pertama sesudah resize atau fullscreen
+    // dilewati begitu saja untuk "membuang sisa restore", padahal `restorePageRef`
+    // hanya benar-benar habis kalau flipbook di-remount (onInit). Kalau ukuran
+    // panggung berubah tanpa mengubah bookWidth atau isPortrait, remount tidak
+    // terjadi, ref tertinggal, dan flip pengguna berikutnya ikut tertelan ->
+    // indikator beku satu halaman padahal halamannya sudah berganti. Di HP
+    // address bar yang muncul/hilang hampir selalu memicu resize seperti itu.
+    // Jalur restore di handleInit sudah menyetel state-nya sendiri, jadi
+    // menyinkronkan ulang di sini hanya idempoten.
+    restorePageRef.current = null;
     currentPageRef.current = event.data;
     setCurrentPage(event.data);
     syncVisibleRange();
@@ -434,6 +445,7 @@ const FlipbookViewer = ({ fileUrl, interactions: interactionValue = [], title = 
 
   const handleInit = useCallback((event) => {
     pageFlipRef.current = event.object;
+    setBookReady(true);
     const page = restorePageRef.current;
     if (page !== null) {
       restorePageRef.current = null;
@@ -490,6 +502,16 @@ const FlipbookViewer = ({ fileUrl, interactions: interactionValue = [], title = 
     }
     restorePageRef.current = currentPageRef.current;
   };
+
+  // Pengaman: kalau `onInit` somehow tidak pernah sampai, tombol tidak boleh
+  // terkunci selamanya. Setelah 4 detik kontrol dibuka kembali, jadi kondisi
+  // paling buruk kembali ke perilaku lama (klik pertama mungkin ditelan),
+  // bukan kontrol yang tidak bisa dipakai.
+  useEffect(() => {
+    if (bookReady || pageCount === 0) return undefined;
+    const timer = setTimeout(() => setBookReady(true), 4000);
+    return () => clearTimeout(timer);
+  }, [bookReady, pageCount]);
 
   // Jaga-jaga: bila animasi terputus (resize/remount di tengah flip) page-flip
   // kadang tidak pernah kembali ke state "read". Tanpa ini semua kontrol
@@ -576,7 +598,7 @@ const FlipbookViewer = ({ fileUrl, interactions: interactionValue = [], title = 
             key={number}
             type="button"
             onClick={() => goToPage(number)}
-            disabled={isAnimating}
+            disabled={isAnimating || !bookReady}
             aria-current={isActive ? "true" : undefined}
             aria-label={`Buka halaman ${number}`}
             title={`Halaman ${number}`}
@@ -592,9 +614,9 @@ const FlipbookViewer = ({ fileUrl, interactions: interactionValue = [], title = 
         <div className="h-full rounded-full bg-emerald-400 transition-[width] duration-300 ease-out" style={{ width: `${progress}%` }} />
       </div>)}
       <div className="flex items-center justify-between gap-2">
-        <button type="button" onClick={() => navigate("previous")} disabled={!pageCount || currentPage <= 0 || isAnimating} className="flipbook-tool flipbook-tool--up inline-flex min-h-11 items-center gap-1 rounded-lg px-3 py-2 text-sm font-semibold transition hover:bg-white/10 active:translate-y-px focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-transparent" data-tip="Halaman sebelumnya (panah kiri)" aria-label="Ke halaman sebelumnya"><ChevronLeft className="h-4 w-4" /><span className="hidden sm:inline">Sebelumnya</span></button>
+        <button type="button" onClick={() => navigate("previous")} disabled={!pageCount || !bookReady || currentPage <= 0 || isAnimating} className="flipbook-tool flipbook-tool--up inline-flex min-h-11 items-center gap-1 rounded-lg px-3 py-2 text-sm font-semibold transition hover:bg-white/10 active:translate-y-px focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-transparent" data-tip="Halaman sebelumnya (panah kiri)" aria-label="Ke halaman sebelumnya"><ChevronLeft className="h-4 w-4" /><span className="hidden sm:inline">Sebelumnya</span></button>
         <span className="min-w-0 truncate text-center text-xs tabular-nums text-emerald-100 sm:text-sm" aria-live="polite">{indicator}</span>
-        <button type="button" onClick={() => navigate("next")} disabled={!pageCount || currentPage >= pageCount - 1 || isAnimating} className="flipbook-tool flipbook-tool--up inline-flex min-h-11 items-center gap-1 rounded-lg px-3 py-2 text-sm font-semibold transition hover:bg-white/10 active:translate-y-px focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-transparent" data-tip="Halaman berikutnya (panah kanan)" aria-label="Ke halaman berikutnya"><span className="hidden sm:inline">Berikutnya</span><ChevronRight className="h-4 w-4" /></button>
+        <button type="button" onClick={() => navigate("next")} disabled={!pageCount || !bookReady || currentPage >= pageCount - 1 || isAnimating} className="flipbook-tool flipbook-tool--up inline-flex min-h-11 items-center gap-1 rounded-lg px-3 py-2 text-sm font-semibold transition hover:bg-white/10 active:translate-y-px focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-transparent" data-tip="Halaman berikutnya (panah kanan)" aria-label="Ke halaman berikutnya"><span className="hidden sm:inline">Berikutnya</span><ChevronRight className="h-4 w-4" /></button>
       </div>
     </footer>
   </section>;

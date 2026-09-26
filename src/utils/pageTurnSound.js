@@ -8,6 +8,13 @@ const GRAINS = 9;
 
 const rand = (min, max) => min + Math.random() * (max - min);
 
+// Jeda antar suara harus diukur dengan jam yang selalu jalan. `context.currentTime`
+// membeku selama AudioContext suspended, dan itu justru kondisi paling sering
+// terjadi di HP: context baru hidup setelah sentuhan pertama. Kalau throttle
+// memakai currentTime, beberapa putaran halaman pertama setelah context hidup
+// terbaca berjarak 0 ms dan ikut terpotong -> halaman dibalik tanpa suara.
+const wallClock = () => (typeof performance !== "undefined" ? performance.now() : Date.now()) / 1000;
+
 const getContext = () => {
   if (typeof window === "undefined") return null;
   const Context = window.AudioContext || window.webkitAudioContext;
@@ -70,8 +77,9 @@ export const playPageTurnSound = ({ direction = "next", volume = 0.15 } = {}) =>
   if (!context) return;
 
   const now = context.currentTime;
-  if (lastPlayedAt >= 0 && now - lastPlayedAt < MIN_GAP) return;
-  lastPlayedAt = now;
+  const wall = wallClock();
+  if (lastPlayedAt >= 0 && wall - lastPlayedAt < MIN_GAP) return;
+  lastPlayedAt = wall;
 
   const start = now + 0.004;
   const level = Math.min(0.3, Math.max(0.015, volume));

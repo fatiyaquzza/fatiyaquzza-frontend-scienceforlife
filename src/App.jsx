@@ -16,6 +16,7 @@ import ArticleHub from "./pages/ArticleHub";
 import ClassOverview from "./pages/ClassOverview";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import NotFound from "./pages/NotFound";
 
 // User Pages
 import Dashboard from "./pages/Dashboard";
@@ -130,6 +131,11 @@ function AppContent() {
                 <Route path="users" element={<UserManagement />} />
                 <Route path="team" element={<TeamManagement />} />
               </Route>
+
+              {/* Harus wildcard dan harus paling akhir: React Router memberi
+                  prioritas route yang lebih spesifik, jadi <Route path="*">
+              di tempat lain akan mencuri /admin/* dan route modul. */}
+              <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
       {showFooter && <Footer />}
