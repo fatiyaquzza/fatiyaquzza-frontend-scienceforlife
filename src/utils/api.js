@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { readStore, removeStore } from './safeStorage';
 
 const API_URL = import.meta.env.VITE_API_URL || (import.meta.env.PROD
   ? 'https://azure-barracuda-788858.hostingersite.com/api'
@@ -14,7 +15,7 @@ const api = axios.create({
 // Add token to requests
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('token');
+    const token = readStore('token');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -30,8 +31,8 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
+      removeStore('token');
+      removeStore('user');
       window.location.href = '/login';
     }
     return Promise.reject(error);

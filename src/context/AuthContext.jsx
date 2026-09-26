@@ -1,5 +1,6 @@
 import { createContext, useState, useContext, useEffect } from 'react';
 import api from '../utils/api';
+import { readStore, readJsonStore, writeStore, removeStore } from '../utils/safeStorage';
 
 const AuthContext = createContext();
 
@@ -16,33 +17,42 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    const savedUser = localStorage.getItem('user');
+    const token = readStore('token');
+    const parsedUser = readJsonStore('user');
 
-    if (token && savedUser) {
-      setUser(JSON.parse(savedUser));
-      api.get('/auth/me')
-        .then((res) => {
-          setUser(res.data.user);
-          localStorage.setItem('user', JSON.stringify(res.data.user));
-        })
-        .catch(() => {
-          localStorage.removeItem('token');
-          localStorage.removeItem('user');
-          setUser(null);
-        })
-        .finally(() => setLoading(false));
-    } else {
+    // Cache user yang hilang atau rusak tidak berarti sesi habis, selama tokennya
+    // masih ada. Versi lama langsung menghapus token di kasus ini, jadi siapa pun
+    // yang riwayat browser-nya terhapus atau tersisa setengah tulis harus login
+    // ulang padahal tokennya masih valid. Sekarang user dipulihkan dari
+    // /auth/me, dan token baru dibuang kalau memang sudah tidak berlaku.
+    if (!token) {
+      removeStore('user');
       setLoading(false);
+      return;
     }
+
+    if (parsedUser) setUser(parsedUser);
+    api.get('/auth/me')
+      .then((res) => {
+        const fresh = res.data?.user;
+        if (!fresh) return;
+        setUser(fresh);
+        writeStore('user', JSON.stringify(fresh));
+      })
+      .catch(() => {
+        removeStore('token');
+        removeStore('user');
+        setUser(null);
+      })
+      .finally(() => setLoading(false));
   }, []);
 
   const login = async (email, password) => {
     try {
       const res = await api.post('/auth/login', { email, password });
       const { token, user } = res.data;
-      localStorage.setItem('token', token);
-      localStorage.setItem('user', JSON.stringify(user));
+      writeStore('token', token);
+      writeStore('user', JSON.stringify(user));
       setUser(user);
       return { success: true, user };
     } catch (error) {
@@ -57,8 +67,8 @@ export const AuthProvider = ({ children }) => {
     try {
       const res = await api.post('/auth/register', { name, email, password, job, address });
       const { token, user } = res.data;
-      localStorage.setItem('token', token);
-      localStorage.setItem('user', JSON.stringify(user));
+      writeStore('token', token);
+      writeStore('user', JSON.stringify(user));
       setUser(user);
       return { success: true, user };
     } catch (error) {
@@ -70,8 +80,8 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+    removeStore('token');
+    removeStore('user');
     setUser(null);
   };
 

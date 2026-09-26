@@ -406,9 +406,86 @@ body {
   overscroll-behavior: none;
 }
 
-.flipbook-stage--scrollable {
-  scrollbar-gutter: stable both-edges;
+.flipbook-stage {
+  position: relative;
+  justify-content: safe center;
+  align-items: safe center;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(134, 239, 172, 0.55) rgba(255, 255, 255, 0.08);
 }
+
+.flipbook-stage:focus-visible {
+  outline: 2px solid rgba(110, 231, 183, 0.7);
+  outline-offset: -2px;
+}
+
+.flipbook-stage::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+.flipbook-stage::-webkit-scrollbar-track {
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.flipbook-stage::-webkit-scrollbar-thumb {
+  border: 2px solid transparent;
+  border-radius: 999px;
+  background: rgba(134, 239, 172, 0.5);
+  background-clip: content-box;
+}
+
+.flipbook-stage::-webkit-scrollbar-thumb:hover {
+  background: rgba(134, 239, 172, 0.75);
+  background-clip: content-box;
+}
+
+.flipbook-tool {
+  position: relative;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .flipbook-tool::after {
+    content: attr(data-tip);
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 50%;
+    z-index: 60;
+    transform: translate(-50%, -4px);
+    white-space: nowrap;
+    border-radius: 0.5rem;
+    background: #04281e;
+    padding: 0.4rem 0.55rem;
+    font-size: 0.6875rem;
+    line-height: 1;
+    color: #d1fae5;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.45);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s ease, transform 0.15s ease;
+  }
+
+  .flipbook-tool:hover::after,
+  .flipbook-tool:focus-visible::after {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+
+  .flipbook-tool--up::after {
+    top: auto;
+    bottom: calc(100% + 8px);
+    transform: translate(-50%, 4px);
+  }
+
+  .flipbook-tool--up:hover::after,
+  .flipbook-tool--up:focus-visible::after {
+    transform: translate(-50%, 0);
+  }
+}
+
 
 .team-slider {
   scrollbar-width: thin;

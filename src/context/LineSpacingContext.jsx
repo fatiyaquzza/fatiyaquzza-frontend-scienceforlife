@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
+import { readStore, writeStore } from "../utils/safeStorage";
 
 const STORAGE_KEY = "ilmana-line-spacing";
 const DEFAULT_LINE_SPACING = "1.5";
@@ -13,14 +14,16 @@ export const LINE_SPACING_OPTIONS = [
 const LineSpacingContext = createContext(null);
 
 export const LineSpacingProvider = ({ children }) => {
-  const [lineSpacing, setLineSpacingState] = useState(() => {
-    if (typeof window === "undefined") return DEFAULT_LINE_SPACING;
-    return localStorage.getItem(STORAGE_KEY) || DEFAULT_LINE_SPACING;
-  });
+  // Provider ini membungkus seluruh aplikasi, jadi localStorage yang melempar
+  // di sini membuat provider gagal mount dan seluruh aplikasi jadi layar putih.
+  // Karena itu penulisan memakai helper yang menelan exception.
+  const [lineSpacing, setLineSpacingState] = useState(
+    () => readStore(STORAGE_KEY) || DEFAULT_LINE_SPACING
+  );
 
   const setLineSpacing = (value) => {
     setLineSpacingState(value);
-    localStorage.setItem(STORAGE_KEY, value);
+    writeStore(STORAGE_KEY, value);
   };
 
   useEffect(() => {
